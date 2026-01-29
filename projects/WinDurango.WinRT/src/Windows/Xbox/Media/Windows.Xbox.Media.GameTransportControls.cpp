@@ -42,7 +42,7 @@ namespace winrt::Windows::Xbox::Media::implementation
     Windows::Xbox::Media::SoundLevel GameTransportControls::SoundLevel()
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Media", "Unimplemented: SoundLevel");
-        return Windows::Xbox::Media::SoundLevel::Unknown;
+        return Windows::Xbox::Media::SoundLevel::Full;
     }
 
     bool GameTransportControls::IsEnabled()
@@ -121,7 +121,7 @@ namespace winrt::Windows::Xbox::Media::implementation
      * Dont use EventRegistrationToken
      * https://stackoverflow.com/questions/63346461/namespace-winrtwindowsfoundationeventregistrationtoken-has-no-member-ev
      */
-    winrt::event_token GameTransportControls::add_ButtonPressed(
+    winrt::event_token GameTransportControls::ButtonPressed(
         Windows::Foundation::TypedEventHandler<
             winrt::Windows::Xbox::Media::GameTransportControls,
             winrt::Windows::Xbox::Media::GameTransportControlsButtonPressedEventArgs> const &handler)
@@ -130,13 +130,13 @@ namespace winrt::Windows::Xbox::Media::implementation
         return e_ButtonPressedHandler.add(handler);
     }
 
-    void GameTransportControls::remove_ButtonPressed(winrt::event_token const &token)
+    void GameTransportControls::ButtonPressed(winrt::event_token const &token)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Media", "Unimplemented: remove_ButtonPressed");
         e_ButtonPressedHandler.remove(token);
     }
 
-    winrt::event_token GameTransportControls::add_PropertyChanged(
+    winrt::event_token GameTransportControls::PropertyChanged(
         Windows::Foundation::TypedEventHandler<
             winrt::Windows::Xbox::Media::GameTransportControls,
             winrt::Windows::Xbox::Media::GameTransportControlsPropertyChangedEventArgs> const &handler)
@@ -145,7 +145,7 @@ namespace winrt::Windows::Xbox::Media::implementation
         return e_PropertyChangedHandler.add(handler);
     }
 
-    void GameTransportControls::remove_PropertyChanged(winrt::event_token const &token)
+    void GameTransportControls::PropertyChanged(winrt::event_token const &token)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Media", "Unimplemented: remove_PropertyChanged");
         e_PropertyChangedHandler.remove(token);
