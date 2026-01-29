@@ -11,6 +11,7 @@
 #include <winrt/windows.storage.provider.h>
 #include <wrl/client.h>
 #include <detours.h>
+#include "CurrentApp.h"
 
 typedef int32_t (__stdcall *GetActivationFactory_t)(HSTRING classId, IActivationFactory** factory);
 

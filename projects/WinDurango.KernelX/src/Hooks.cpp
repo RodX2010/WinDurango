@@ -140,7 +140,7 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
 
     winDurango->log.Log("WinDurango::KernelX", "EraRoGetActivationFactory: {}", rss);
 
-    if (IsClassName(classId, "Windows.ApplicationModel.Store.CurrentApp"))
+    if (rss == std::string("Windows.ApplicationModel.Store.CurrentApp"))
     {
         HRESULT hr = RoGetActivationFactory(classId, iid, factory);
 
@@ -183,7 +183,7 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
         return i_factory.CopyTo(iid, factory);
     }
 
-    return E_NOINTERFACE;
+    return RoGetActivationFactory(classId, iid, factory);
 }
 
 HRESULT WINAPI GetActivationFactoryRedirect(PCWSTR str, REFIID riid, void **ppFactory)
