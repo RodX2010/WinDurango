@@ -84,8 +84,8 @@ namespace Window.Xbox.System
         UINT32 Reputation();
         //UserAgeGroup AgeGroup();
         Windows.Foundation.Collections.IVectorView<unsigned int> Privileges();
-        Windows.Foundation.IAsyncOperation<GetPictureResult> GetApplicationPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
-        Windows.Foundation.IAsyncOperation<GetPictureResult> GetGamerPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
+        //Windows.Foundation.IAsyncOperation<GetPictureResult> GetApplicationPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
+        //Windows.Foundation.IAsyncOperation<GetPictureResult> GetGamerPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
     }
 
     // Placeholder GUID
