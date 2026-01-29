@@ -1,0 +1,171 @@
+namespace Window.Xbox.System 
+{
+    runtimeclass User;
+    runtimeclass UserDisplayInfo;
+    runtimeclass UserDisplayInfoChangedEventArgs;
+    runtimeclass UserAddedEventArgs;
+    runtimeclass UserRemovedEventArgs;
+    runtimeclass OnlineStateChangedEventArgs;
+    runtimeclass GetTokenAndSignatureResult;
+    runtimeclass AudioDeviceAddedEventArgs;
+    runtimeclass AudioDeviceRemovedEventArgs;
+    runtimeclass AudioDeviceChangedEventArgs;
+    runtimeclass SignInCompletedEventArgs;
+    runtimeclass SignOutStartedEventArgs;
+    runtimeclass SignOutCompletedEventArgs;
+
+    enum UserPictureSize 
+    {
+        Small = 0x0001,
+        Medium = 0x0002,
+        Large = 0x0003,
+        ExtraLarge = 0x0004,
+    };
+
+    enum UserOnlineState
+    {
+        Unknown = 0x0000,
+        Offline = 0x0001,
+        Online = 0x0002,
+    };
+
+    // Placeholder GUID
+    [uuid(AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    interface IUserStatics : IInspectable
+    {
+        Guid GetNetworkCacheIdForUsers(Windows.Foundation.Collections.IVectorView<UINT32> unk);
+        UserOnlineState OnlineState { get; };
+        event Windows.Foundation.EventHandler<OnlineStateChangedEventArgs> OnlineStateChanged(Windows.Foundation.EventRegistrationToken unk);
+        Windows.Foundation.Collections.IVectorView<User> Users { get; };
+        event Windows.Foundation.EventHandler<UserAddedEventArgs> UserAdded;
+        event Windows.Foundation.EventHandler<UserRemovedEventArgs> UserRemoved;
+        User GetUserById(UINT32 Id);
+        [default_overload, overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers, HSTRING body);
+        [overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers, Windows.Foundation.Collections.IVector<Byte> body);
+        [overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers);
+        event Windows.Foundation.EventHandler<AudioDeviceAddedEventArgs> AudioDeviceAdded;
+        event Windows.Foundation.EventHandler<AudioDeviceRemovedEventArgs> AudioDeviceRemoved;
+        event Windows.Foundation.EventHandler<AudioDeviceChangedEventArgs> AudioDeviceChanged;
+        event Windows.Foundation.EventHandler<SignInCompletedEventArgs> SignInCompleted;
+        event Windows.Foundation.EventHandler<SignOutStartedEventArgs> SignOutStarted;
+        event Windows.Foundation.EventHandler<SignOutCompletedEventArgs> SignOutCompleted;
+        event Windows.Foundation.EventHandler<UserDisplayInfoChangedEventArgs> UserDisplayInfoChanged;
+        Guid GetNetworkCacheIdForUsers(Windows.Foundation.Collections.IVectorView<unsigned int> unk);
+    }
+
+    // Placeholder GUID
+    [interface_name("IUser", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    [static(IUserStatics, 1.0)]
+    runtimeclass User 
+    {
+        UINT32 Id { get; };
+        //Windows.Foundation.Collections.IVectorView<IAudioDeviceInfo> AudioDevices { get; };
+        //Windows.Foundation.Collections.IVectorView<Windows.Xbox.Input.IController> Controllers { get; };
+        UserDisplayInfo DisplayInfo { get; };
+        Boolean IsGuest { get; };
+        Boolean IsSignedIn { get; };
+        //UserLocation Location { get; };
+        User Sponsor { get; };
+        HSTRING XboxUserHash { get; };
+        HSTRING XboxUserId { get; };
+        [default_overload, overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers, HSTRING body);
+        [overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers, Windows.Foundation.Collections.IVector<Byte> body);
+        [overload("GetTokenAndSignatureAsync")] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(HSTRING url, HSTRING method, HSTRING headers);
+    }
+
+    // Placeholder GUID
+    [interface_name("IUserDisplayInfo", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass UserDisplayInfo
+    {
+        HSTRING Gamertag();
+        UINT32 GamerScore();
+        HSTRING ApplicationDisplayName();
+        HSTRING GameDisplayName();
+        UINT32 Reputation();
+        //UserAgeGroup AgeGroup();
+        Windows.Foundation.Collections.IVectorView<unsigned int> Privileges();
+        Windows.Foundation.IAsyncOperation<GetPictureResult> GetApplicationPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
+        Windows.Foundation.IAsyncOperation<GetPictureResult> GetGamerPictureAsync(UserPictureSize unk, Windows.Storage.Streams.IBuffer unka);
+    }
+
+    // Placeholder GUID
+    [interface_name("IUserDisplayInfoChangedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass UserDisplayInfoChangedEventArgs 
+    {
+        User User { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IUserAddedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass UserAddedEventArgs 
+    {
+        User User { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IUserRemovedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass UserRemovedEventArgs 
+    {
+        User User { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IOnlineStateChangedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass OnlineStateChangedEventArgs 
+    {
+        UserOnlineState State { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IGetTokenAndSignatureResult", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass GetTokenAndSignatureResult 
+    {
+        HSTRING Signature { get; };
+        HSTRING Token { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IAudioDeviceAddedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass AudioDeviceAddedEventArgs 
+    {
+        User User { get; };
+        //IAudioDeviceInfo AudioDevice { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IAudioDeviceRemovedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass AudioDeviceRemovedEventArgs 
+    {
+        User User { get; };
+        //IAudioDeviceInfo AudioDevice { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("IAudioDeviceChangedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass AudioDeviceChangedEventArgs 
+    {
+        User User { get; };
+        //IAudioDeviceInfo AudioDevice { get; };
+    }
+
+    // Placeholder GUID
+    [interface_name("ISignInCompletedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass SignInCompletedEventArgs 
+    {
+        User User { get; };
+    }
+
+    // Placeholder GUID  TODO: PLACEHOLDER
+    [interface_name("ISignOutStartedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass SignOutStartedEventArgs 
+    {
+        UserOnlineState State { get; };
+    }
+
+    // Placeholder GUID  TODO: PLACEHOLDER
+    [interface_name("ISignOutCompletedEventArgs", AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass SignOutCompletedEventArgs 
+    {
+        UserOnlineState State { get; };
+    }
+}

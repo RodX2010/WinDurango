@@ -10,6 +10,7 @@ HRESULT EraXboxUserLicenseInformationWrapper::QueryInterface(const IID &riid, vo
     }
 
     *ppvObject = nullptr;
+    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraXboxUserLicenseInformationWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
     return E_NOINTERFACE;
 }
 
@@ -27,16 +28,19 @@ ULONG EraXboxUserLicenseInformationWrapper::Release()
 
 HRESULT EraXboxUserLicenseInformationWrapper::GetIids(ULONG *iidCount, IID **iids)
 {
+    winDurango->log.Log("WinDurango::KernelX::CurrentApp", "Unimplemented - EraXboxUserLicenseInformationWrapper::GetIids");
     return E_NOTIMPL;
 }
 
 HRESULT EraXboxUserLicenseInformationWrapper::GetRuntimeClassName(HSTRING *className)
 {
+    winDurango->log.Log("WinDurango::KernelX::CurrentApp", "Unimplemented - EraXboxUserLicenseInformationWrapper::GetRuntimeClassName");
     return E_NOTIMPL;
 }
 
 HRESULT EraXboxUserLicenseInformationWrapper::GetTrustLevel(TrustLevel *trustLevel)
 {
+    winDurango->log.Log("WinDurango::KernelX::CurrentApp", "Unimplemented - EraXboxUserLicenseInformationWrapper::GetTrustLevel");
     return E_NOTIMPL;
 }
 
@@ -73,6 +77,7 @@ HRESULT EraLicenseInformationWrapper::QueryInterface(const IID &riid, void **ppv
     }
 
     *ppvObject = nullptr;
+    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraLicenseInformationWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
     return E_NOINTERFACE;
 }
 
@@ -105,6 +110,7 @@ HRESULT EraLicenseInformationWrapper::GetTrustLevel(TrustLevel *trustLevel)
 
 HRESULT EraLicenseInformationWrapper::get_ProductLicenses(ABI::Windows::Foundation::Collections::__FIMapView_2_HSTRING_Windows__CApplicationModel__CStore__CProductLicense_t **value)
 {
+    winDurango->log.Log("WinDurango::KernelX::CurrentApp", "Unimplemented - EraLicenseInformationWrapper::get_ProductLicenses");
     return E_NOTIMPL;
 }
 
@@ -159,6 +165,7 @@ HRESULT __stdcall EraCurrentAppWrapper::QueryInterface(REFIID riid, void **ppvOb
     }
 
     *ppvObject = nullptr;
+    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraCurrentAppWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
     return E_NOINTERFACE;
 }
 
