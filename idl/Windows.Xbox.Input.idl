@@ -1,0 +1,265 @@
+import "Windows.Xbox.System.idl";
+
+namespace Windows.Xbox.Input 
+{
+    [flags]
+    enum GamepadButtons 
+    {
+        None = 0x0,
+        DPadUp = 0x100,
+        DPadDown = 0x200,
+        DPadLeft = 0x400,
+        DPadRight = 0x800,
+        View = 0x8,
+        Menu = 0x4,
+        LeftThumbstick = 0x4000,
+        RightThumbstick = 0x8000,
+        LeftShoulder = 0x1000,
+        RightShoulder = 0x2000,
+        A = 0x10,
+        B = 0x20,
+        X = 0x40,
+        Y = 0x80,
+    };
+
+    [flags]
+    enum NavigationButtons 
+    {
+        None = 0x0,
+        Up = 0x100,
+        Down = 0x200,
+        Left = 0x400,
+        Right = 0x800,
+        View = 0x8,
+        Menu = 0x4,
+        PreviousPage = 0x1000,
+        NextPage = 0x2000,
+        Accept = 0x10,
+        Cancel = 0x20,
+        X = 0x40,
+        Y = 0x80,
+    };
+
+    [flags]
+    enum ControllerOrderFilter 
+    {
+        None = 0x0,
+        TrackedAccessories = 0x1,
+        TrackedBodies = 0x2,
+    };
+
+    enum MetadataVersion 
+    {
+        V1 = 0x1,
+    };
+
+    enum HandType {
+        NONE = 0x0,
+        LEFT = 0x1,
+        RIGHT = 0x2,
+    };
+
+    runtimeclass Controller;
+
+    [interface_name("IControllerAddedEventArgs", AACAAAAB-ACAA-AAAA-AAAA-AAACCCAAAAAA)]
+    runtimeclass ControllerAddedEventArgs
+    {
+        Controller Controller { get; };
+    }
+
+    [interface_name("IControllerRemovedEventArgs", FAFAAAAB-AAAA-AEAA-AAAA-AAACCCAAAAAA)]
+    runtimeclass ControllerRemovedEventArgs
+    {
+        Controller Controller { get; };
+    }
+
+    [interface_name("IControllerPairingChangedEventArgs", FAFAAAAB-AAAA-AAAA-AAAA-AAAECCAAFAFA)]
+    runtimeclass ControllerPairingChangedEventArgs
+    {
+        Controller Controller { get; };
+        Windows.Xbox.System.User User { get; };
+        Windows.Xbox.System.User PreviousUser { get; };
+    }
+
+    [interface_name("IControllerOrderChangedEventArgs", FAFAAAAB-AABA-ABAA-AEAA-AAACCCAAFAFA)]
+    runtimeclass ControllerOrderChangedEventArgs
+    {
+    }
+
+    [interface_name("IGamepadAddedEventArgs", AACEAAAB-AAAA-AAAA-AAAA-AAAAAAAAAAAA)]
+    runtimeclass GamepadAddedEventArgs
+    {
+        Gamepad Gamepad { get; };
+    }
+
+    [interface_name("IGamepadRemovedEventArgs", AACAAAAB-FFAC-AAAA-AAAA-AAAAAAAAEFDA)]
+    runtimeclass GamepadRemovedEventArgs
+    {
+        Gamepad Gamepad { get; };
+    }
+
+    [interface_name("IBiometricUserChangedEventArgs", AACAAAAB-FFAC-AAAA-AAAA-AACCAAAAEFDA)]
+    runtimeclass BiometricUserChangedEventArgs
+    {
+        UInt32 BiometricUserId { get; };
+    }
+
+    [interface_name("IBodyControllerAddedEventArgs", AACAAAAB-F88C-AAAA-AAAA-AACCAAAAEFDA)]
+    runtimeclass BodyControllerAddedEventArgs
+    {
+        BodyController BodyController { get; };
+    }
+
+    [interface_name("IBodyControllerReadingChangedEventArgs", AACAAAAB-F88C-AAAA-AAAA-AA88AAAAEFDA)]
+    runtimeclass BodyControllerReadingChangedEventArgs
+    {
+        BodyControllerReading Reading { get; };
+    }
+
+    [interface_name("IBodyControllerRemovedEventArgs", AACAAAAB-F88C-A88A-AAAA-AA88AAAAEFDA)]
+    runtimeclass BodyControllerRemovedEventArgs
+    {
+        BodyController BodyController { get; };
+    }
+
+    struct RawGamepadReading
+    {
+        UInt64 Timestamp;
+        GamepadButtons Buttons;
+        Single LeftTrigger;
+        Single RightTrigger;
+        Single LeftThumbstickX;
+        Single LeftThumbstickY;
+        Single RightThumbstickX;
+        Single RightThumbstickY;
+    };
+
+    struct GamepadVibration
+    {
+        Single LeftMotorLevel;
+        Single RightMotorLevel;
+        Single LeftTriggerLevel;
+        Single RightTriggerLevel;
+    };
+
+    struct RawNavigationReading
+    {
+        UInt64 Timestamp;
+        NavigationButtons Buttons;
+    };
+
+    [interface_name("IBodyController", ABCAAAAB-AAAA-AABA-AAAA-AACCFFDAAAAF)]
+    runtimeclass BodyController
+    {
+        UInt32 BiometricUserId { get; };
+        event Windows.Foundation.TypedEventHandler<BodyController, BiometricUserChangedEventArgs> BiometricUserChanged;
+        BodyControllerReading GetCurrentReading;
+        event Windows.Foundation.TypedEventHandler<BodyController, BodyControllerReadingChangedEventArgs> ReadingChanged;
+    }
+
+    [interface_name("IBodyControllerReading", ABCAAAAB-AAAA-AABA-AAAA-AACC88DAAAAF)]
+    runtimeclass BodyControllerReading
+    {
+        Windows.Foundation.DateTime Timestamp { get; };
+        Boolean IsLeanTracked { get; };
+        Single LeanX { get; };
+        Single LeanY { get; };
+    }
+
+    [interface_name("IBodyHandPair", AB88AA8B-AAAA-AABA-AAAA-AACC88DAAAAF)]
+    runtimeclass BodyHandPair
+    {
+        UInt64 BodyTrackingId { get; set; };
+        HandType HandType { get; set; };
+    }
+
+    [interface_name("IGamepadReading", ABCAAAAB-AAAA-AABA-AAAA-AAAAADDAAAAA)]
+    runtimeclass GamepadReading
+    {
+        Windows.Foundation.DateTime Timestamp { get; };
+        GamepadButtons Buttons { get; };
+        Boolean IsDPadUpPressed { get; };
+        Boolean IsDPadDownPressed { get; };
+        Boolean IsDPadLeftPressed { get; };
+        Boolean IsDPadRightPressed { get; };
+        Boolean IsMenuPressed { get; };
+        Boolean IsViewPressed { get; };
+        Boolean IsLeftThumbstickPressed { get; };
+        Boolean IsRightThumbstickPressed { get; };
+        Boolean IsLeftShoulderPressed { get; };
+        Boolean IsRightShoulderPressed { get; };
+        Boolean IsAPressed { get; };
+        Boolean IsBPressed { get; };
+        Boolean IsXPressed { get; };
+        Boolean IsYPressed { get; };
+        Single LeftTrigger { get; };
+        Single RightTrigger { get; };
+        Single LeftThumbstickX { get; };
+        Single LeftThumbstickY { get; };
+        Single RightThumbstickX { get; };
+        Single RightThumbstickY { get; };
+    }
+
+    [uuid(AACAAAAB-AAAA-AAAA-AAAA-DDFAAAAAAAAA)]
+    interface IController
+    {
+        UInt64 Id { get; };
+        String Type { get; };
+        Windows.Xbox.System.User User { get; };
+    }
+
+    [static_name("IControllerStatics", AACAAAAB-AAAA-AAAA-AAAA-AADDAFFFFAAA)]
+    runtimeclass Controller : [default] IController
+    {
+        static Windows.Foundation.Collections.IVectorView<Controller> Controllers { get; };
+        static event Windows.Foundation.EventHandler<ControllerAddedEventArgs> ControllerAdded;
+        static event Windows.Foundation.EventHandler<ControllerRemovedEventArgs> ControllerRemoved;
+        static event Windows.Foundation.EventHandler<ControllerPairingChangedEventArgs> ControllerPairingChanged;
+        static event Windows.Foundation.EventHandler<ControllerOrderChangedEventArgs> ControllerOrderChanged;
+        static Controller GetControllerById(UInt64 unk);
+        static void GetControllerMetadata(UInt64 unk, MetadataVersion version, Windows.Foundation.Collections.IVector<UInt8> unka);
+        static Windows.Foundation.Collections.IVectorView<Controller> GetControllersOrderedLeftToRight(ControllerOrderFilter filter);
+    }
+
+    [uuid(AACAAAAB-ADAA-AAAA-AAAA-AAAAAAAACAAA)]
+    interface INavigationReading requires IController
+    {
+        Windows.Foundation.DateTime Timestamp { get; };
+        NavigationButtons Buttons { get; };
+        Boolean IsUpPressed { get; };
+        Boolean IsDownPressed { get; };
+        Boolean IsLeftPressed { get; };
+        Boolean IsRightPressed { get; };
+        Boolean IsMenuPressed { get; };
+        Boolean IsViewPressed { get; };
+        Boolean IsPreviousPagePressed { get; };
+        Boolean IsNextPagePressed { get; };
+        Boolean IsAcceptPressed { get; };
+        Boolean IsCancelPressed { get; };
+        Boolean IsXPressed { get; };
+        Boolean IsYPressed { get; };
+    }
+
+    [uuid(AACAAAAB-AAAA-AAAA-AAAA-CDAAAAAACAAA)]
+    interface INavigationController requires IController
+    {
+        INavigationReading GetNavigationReading();
+        RawNavigationReading GetRawNavigationReading();
+    }
+
+    [uuid(AACAAAAB-AADC-AAAA-AAAA-AFAAAAAAAAAA)]
+    interface IGamepad requires INavigationController
+    {
+        GamepadVibration SetVibration();
+        GamepadReading GetCurrentReading();
+        RawGamepadReading GetRawCurrentReading();
+    }
+
+    [static_name("IGamepadStatics", AACAAAAB-AAAA-AAAA-AAAA-AFADCAAAFAAA)]
+    runtimeclass Gamepad : [default] IGamepad
+    {
+        static Windows.Foundation.Collections.IVectorView<Gamepad> Gamepads { get; };
+        static event Windows.Foundation.EventHandler<GamepadAddedEventArgs> GamepadAdded;
+        static event Windows.Foundation.EventHandler<GamepadRemovedEventArgs> GamepadRemoved;
+    }
+}
