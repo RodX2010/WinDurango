@@ -10,7 +10,10 @@ HRESULT EraXboxUserLicenseInformationWrapper::QueryInterface(const IID &riid, vo
     }
 
     *ppvObject = nullptr;
-    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraXboxUserLicenseInformationWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
+    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraXboxUserLicenseInformationWrapper - {:08x}-{:04x}-{:04x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}", 
+        riid.Data1, riid.Data2, riid.Data3, riid.Data4[0], 
+        riid.Data4[1], riid.Data4[2], riid.Data4[3], riid.Data4[4], 
+        riid.Data4[5], riid.Data4[6], riid.Data4[7]);
     return E_NOINTERFACE;
 }
 
@@ -73,11 +76,10 @@ HRESULT EraLicenseInformationWrapper::QueryInterface(const IID &riid, void **ppv
         OLECHAR iidwstr[sizeof(iidstr)];
         StringFromGUID2(riid, iidwstr, ARRAYSIZE(iidwstr));
         WideCharToMultiByte(CP_UTF8, 0, iidwstr, -1, iidstr, sizeof(iidstr), nullptr, nullptr);
-        printf("[LicenseInformationWrapperX] Interface Not Implemented: %s\n", iidstr);
+        winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraLicenseInformationWrapper - {}", iidstr);
     }
 
     *ppvObject = nullptr;
-    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraLicenseInformationWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
     return E_NOINTERFACE;
 }
 
@@ -161,11 +163,10 @@ HRESULT __stdcall EraCurrentAppWrapper::QueryInterface(REFIID riid, void **ppvOb
         OLECHAR iidwstr[sizeof(iidstr)];
         StringFromGUID2(riid, iidwstr, ARRAYSIZE(iidwstr));
         WideCharToMultiByte(CP_UTF8, 0, iidwstr, -1, iidstr, sizeof(iidstr), nullptr, nullptr);
-        printf("[EraCurrentAppWrapper] Interface Not Implemented: %s\n", iidstr);
+        winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraCurrentAppWrapper - {}", iidstr);
     }
 
     *ppvObject = nullptr;
-    winDurango->log.Warn("WinDurango::KernelX::CurrentApp", "No Interface Found: EraCurrentAppWrapper - {}-{}-{}-{}", riid.Data1, riid.Data2, riid.Data3, riid.Data4);
     return E_NOINTERFACE;
 }
 

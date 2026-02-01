@@ -148,13 +148,18 @@ namespace Windows.Xbox.Input
         NavigationButtons Buttons;
     };
 
-    [interface_name("IBodyController", ABCAAAAB-AAAA-AABA-AAAA-AACCFFDAAAAF)]
-    runtimeclass BodyController
+    [uuid(ABCAAAAB-AAAA-AABA-AAAA-AACCFFDAAAAF)]
+    interface IBodyController requires IController
     {
         UInt32 BiometricUserId { get; };
         event Windows.Foundation.TypedEventHandler<BodyController, BiometricUserChangedEventArgs> BiometricUserChanged;
         BodyControllerReading GetCurrentReading;
         event Windows.Foundation.TypedEventHandler<BodyController, BodyControllerReadingChangedEventArgs> ReadingChanged;
+    }
+    
+    runtimeclass BodyController : [default] IBodyController
+    {
+        BodyController();
     }
 
     [interface_name("IBodyControllerReading", ABCAAAAB-AAAA-AABA-AAAA-AACC88DAAAAF)]
@@ -169,6 +174,7 @@ namespace Windows.Xbox.Input
     [interface_name("IBodyHandPair", AB88AA8B-AAAA-AABA-AAAA-AACC88DAAAAF)]
     runtimeclass BodyHandPair
     {
+        BodyHandPair();
         UInt64 BodyTrackingId { get; set; };
         HandType HandType { get; set; };
     }
@@ -245,6 +251,11 @@ namespace Windows.Xbox.Input
     {
         INavigationReading GetNavigationReading();
         RawNavigationReading GetRawNavigationReading();
+    }
+
+    runtimeclass NavigationController : [default] INavigationController
+    {
+        NavigationController();
     }
 
     [uuid(AACAAAAB-AADC-AAAA-AAAA-AFAAAAAAAAAA)]

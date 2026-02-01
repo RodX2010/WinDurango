@@ -83,7 +83,7 @@ namespace Windows.Xbox.System
         static Guid GetNetworkCacheIdForUsers(Windows.Foundation.Collections.IVectorView<unsigned int> unk);
         UInt32 Id { get; };
         Windows.Foundation.Collections.IVectorView<AudioDeviceInfo> AudioDevices { get; };
-        Windows.Foundation.Collections.IVectorView<Windows.Xbox.Input.Controller> Controllers { get; };
+        Windows.Foundation.Collections.IVectorView<Windows.Xbox.Input.IController> Controllers { get; };
         UserDisplayInfo DisplayInfo { get; };
         Boolean IsGuest { get; };
         Boolean IsSignedIn { get; };
@@ -166,9 +166,15 @@ namespace Windows.Xbox.System
         User User { get; };
     }
 
-    // Placeholder GUID TODO
-    [interface_name("ISignOutDeferral", AAAFFDDA-AFAA-AAAA-AAAA-AAAAAAAAAAAA)]
-    runtimeclass SignOutDeferral 
+    // Placeholder GUID 
+    [uuid(AAAFFDDA-AFAA-AAAA-AAAA-AAAAAAAA22AA)]
+    [version(1.0)]
+    interface ISignOutDeferral 
+    {
+        HRESULT Complete();
+    }
+
+    runtimeclass SignOutDeferral : [default] ISignOutDeferral
     {
     }
 

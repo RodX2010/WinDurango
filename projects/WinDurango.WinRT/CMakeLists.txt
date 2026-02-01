@@ -41,6 +41,16 @@ set(FILES
     "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControls.cpp"
     "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControlsButtonPressedEventArgs.cpp"
     "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControlsPropertyChangedEventArgs.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.BiometricUser.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.BodyController.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.BodyHandPair.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.Controller.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.Gamepad.cpp"
+    "src/Windows/Xbox/Input/Windows.Xbox.Input.NavigationController.cpp"
+    "src/Windows/Xbox/System/Windows.Xbox.System.AudioDeviceInfo.cpp"
+    "src/Windows/Xbox/System/Windows.Xbox.System.cpp"
+    "src/Windows/Xbox/System/Windows.Xbox.System.User.cpp"
+    "src/Windows/Xbox/System/Windows.Xbox.System.UserDisplayInfo.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -55,6 +65,8 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Media"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/System"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Input"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )
