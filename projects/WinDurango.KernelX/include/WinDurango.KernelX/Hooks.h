@@ -12,6 +12,8 @@
 #include <wrl/client.h>
 #include <detours.h>
 #include "CurrentApp.h"
+#include "EraCoreWindow.h"
+#include "EraCoreApplication.h"
 
 typedef int32_t (__stdcall *GetActivationFactory_t)(HSTRING classId, IActivationFactory** factory);
 
@@ -39,3 +41,24 @@ inline bool IsClassName(HSTRING classId, const char *classIdName)
 }
 
 HRESULT(WINAPI *TrueActivateInstance)(IActivationFactory *thisptr, IInspectable **instance) = nullptr;
+
+#define IsXboxCallee() IsXboxAddress(_ReturnAddress())
+
+BOOL IsXboxModule(HMODULE module)
+{
+    return module == GetModuleHandleW(nullptr);
+}
+
+inline BOOL IsXboxAddress(const PVOID Address)
+{
+    HMODULE hModule;
+
+    if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, static_cast<LPCWSTR>(Address), &hModule))
+        return FALSE;
+
+    return IsXboxModule(hModule);
+}
+
+HRESULT(STDMETHODCALLTYPE *TrueGetForCurrentThread)(ICoreWindowStatic *staticWindow, CoreWindow **window);
+
+HRESULT STDMETHODCALLTYPE EraGetForCurrentThread(ICoreWindowStatic *pThis, CoreWindow **ppWindow);

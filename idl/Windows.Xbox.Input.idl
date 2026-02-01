@@ -61,19 +61,19 @@ namespace Windows.Xbox.Input
 
     runtimeclass Controller;
 
-    [interface_name("IControllerAddedEventArgs", AACAAAAB-ACAA-AAAA-AAAA-AAACCCAAAAAA)]
+    [interface_name("IControllerAddedEventArgs", 3dacf202-8c03-4db7-9e89-8f2e1c5374be)]
     runtimeclass ControllerAddedEventArgs
     {
         Controller Controller { get; };
     }
 
-    [interface_name("IControllerRemovedEventArgs", FAFAAAAB-AAAA-AEAA-AAAA-AAACCCAAAAAA)]
+    [interface_name("IControllerRemovedEventArgs", fd4af91e-40c3-4de0-821b-0be1bd1417d1)]
     runtimeclass ControllerRemovedEventArgs
     {
         Controller Controller { get; };
     }
 
-    [interface_name("IControllerPairingChangedEventArgs", FAFAAAAB-AAAA-AAAA-AAAA-AAAECCAAFAFA)]
+    [interface_name("IControllerPairingChangedEventArgs", 414591c9-0467-44ad-a1c1-087488cb0769)]
     runtimeclass ControllerPairingChangedEventArgs
     {
         Controller Controller { get; };
@@ -81,7 +81,7 @@ namespace Windows.Xbox.Input
         Windows.Xbox.System.User PreviousUser { get; };
     }
 
-    [interface_name("IControllerOrderChangedEventArgs", FAFAAAAB-AABA-ABAA-AEAA-AAACCCAAFAFA)]
+    [interface_name("IControllerOrderChangedEventArgs", 5D992A1E-70B7-4269-ACDD-F36668291D98)]
     runtimeclass ControllerOrderChangedEventArgs
     {
     }
@@ -206,7 +206,7 @@ namespace Windows.Xbox.Input
         Single RightThumbstickY { get; };
     }
 
-    [uuid(AACAAAAB-AAAA-AAAA-AAAA-DDFAAAAAAAAA)]
+    [uuid(9776ff56-9bfd-4581-ad45-b645bba526d6)]
     interface IController
     {
         UInt64 Id { get; };
@@ -214,7 +214,7 @@ namespace Windows.Xbox.Input
         Windows.Xbox.System.User User { get; };
     }
 
-    [static_name("IControllerStatics", AACAAAAB-AAAA-AAAA-AAAA-AADDAFFFFAAA)]
+    [static_name("IControllerStatics", 7400624f-144b-47fc-9f3b-1dcafb482873)]
     runtimeclass Controller : [default] IController
     {
         static Windows.Foundation.Collections.IVectorView<Controller> Controllers { get; };
@@ -258,7 +258,7 @@ namespace Windows.Xbox.Input
         NavigationController();
     }
 
-    [uuid(AACAAAAB-AADC-AAAA-AAAA-AFAAAAAAAAAA)]
+    [uuid(E0422A66-C480-4C70-9F99-F8371DCC3E30)]
     interface IGamepad requires INavigationController
     {
         GamepadVibration SetVibration();

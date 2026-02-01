@@ -2,6 +2,7 @@
 // Created by DexrnZacAttack on 1/23/26 using zPc-i2.
 //
 #pragma once
+#pragma comment(lib, "runtimeobject.lib")
 #include "Config.h"
 #include "Interfaces/Storage/Directory.h"
 #include "Logging.h"

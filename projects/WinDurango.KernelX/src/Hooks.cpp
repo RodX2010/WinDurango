@@ -1,6 +1,9 @@
+#pragma comment(lib, "runtimeobject.lib")
 #include "Hooks.h"
 #include "kernelx.h"
 #include "CurrentApp.h"
+#include <detours.h>
+#include <wrl.h>
 
 using namespace ABI::Windows::ApplicationModel::Store;
 
@@ -126,6 +129,25 @@ HRESULT __stdcall EraAppActivateInstance(IActivationFactory *thisptr, IInspectab
     return S_OK;
 }
 
+HRESULT __stdcall EraGetForCurrentThread(ICoreWindowStatic *pThis, CoreWindow **ppWindow)
+{
+    HRESULT hr = TrueGetForCurrentThread(pThis, ppWindow);
+    if (FAILED(hr))
+    {
+        return hr;
+    }
+
+    if (*ppWindow == NULL)
+    {
+        return hr;
+    }
+
+    if (IsXboxCallee())
+        *reinterpret_cast<ICoreWindowEra **>(ppWindow) = new CoreWindowEra(*ppWindow);
+
+    return hr;
+}
+
 
 inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, void **factory)
 {
@@ -151,6 +173,49 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
         DetourUpdateThread(GetCurrentThread());
         DetourAttach(reinterpret_cast<PVOID *>(&TrueActivateInstance), reinterpret_cast<PVOID>(EraAppActivateInstance));
         DetourTransactionCommit();
+    }
+
+    if (rss == std::string("Windows.ApplicationModel.Core.CoreApplication"))
+    {
+        ComPtr<IActivationFactory> realFactory;
+
+        HRESULT hr = RoGetActivationFactory(Microsoft::WRL::Wrappers::HStringReference::HStringReference(
+                                                RuntimeClass_Windows_ApplicationModel_Core_CoreApplication)
+                                                .Get(),
+                                            IID_PPV_ARGS(&realFactory));
+
+        if (FAILED(hr))
+            return hr;
+
+        ComPtr<CoreApplicationEra> wrappedFactory = Make<CoreApplicationEra>(realFactory);
+
+        return wrappedFactory.CopyTo(iid, factory);
+    }
+
+    if (rss == std::string("Windows.UI.Core.CoreWindow"))
+    {
+        ComPtr<ICoreWindowStatic> coreWindowStatic;
+        HRESULT hr = RoGetActivationFactory(
+            Microsoft::WRL::Wrappers::HStringReference::HStringReference(RuntimeClass_Windows_UI_Core_CoreWindow).Get(),
+            IID_PPV_ARGS(&coreWindowStatic));
+        if (FAILED(hr))
+        {
+            DebugBreak();
+            return hr;
+        }
+
+        if (!TrueGetForCurrentThread)
+        {
+            *reinterpret_cast<void **>(&TrueGetForCurrentThread) =
+                (*reinterpret_cast<void ***>(coreWindowStatic.Get()))[6];
+
+            DetourTransactionBegin();
+            DetourUpdateThread(GetCurrentThread());
+            DetourAttach(reinterpret_cast<PVOID *>(&TrueGetForCurrentThread), reinterpret_cast<PVOID>(EraGetForCurrentThread));
+            DetourTransactionCommit();
+        }
+
+        return coreWindowStatic.CopyTo(iid, factory);
     }
 
     if (!p_GetActivationFactory) 
