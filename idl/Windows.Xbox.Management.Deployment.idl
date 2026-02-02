@@ -1,0 +1,215 @@
+namespace Windows.Xbox.Management.Deployment
+{
+    enum InstalledPackagesFilter 
+    {
+        AllRelatedPackages = 0x0,
+        CurrentTitleOnly = 0x1,
+        RelatedTitlesOnly = 0x2,
+        AllDownloadableContentOnly = 0x3,
+    };
+
+    enum InstallationState 
+    {
+        Installed = 0x0,
+        Pending = 0x1,
+        Available = 0x2,
+        Unavailable = 0x3,
+    };
+
+    enum TransferOperationType
+    {
+        TODO,
+    };
+
+    enum PackageTransferType
+    {
+        TODO,
+    };
+
+    enum UpdateInstallOrderBehavior 
+    {
+        InterruptCurrentTransfer = 0x0,
+    };
+    
+    enum PackageTransferStatus 
+    {
+        None = 0x0,
+        Waiting = 0x1,
+        Paused = 0x2,
+        Running = 0x3,
+        Error = 0x4,
+    };
+
+    [interface_name("IChunkCompletedEventArgs", AAC11AAB-F88C-AAAA-AAAA-AA88AAAAEFDA)]
+    runtimeclass ChunkCompletedEventArgs
+    {
+        UInt32 ChunkId { get; };
+    }
+
+    [interface_name("IDownloadableContentPackageInstallCompletedEventArgs", AAC11AAB-F88C-AAAA-AAAA-AA11AA11EFDA)]
+    runtimeclass DownloadableContentPackageInstallCompletedEventArgs
+    {
+        TransferOperationType OperationType { get; };
+        String PackageFullName { get; };
+        Guid ContentId { get; };
+        HRESULT Result { get; };
+    }
+
+    [interface_name("ILicenseTerminatedEventArgs", 11C11AAB-F88C-AAAA-AAAA-AA11AA11EFDA)]
+    runtimeclass LicenseTerminatedEventArgs
+    {
+        HRESULT Reason { get; };
+        String PackageFullName { get; };
+        String UserXuidIfCausedBySignout { get; };
+    }
+
+    [interface_name("IProgressChangedEventArgs", 11C11AAB-F88C-AAAA-AAAA-AA11AA11E5DA)]
+    runtimeclass ProgressChangedEventArgs
+    {
+        UInt32 PercentComplete { get; };
+    }
+
+    [interface_name("IRequestUpdatePackageResult", 11C11A6B-F88C-AAAA-AAAA-AA11AA11E5DA)]
+    runtimeclass RequestUpdatePackageResult
+    {
+        HRESULT Result { get; };
+    }
+
+    [interface_name("IChunkSpecifiers", AAC11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
+    runtimeclass ChunkSpecifiers
+    {
+        Windows.Foundation.Collections.IVector<String> Languages { get; };
+        Windows.Foundation.Collections.IVector<String> Tags { get; };
+    }
+
+    [interface_name("IPackageTransferManagerTransferInfo", 44C11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
+    runtimeclass PackageTransferManagerTransferInfo
+    {
+        PackageTransferType TransferType { get; };
+    }
+
+    [interface_name("ITransferCompletedEventArgs", 44C11AAB-F88C-AAAA-A22A-AA11AAAAEFDA)]
+    runtimeclass TransferCompletedEventArgs
+    {
+    }
+
+    // TODO
+    [interface_name("ITransferStatusChangedEventArgs", 41C11AAB-F88C-AAAA-A22A-AA11AAAAEFDA)]
+    runtimeclass TransferStatusChangedEventArgs
+    {
+        void UnknownOne();
+        void UnknownTwo();
+    }
+
+    [interface_name("IPackageTransferWatcher", 41C11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
+    [static_name("IPackageTransferWatcherStatics", 41C11AAB-F88C-AAAA-AAAA-AA11AAA11FDA)]
+    runtimeclass PackageTransferWatcher
+    {
+        static PackageTransferWatcher Create(Windows.ApplicationModel.Package unk, Windows.Foundation.Collections.IIterable<UInt32> unka);
+        [default_overload] static PackageTransferWatcher Create(Windows.ApplicationModel.Package unk);
+        Windows.Foundation.Collections.IVectorView<UInt32> ChunkIds { get; };
+        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, ChunkCompletedEventArgs> ChunkCompleted;
+        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, ProgressChangedEventArgs> ProgressChanged;
+        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferCompletedEventArgs> TransferCompleted;
+    }
+
+    [interface_name("IPackageTransferManager", A1111AAB-F88C-AAAA-AAAA-AA11AAAA11DA)]
+    [static_name("IPackageTransferManagerStatics", A1111AAB-F88C-AAAA-AAAA-AA11AAAA112A)]
+    runtimeclass PackageTransferManager
+    {
+        static PackageTransferManager Current { get; };
+        static PackageTransferManager Create(Windows.ApplicationModel.Package unk);
+        void UpdateInstallOrder(Windows.Foundation.Collections.IIterable<UInt32> unk, UpdateInstallOrderBehavior unka);
+        Boolean IsChunkInstalled(UInt32 unk);
+        Boolean AreChunksInstalled(Windows.Foundation.Collections.IIterable<UInt32> unk);
+        UInt32 FindChunkFromFile(String unk);
+        PackageTransferStatus TransferStatus { get; };
+    }
+
+    [interface_name("IPackageTransferManagerForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AAAA11DA)]
+    [static_name("IPackageTransferWatcherStaticsForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AA1111DA)]
+    runtimeclass PackageTransferManagerForChunkSpecifiers
+    {
+        static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
+        ChunkSpecifiers AvailableChunkSpecifiers { get; };
+        InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
+        [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
+        Windows.Foundation.IAsyncOperation<PackageTransferWatcher> AddChunkSpecifiersAsync(ChunkSpecifiers unk);
+        Windows.Foundation.IAsyncAction RemoveChunkSpecifiersAsync(ChunkSpecifiers unk);
+    }
+
+    [static_name("IPackageTransferWatcherStaticsForContentPackages", A1111AAB-1881-AAAA-AAAA-AA11AA111143)]
+    runtimeclass PackageTransferWatcherForContentPackages
+    {
+        static PackageTransferWatcher CreateForContentPackage(ContentPackage unk);
+        static PackageTransferWatcher CreateForDownloadableContentPackage(DownloadableContentPackage unk);
+    }
+
+    [interface_name("IPackageTransferWatcherTransferInfo", A1111AAB-1881-AAAA-AAAA-AA11A3111143)]
+    runtimeclass PackageTransferWatcherTransferInfo
+    {
+        PackageTransferStatus TransferStatus { get; };
+        PackageTransferType TransferType { get; };
+        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferStatusChangedEventArgs> TransferStatusChanged;
+    }
+
+    delegate void DownloadableContentPackageInstallCompletedEventHandler();
+
+    [interface_name("IDownloadableContentPackageManager", AAC11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
+    runtimeclass DownloadableContentPackageManager
+    {
+        DownloadableContentPackageManager();
+        Windows.Foundation.Collections.IVectorView<DownloadableContentPackage> FindPackages(InstalledPackagesFilter unk);
+        event DownloadableContentPackageInstallCompletedEventHandler DownloadableContentPackageInstallCompleted;
+        event Windows.Foundation.EventHandler<DownloadableContentPackageInstallCompletedEventArgs> DownloadableContentPackageInstallCompletedWithDetails;
+    }
+
+    [interface_name("ICheckForUpdateResult", 8AC11AAB-F88C-AAAA-AAAA-AA11AAAA111A)]
+    runtimeclass CheckForUpdateResult
+    {
+        Boolean IsUpdateAvailable { get; };
+        Boolean IsUpdateMandatory { get; };
+    }
+
+    [static_name("IContentUpdateStatics", AAC11AAB-F88C-AAAA-AAAA-AA11AAAA111A)]
+    runtimeclass ContentUpdate
+    {
+        static Windows.Foundation.IAsyncOperation<CheckForUpdateResult> CheckForUpdateAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdatePackageAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
+    }
+
+    [interface_name("IDownloadableContentPackage", A1111AAB-F88C-AAAA-AAAA-AA11AAAA111A)]
+    runtimeclass DownloadableContentPackage
+    {
+        String TitleId { get; };
+        String ContentId { get; };
+        String ProductId { get; };
+        String PackageFullName { get; };
+        String MountPath { get; };
+        Boolean IsMounted { get; };
+        UInt32 ContentType { get; };
+        String DisplayName { get; };
+        String Description { get; };
+        String Publisher { get; };
+        String Version { get; };
+        String Mount();
+        void Unmount();
+        Boolean CheckLicense(Windows.Foundation.IReference<Boolean> unk); // TODO
+        event Windows.Foundation.TypedEventHandler<DownloadableContentPackage, LicenseTerminatedEventArgs> LicenseTerminated;
+    }
+
+    [interface_name("IContentPackage", A11112AB-F88C-AAAA-AAAA-AA11A7AA111A)]
+    runtimeclass ContentPackage
+    {
+        String TitleId { get; };
+        String ContentId { get; };
+        String ProductId { get; };
+        String PackageFullName { get; };
+        UInt32 ContentType { get; };
+        String DisplayName { get; };
+        String Description { get; };
+        String Publisher { get; };
+        String Version { get; };
+    }
+}

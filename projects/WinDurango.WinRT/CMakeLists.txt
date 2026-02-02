@@ -51,6 +51,12 @@ set(FILES
     "src/Windows/Xbox/System/Windows.Xbox.System.cpp"
     "src/Windows/Xbox/System/Windows.Xbox.System.User.cpp"
     "src/Windows/Xbox/System/Windows.Xbox.System.UserDisplayInfo.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.ContentUpdate.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.DownloadableContentPackageManager.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferManager.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferManagerForChunkSpecifiers.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcher.cpp"
+    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcherForContentPackages.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -67,6 +73,7 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Media"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/System"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Input"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Management/Deployment"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )
