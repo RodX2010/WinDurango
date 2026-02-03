@@ -10,8 +10,11 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
     struct ProgressChangedEventArgs : ProgressChangedEventArgsT<ProgressChangedEventArgs>
     {
         ProgressChangedEventArgs() = default;
+        ProgressChangedEventArgs(uint32_t percent) : percent(percent) {}
 
         uint32_t PercentComplete();
+    private:
+        uint32_t percent;
     };
 
     struct TransferStatusChangedEventArgs : TransferStatusChangedEventArgsT<TransferStatusChangedEventArgs>
@@ -36,6 +39,8 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
         winrt::Windows::Xbox::Management::Deployment::PackageTransferType TransferType();
         winrt::event_token TransferStatusChanged(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::TransferStatusChangedEventArgs> const& handler);
         void TransferStatusChanged(winrt::event_token const& token) noexcept;
+    private:
+        winrt::event<winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::TransferStatusChangedEventArgs>> e_TransferStatusChanged;
     };
 
     struct PackageTransferWatcher : PackageTransferWatcherT<PackageTransferWatcher>
@@ -51,6 +56,10 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
         void ProgressChanged(winrt::event_token const& token) noexcept;
         winrt::event_token TransferCompleted(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::TransferCompletedEventArgs> const& handler);
         void TransferCompleted(winrt::event_token const& token) noexcept;
+    private:
+        winrt::event<winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::ChunkCompletedEventArgs>> e_ChunkCompleted;
+        winrt::event<winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::ProgressChangedEventArgs>> e_ProgressChanged;
+        winrt::event<winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher, winrt::Windows::Xbox::Management::Deployment::TransferCompletedEventArgs>> e_TransferCompleted;
     };
 }
 namespace winrt::Windows::Xbox::Management::Deployment::factory_implementation

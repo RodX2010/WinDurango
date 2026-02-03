@@ -7,8 +7,12 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
     struct PackageTransferManagerTransferInfo : PackageTransferManagerTransferInfoT<PackageTransferManagerTransferInfo>
     {
         PackageTransferManagerTransferInfo() = default;
+        PackageTransferManagerTransferInfo(winrt::Windows::Xbox::Management::Deployment::PackageTransferType transferType) 
+            : transferType(transferType) {}
 
         winrt::Windows::Xbox::Management::Deployment::PackageTransferType TransferType();
+    private:
+        winrt::Windows::Xbox::Management::Deployment::PackageTransferType transferType;
     };
 
     struct PackageTransferManager : PackageTransferManagerT<PackageTransferManager>

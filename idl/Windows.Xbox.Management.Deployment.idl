@@ -195,7 +195,7 @@ namespace Windows.Xbox.Management.Deployment
         String Version { get; };
         String Mount();
         void Unmount();
-        Boolean CheckLicense(Windows.Foundation.IReference<Boolean> unk); // TODO
+        void CheckLicense(out Boolean unk, out Boolean unka);
         event Windows.Foundation.TypedEventHandler<DownloadableContentPackage, LicenseTerminatedEventArgs> LicenseTerminated;
     }
 

@@ -1,117 +1,149 @@
 #include "Windows.Xbox.Management.Deployment.DownloadableContentPackageManager.h"
+#include "WinDurangoWinRT.h"
 
 namespace winrt::Windows::Xbox::Management::Deployment::implementation
 {
     winrt::hresult LicenseTerminatedEventArgs::Reason()
     {
-        throw hresult_not_implemented();
+        return reason;
     }
+
     hstring LicenseTerminatedEventArgs::PackageFullName()
     {
-        throw hresult_not_implemented();
+        return packageFullName;
     }
+    
     hstring LicenseTerminatedEventArgs::UserXuidIfCausedBySignout()
     {
-        throw hresult_not_implemented();
+        return userXuid;
     }
+    
     winrt::Windows::Xbox::Management::Deployment::TransferOperationType DownloadableContentPackageInstallCompletedEventArgs::OperationType()
     {
-        throw hresult_not_implemented();
+        return operationType;
     }
+    
     hstring DownloadableContentPackageInstallCompletedEventArgs::PackageFullName()
     {
-        throw hresult_not_implemented();
+        return packageFullName;
     }
+    
     winrt::guid DownloadableContentPackageInstallCompletedEventArgs::ContentId()
     {
-        throw hresult_not_implemented();
+        return contentId;
     }
+    
     winrt::hresult DownloadableContentPackageInstallCompletedEventArgs::Result()
     {
-        throw hresult_not_implemented();
+        return result;
     }
+    
     hstring DownloadableContentPackage::TitleId()
     {
-        throw hresult_not_implemented();
+        return title;
     }
+    
     hstring DownloadableContentPackage::ContentId()
     {
-        throw hresult_not_implemented();
+        return content;
     }
+    
     hstring DownloadableContentPackage::ProductId()
     {
-        throw hresult_not_implemented();
+        return product;
     }
+    
     hstring DownloadableContentPackage::PackageFullName()
     {
-        throw hresult_not_implemented();
+        return packageFullName;
     }
+    
     hstring DownloadableContentPackage::MountPath()
     {
-        throw hresult_not_implemented();
+        return mountPath;
     }
+    
     bool DownloadableContentPackage::IsMounted()
     {
-        throw hresult_not_implemented();
+        return isMounted;
     }
+    
     uint32_t DownloadableContentPackage::ContentType()
     {
-        throw hresult_not_implemented();
+        return contentType;
     }
+    
     hstring DownloadableContentPackage::DisplayName()
     {
-        throw hresult_not_implemented();
+        return displayName;
     }
+    
     hstring DownloadableContentPackage::Description()
     {
-        throw hresult_not_implemented();
+        return description;
     }
+    
     hstring DownloadableContentPackage::Publisher()
     {
-        throw hresult_not_implemented();
+        return publisher;
     }
+    
     hstring DownloadableContentPackage::Version()
     {
-        throw hresult_not_implemented();
+        return version;
     }
+    
     hstring DownloadableContentPackage::Mount()
     {
-        throw hresult_not_implemented();
+        return mount;
     }
+    
     void DownloadableContentPackage::Unmount()
     {
-        throw hresult_not_implemented();
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: Unmount");
+        mount = L"";
     }
-    bool DownloadableContentPackage::CheckLicense(winrt::Windows::Foundation::IReference<bool> const& unk)
+    
+    void DownloadableContentPackage::CheckLicense(bool& isTrial, bool& hasLicence)
     {
-        throw hresult_not_implemented();
+        isTrial = false;
+        hasLicence = true;
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: CheckLicence");
     }
+    
     winrt::event_token DownloadableContentPackage::LicenseTerminated(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage, winrt::Windows::Xbox::Management::Deployment::LicenseTerminatedEventArgs> const& handler)
     {
-        throw hresult_not_implemented();
+        return e_LicenseTerminated.add(handler);
     }
+    
     void DownloadableContentPackage::LicenseTerminated(winrt::event_token const& token) noexcept
     {
-        throw hresult_not_implemented();
+        e_LicenseTerminated.remove(token);
     }
+    
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage> DownloadableContentPackageManager::FindPackages(winrt::Windows::Xbox::Management::Deployment::InstalledPackagesFilter const& unk)
     {
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: FindPackages");
         throw hresult_not_implemented();
     }
+    
     winrt::event_token DownloadableContentPackageManager::DownloadableContentPackageInstallCompleted(winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackageInstallCompletedEventHandler const& handler)
     {
-        throw hresult_not_implemented();
+       return e_DownloadableContentPackageInstallCompleted.add(handler);
     }
+    
     void DownloadableContentPackageManager::DownloadableContentPackageInstallCompleted(winrt::event_token const& token) noexcept
     {
-        throw hresult_not_implemented();
+        e_DownloadableContentPackageInstallCompleted.remove(token);
     }
+    
     winrt::event_token DownloadableContentPackageManager::DownloadableContentPackageInstallCompletedWithDetails(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackageInstallCompletedEventArgs> const& handler)
     {
-        throw hresult_not_implemented();
+        return e_DownloadableContentPackageInstallCompletedWithDetails.add(handler);
     }
+    
     void DownloadableContentPackageManager::DownloadableContentPackageInstallCompletedWithDetails(winrt::event_token const& token) noexcept
     {
-        throw hresult_not_implemented();
+        e_DownloadableContentPackageInstallCompletedWithDetails.remove(token);
     }
 }

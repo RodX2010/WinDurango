@@ -1,77 +1,98 @@
 #include "Windows.Xbox.Management.Deployment.ContentUpdate.h"
+#include "WinDurangoWinRT.h"
 
 namespace winrt::Windows::Xbox::Management::Deployment::implementation
 {
     winrt::hresult RequestUpdatePackageResult::Result()
     {
-        throw hresult_not_implemented();
+        return result;
     }
+
     bool CheckForUpdateResult::IsUpdateAvailable()
     {
-        throw hresult_not_implemented();
+        return updateAvail;
     }
+
     bool CheckForUpdateResult::IsUpdateMandatory()
     {
-        throw hresult_not_implemented();
+        return updateMandatory;
     }
+
     uint32_t ChunkCompletedEventArgs::ChunkId()
     {
-        throw hresult_not_implemented();
+        return chunkID;
     }
+
     winrt::Windows::Foundation::Collections::IVector<hstring> ChunkSpecifiers::Languages()
     {
-        throw hresult_not_implemented();
+        return langs;
     }
+
     winrt::Windows::Foundation::Collections::IVector<hstring> ChunkSpecifiers::Tags()
     {
-        throw hresult_not_implemented();
+        return tags;
     }
+
     hstring ContentPackage::TitleId()
     {
-        throw hresult_not_implemented();
+        return title;
     }
+
     hstring ContentPackage::ContentId()
     {
-        throw hresult_not_implemented();
+        return content;
     }
+
     hstring ContentPackage::ProductId()
     {
-        throw hresult_not_implemented();
+        return product;
     }
+
     hstring ContentPackage::PackageFullName()
     {
-        throw hresult_not_implemented();
+        return packageFullName;
     }
+
     uint32_t ContentPackage::ContentType()
     {
-        throw hresult_not_implemented();
+        return contentType;
     }
+
     hstring ContentPackage::DisplayName()
     {
-        throw hresult_not_implemented();
+        return displayName;
     }
+
     hstring ContentPackage::Description()
     {
-        throw hresult_not_implemented();
+        return description;
     }
+
     hstring ContentPackage::Publisher()
     {
-        throw hresult_not_implemented();
+        return publisher;
     }
+
     hstring ContentPackage::Version()
     {
-        throw hresult_not_implemented();
+        return version;
     }
+
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::Management::Deployment::CheckForUpdateResult> ContentUpdate::CheckForUpdateAsync(winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage unk)
     {
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: CheckForUpdateAsync");
         throw hresult_not_implemented();
     }
+
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::Management::Deployment::RequestUpdatePackageResult> ContentUpdate::RequestUpdatePackageAsync(winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage unk)
     {
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: RequestUpdatePackageAsync(DownloadableContentPackage)");
         throw hresult_not_implemented();
     }
+    
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::Management::Deployment::RequestUpdatePackageResult> ContentUpdate::RequestUpdateCurrentPackageAsync()
     {
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: RequestUpdateCurrentPackageAsync");
         throw hresult_not_implemented();
     }
 }

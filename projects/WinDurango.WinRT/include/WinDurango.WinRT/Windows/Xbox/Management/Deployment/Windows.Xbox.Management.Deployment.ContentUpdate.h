@@ -11,8 +11,11 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
     struct RequestUpdatePackageResult : RequestUpdatePackageResultT<RequestUpdatePackageResult>
     {
         RequestUpdatePackageResult() = default;
+        RequestUpdatePackageResult(winrt::hresult hres) : result(hres) {}
 
         winrt::hresult Result();
+    private:
+        winrt::hresult result;
     };
 
     struct CheckForUpdateResult : CheckForUpdateResultT<CheckForUpdateResult>
@@ -21,26 +24,41 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
 
         bool IsUpdateAvailable();
         bool IsUpdateMandatory();
+    private:
+        bool updateAvail = false;
+        bool updateMandatory = false;
     };
 
     struct ChunkCompletedEventArgs : ChunkCompletedEventArgsT<ChunkCompletedEventArgs>
     {
         ChunkCompletedEventArgs() = default;
-
+        ChunkCompletedEventArgs(uint32_t id) : chunkID(id) {}
+        
         uint32_t ChunkId();
+    private:
+        uint32_t chunkID;
     };
 
     struct ChunkSpecifiers : ChunkSpecifiersT<ChunkSpecifiers>
     {
         ChunkSpecifiers() = default;
+        ChunkSpecifiers(winrt::Windows::Foundation::Collections::IVector<hstring> langs, winrt::Windows::Foundation::Collections::IVector<hstring> tags)
+            : langs(langs), tags(tags) {}
 
         winrt::Windows::Foundation::Collections::IVector<hstring> Languages();
         winrt::Windows::Foundation::Collections::IVector<hstring> Tags();
+    private:
+        winrt::Windows::Foundation::Collections::IVector<hstring> langs;
+        winrt::Windows::Foundation::Collections::IVector<hstring> tags;
     };
 
     struct ContentPackage : ContentPackageT<ContentPackage>
     {
         ContentPackage() = default;
+        ContentPackage(hstring title, hstring content, hstring product, hstring packageFullName, 
+            uint32_t contentType, hstring displayName, hstring description, hstring publisher, hstring version)
+            : title(title), content(content), product(product), packageFullName(packageFullName), contentType(contentType),
+            displayName(displayName), description(description), publisher(publisher), version(version) {}
 
         hstring TitleId();
         hstring ContentId();
@@ -51,6 +69,16 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
         hstring Description();
         hstring Publisher();
         hstring Version();
+    private:
+        hstring title;
+        hstring content;
+        hstring product;
+        hstring packageFullName;
+        uint32_t contentType;
+        hstring displayName;
+        hstring description;
+        hstring publisher;
+        hstring version;
     };
     
     struct ContentUpdate
