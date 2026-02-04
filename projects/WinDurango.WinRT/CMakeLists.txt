@@ -57,6 +57,10 @@ set(FILES
     "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferManagerForChunkSpecifiers.cpp"
     "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcher.cpp"
     "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcherForContentPackages.cpp"
+    "src/Windows/Xbox/ApplicationModel/Core/Windows.Xbox.ApplicationModel.Core.CoreApplicationContext.cpp"
+    "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.Product.cpp"
+    "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.ProductPurchasedEventArgs.cpp"
+    "src/Windows/Xbox/ApplicationModel/Windows.Xbox.ApplicationModel.Help.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -74,6 +78,9 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/System"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Input"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Management/Deployment"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel/Core"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel/Store"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )

@@ -1,0 +1,111 @@
+import "Windows.Xbox.System.idl";
+
+namespace Windows.Xbox.ApplicationModel
+{
+    [flags]
+    enum PrivilegeCheckResult 
+    {
+        NoIssue = 0x0,
+        PurchaseRequired = 0x1,
+        Aborted = 0x2,
+        Banned = 0x4,
+        Restricted = 0x8,
+    };
+
+    namespace Core
+    {
+        [interface_name("ICoreApplicationContext", 99999999-8888-7777-6666-555555555555)]
+        runtimeclass CoreApplicationContext
+        {
+            CoreApplicationContext();
+            Windows.Xbox.System.User CurrentUser { get; };
+            event Windows.Foundation.EventHandler<IInspectable> CurrentUserChanged;
+        }
+    }
+
+    [static_name("IHelp", 98999999-8888-7777-6666-555555555555)]
+    runtimeclass Help
+    {
+        static Windows.Foundation.IAsyncAction Show(Windows.Xbox.System.User usr);
+        static Windows.Foundation.IAsyncAction ShowForError(String unk, String unka);
+    }
+
+    namespace Store
+    {
+        [flags]
+        enum ProductItemTypes 
+        {
+            Game = 0x1,
+            App = 0x2,
+            Consumable = 0x4,
+            Durable = 0x8,
+            GameDemo = 0x10,
+        };
+
+        [flags]
+        enum PrivilegeCheckResult 
+        {
+            NoIssue = 0x0,
+            PurchaseRequired = 0x1,
+            Aborted = 0x2,
+            Banned = 0x4,
+            Restricted = 0x8,
+        };
+
+        enum KnownPrivileges 
+        {
+            XPRIVILEGE_BROADCAST = 0xbe,
+            XPRIVILEGE_FREE_CONTENT = 0xc1,
+            XPRIVILEGE_VIEW_FRIENDS_LIST = 0xc5,
+            XPRIVILEGE_GAME_DVR = 0xc6,
+            XPRIVILEGE_SHARE_KINECT_CONTENT = 0xc7,
+            XPRIVILEGE_MULTIPLAYER_PARTIES = 0xcb,
+            XPRIVILEGE_COMMUNICATION_VOICE_INGAME = 0xcd,
+            XPRIVILEGE_COMMUNICATION_VOICE_SKYPE = 0xce,
+            XPRIVILEGE_CLOUD_GAMING_MANAGE_SESSION = 0xcf,
+            XPRIVILEGE_CLOUD_GAMING_JOIN_SESSION = 0xd0,
+            XPRIVILEGE_CLOUD_SAVED_GAMES = 0xd1,
+            XPRIVILEGE_SHARE_CONTENT = 0xd3,
+            XPRIVILEGE_PREMIUM_CONTENT = 0xd6,
+            XPRIVILEGE_NOUPSELL = 0xd7,
+            XPRIVILEGE_SUBSCRIPTION_CONTENT = 0xdb,
+            XPRIVILEGE_SOCIAL_NETWORK_SHARING = 0xdc,
+            XPRIVILEGE_PREMIUM_VIDEO = 0xe0,
+            XPRIVILEGE_VIDEO_COMMUNICATIONS = 0xeb,
+            XPRIVILEGE_PURCHASE_CONTENT = 0xf5,
+            XPRIVILEGE_USER_CREATED_CONTENT = 0xf7,
+            XPRIVILEGE_PROFILE_VIEWING = 0xf9,
+            XPRIVILEGE_COMMUNICATIONS = 0xfc,
+            XPRIVILEGE_MULTIPLAYER_SESSIONS = 0xfe,
+            XPRIVILEGE_ADD_FRIEND = 0xff,
+        };
+
+        [interface_name("IProductPurchasedEventArgs", 98888899-8888-7777-6666-555555555555)]
+        runtimeclass ProductPurchasedEventArgs
+        {
+            String Receipt();
+        }
+
+        [uuid(98888888-8888-7777-6666-555555555555)]
+        delegate HRESULT ProductPurchasedEventHandler(ProductPurchasedEventArgs unk);
+
+        [static_name("IProductStatics", 98888888-7888-7777-6666-555555555555)]
+        runtimeclass Product
+        {
+            static Windows.Foundation.IAsyncAction ShowPurchaseAsync(Windows.Xbox.System.User unk, String unka);
+            static Windows.Foundation.IAsyncAction ShowDetailsAsync(Windows.Xbox.System.User unk, String unka);
+            static Windows.Foundation.IAsyncAction ShowMarketplaceAsync(Windows.Xbox.System.User unk, ProductItemTypes unka, String unkaa, ProductItemTypes unkaaa);
+            static Windows.Foundation.IAsyncAction ShowRedeemCodeAsync(Windows.Xbox.System.User unk, String unka);
+            static Windows.Foundation.IAsyncAction ShowSubscriptionAsync(Windows.Xbox.System.User unk, String unka, UInt32 unkaa);
+            static Windows.Foundation.IAsyncOperation<PrivilegeCheckResult> CheckPrivilegeAsync(Windows.Xbox.System.User unk, UInt32 unka, Boolean unkaa, String unkaaa);
+            static Windows.Foundation.IAsyncOperation<PrivilegeCheckResult> CheckPrivilegesAsync(Windows.Xbox.System.User unk, Windows.Foundation.Collections.IVectorView<UInt32> unka, Boolean unkaa, String unkaaa);
+            static event ProductPurchasedEventHandler ProductPurchased;
+
+            [static_name("IProductStaticsV2", 98888888-7788-7777-6666-555555555555)]
+            {
+                static Windows.Foundation.IAsyncAction ShowPurchaseForStoreIdAsync(Windows.Xbox.System.User unk, String unka);
+                static Windows.Foundation.IAsyncAction ShowDetailsForStoreIdAsync(Windows.Xbox.System.User unk, String unka);
+            }
+        }
+    }
+}
