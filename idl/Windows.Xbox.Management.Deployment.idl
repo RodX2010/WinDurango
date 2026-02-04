@@ -122,10 +122,12 @@ namespace Windows.Xbox.Management.Deployment
     }
 
     [interface_name("IPackageTransferManager", C2D4B94B-0413-4380-B2F2-AB9872D08285)]
-    [static_name("IContentUpdateStatics", D6CF4CAE-9EB1-4CBE-B426-7E75D429F846)]
     [static_name("IPackageTransferManagerStatics", D6CF4CAE-9EB1-4CBE-B426-7E75D429F846)]
     runtimeclass PackageTransferManager
     {
+        static Windows.Foundation.IAsyncOperation<CheckForUpdateResult> CheckForUpdateAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdatePackageAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
         static PackageTransferManager Current { get; };
         static PackageTransferManager Create(Windows.ApplicationModel.Package unk);
         void UpdateInstallOrder(Windows.Foundation.Collections.IIterable<UInt32> unk, UpdateInstallOrderBehavior unka);
@@ -133,13 +135,21 @@ namespace Windows.Xbox.Management.Deployment
         Boolean AreChunksInstalled(Windows.Foundation.Collections.IIterable<UInt32> unk);
         UInt32 FindChunkFromFile(String unk);
         PackageTransferStatus TransferStatus { get; };
+        PackageTransferType TransferType{ get; };
+        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferStatusChangedEventArgs> TransferStatusChanged;
+        static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
+        ChunkSpecifiers AvailableChunkSpecifiers{ get; };
+        InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
+        [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
+        Windows.Foundation.IAsyncOperation<PackageTransferWatcher> AddChunkSpecifiersAsync(ChunkSpecifiers unk);
+        Windows.Foundation.IAsyncAction RemoveChunkSpecifiersAsync(ChunkSpecifiers unk);
     }
 
     [interface_name("IPackageTransferManagerForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AAAA11DA)]
     [static_name("IPackageTransferWatcherStaticsForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AA1111DA)]
     runtimeclass PackageTransferManagerForChunkSpecifiers
     {
-	static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
+	    static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
         ChunkSpecifiers AvailableChunkSpecifiers { get; };
         InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
         [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
