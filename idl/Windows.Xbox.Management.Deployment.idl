@@ -113,7 +113,16 @@ namespace Windows.Xbox.Management.Deployment
         event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferCompletedEventArgs> TransferCompleted;
     }
 
+    [static_name("IContentUpdateStatics", 8D81C55A-6DC1-492B-8E31-1A71AACDE300)]
+    runtimeclass ContentUpdate
+    {
+        static Windows.Foundation.IAsyncOperation<CheckForUpdateResult> CheckForUpdateAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdatePackageAsync(DownloadableContentPackage unk);
+        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
+    }
+
     [interface_name("IPackageTransferManager", C2D4B94B-0413-4380-B2F2-AB9872D08285)]
+    [static_name("IContentUpdateStatics", D6CF4CAE-9EB1-4CBE-B426-7E75D429F846)]
     [static_name("IPackageTransferManagerStatics", D6CF4CAE-9EB1-4CBE-B426-7E75D429F846)]
     runtimeclass PackageTransferManager
     {
@@ -130,7 +139,6 @@ namespace Windows.Xbox.Management.Deployment
     [static_name("IPackageTransferWatcherStaticsForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AA1111DA)]
     runtimeclass PackageTransferManagerForChunkSpecifiers
     {
-        static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
         ChunkSpecifiers AvailableChunkSpecifiers { get; };
         InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
         [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
@@ -169,14 +177,6 @@ namespace Windows.Xbox.Management.Deployment
     {
         Boolean IsUpdateAvailable { get; };
         Boolean IsUpdateMandatory { get; };
-    }
-
-    [static_name("IContentUpdateStatics", AAC11AAB-F88C-AAAA-AAAA-AA11AAAA111A)]
-    runtimeclass ContentUpdate
-    {
-        static Windows.Foundation.IAsyncOperation<CheckForUpdateResult> CheckForUpdateAsync(DownloadableContentPackage unk);
-        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdatePackageAsync(DownloadableContentPackage unk);
-        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
     }
 
     [interface_name("IDownloadableContentPackage", 696996E9-F0F6-4497-A05E-514D915B7D05)]
