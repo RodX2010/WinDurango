@@ -14,7 +14,7 @@ namespace Windows.Xbox.ApplicationModel
 
     namespace Core
     {
-        [interface_name("ICoreApplicationContext", 99999999-8888-7777-6666-555555555555)]
+        [interface_name("ICoreApplicationContext", d8d4c59f-b9ac-4d41-842d-a01c59b617e7)]
         runtimeclass CoreApplicationContext
         {
             CoreApplicationContext();
@@ -80,13 +80,13 @@ namespace Windows.Xbox.ApplicationModel
             XPRIVILEGE_ADD_FRIEND = 0xff,
         };
 
-        [interface_name("IProductPurchasedEventArgs", 98888899-8888-7777-6666-555555555555)]
+        [interface_name("IProductPurchasedEventArgs", 22ee37de-7630-4fd8-9e7b-f61f86b5ef7c)]
         runtimeclass ProductPurchasedEventArgs
         {
             String Receipt();
         }
 
-        [uuid(98888888-8888-7777-6666-555555555555)]
+        [uuid(d1f1adca-92a4-4a88-b205-c54ac6152f43)]
         delegate HRESULT ProductPurchasedEventHandler(ProductPurchasedEventArgs unk);
 
         [static_name("IProductStatics", 98888888-7888-7777-6666-555555555555)]

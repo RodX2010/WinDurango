@@ -40,13 +40,13 @@ namespace Windows.Xbox.Management.Deployment
         Error = 0x4,
     };
 
-    [interface_name("IChunkCompletedEventArgs", AAC11AAB-F88C-AAAA-AAAA-AA88AAAAEFDA)]
+    [interface_name("IChunkCompletedEventArgs", C1B7DCCE-7CCC-4A06-BA46-4B90E6A87D0B)]
     runtimeclass ChunkCompletedEventArgs
     {
         UInt32 ChunkId { get; };
     }
 
-    [interface_name("IDownloadableContentPackageInstallCompletedEventArgs", AAC11AAB-F88C-AAAA-AAAA-AA11AA11EFDA)]
+    [interface_name("IDownloadableContentPackageInstallCompletedEventArgs", 38D2BDCD-9201-4D55-B45B-4F84455095F3)]
     runtimeclass DownloadableContentPackageInstallCompletedEventArgs
     {
         TransferOperationType OperationType { get; };
@@ -55,7 +55,7 @@ namespace Windows.Xbox.Management.Deployment
         HRESULT Result { get; };
     }
 
-    [interface_name("ILicenseTerminatedEventArgs", 11C11AAB-F88C-AAAA-AAAA-AA11AA11EFDA)]
+    [interface_name("ILicenseTerminatedEventArgs", 23D7EB2B-B52E-43D0-878C-DD7277C8269E)]
     runtimeclass LicenseTerminatedEventArgs
     {
         HRESULT Reason { get; };
@@ -63,7 +63,7 @@ namespace Windows.Xbox.Management.Deployment
         String UserXuidIfCausedBySignout { get; };
     }
 
-    [interface_name("IProgressChangedEventArgs", 11C11AAB-F88C-AAAA-AAAA-AA11AA11E5DA)]
+    [interface_name("IProgressChangedEventArgs", 946656D5-BA50-4117-ACFD-9DD518C679B8)]
     runtimeclass ProgressChangedEventArgs
     {
         UInt32 PercentComplete { get; };
@@ -88,7 +88,7 @@ namespace Windows.Xbox.Management.Deployment
         PackageTransferType TransferType { get; };
     }
 
-    [interface_name("ITransferCompletedEventArgs", 44C11AAB-F88C-AAAA-A22A-AA11AAAAEFDA)]
+    [interface_name("ITransferCompletedEventArgs", 0BBF7ED2-8455-4853-AF1A-10F02CDC4EBD)]
     runtimeclass TransferCompletedEventArgs
     {
     }
@@ -101,8 +101,8 @@ namespace Windows.Xbox.Management.Deployment
         void UnknownTwo();
     }
 
-    [interface_name("IPackageTransferWatcher", 41C11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
-    [static_name("IPackageTransferWatcherStatics", 41C11AAB-F88C-AAAA-AAAA-AA11AAA11FDA)]
+    [interface_name("IPackageTransferWatcher", E74B8E43-BA51-4B09-AD3F-01BAFF31F934)]
+    [static_name("IPackageTransferWatcherStatics", A306E506-12F9-460A-B0AE-50BA328C786C)]
     runtimeclass PackageTransferWatcher
     {
         static PackageTransferWatcher Create(Windows.ApplicationModel.Package unk, Windows.Foundation.Collections.IIterable<UInt32> unka);
@@ -113,8 +113,8 @@ namespace Windows.Xbox.Management.Deployment
         event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferCompletedEventArgs> TransferCompleted;
     }
 
-    [interface_name("IPackageTransferManager", A1111AAB-F88C-AAAA-AAAA-AA11AAAA11DA)]
-    [static_name("IPackageTransferManagerStatics", A1111AAB-F88C-AAAA-AAAA-AA11AAAA112A)]
+    [interface_name("IPackageTransferManager", C2D4B94B-0413-4380-B2F2-AB9872D08285)]
+    [static_name("IPackageTransferManagerStatics", D6CF4CAE-9EB1-4CBE-B426-7E75D429F846)]
     runtimeclass PackageTransferManager
     {
         static PackageTransferManager Current { get; };
@@ -155,7 +155,7 @@ namespace Windows.Xbox.Management.Deployment
 
     delegate void DownloadableContentPackageInstallCompletedEventHandler();
 
-    [interface_name("IDownloadableContentPackageManager", AAC11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
+    [interface_name("IDownloadableContentPackageManager", 971FEAAF-98F8-4038-B8C1-3A5F1A043B97)]
     runtimeclass DownloadableContentPackageManager
     {
         DownloadableContentPackageManager();
@@ -179,7 +179,7 @@ namespace Windows.Xbox.Management.Deployment
         static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
     }
 
-    [interface_name("IDownloadableContentPackage", A1111AAB-F88C-AAAA-AAAA-AA11AAAA111A)]
+    [interface_name("IDownloadableContentPackage", 696996E9-F0F6-4497-A05E-514D915B7D05)]
     runtimeclass DownloadableContentPackage
     {
         String TitleId { get; };
