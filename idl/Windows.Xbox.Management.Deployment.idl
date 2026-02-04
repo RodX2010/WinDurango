@@ -139,6 +139,7 @@ namespace Windows.Xbox.Management.Deployment
     [static_name("IPackageTransferWatcherStaticsForChunkSpecifiers", A1111AAB-1881-AAAA-AAAA-AA11AA1111DA)]
     runtimeclass PackageTransferManagerForChunkSpecifiers
     {
+	static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
         ChunkSpecifiers AvailableChunkSpecifiers { get; };
         InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
         [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
