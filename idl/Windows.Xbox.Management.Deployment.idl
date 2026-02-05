@@ -82,12 +82,6 @@ namespace Windows.Xbox.Management.Deployment
         Windows.Foundation.Collections.IVector<String> Tags { get; };
     }
 
-    [interface_name("IPackageTransferManagerTransferInfo", 44C11AAB-F88C-AAAA-AAAA-AA11AAAAEFDA)]
-    runtimeclass PackageTransferManagerTransferInfo
-    {
-        PackageTransferType TransferType { get; };
-    }
-
     [interface_name("ITransferCompletedEventArgs", 0BBF7ED2-8455-4853-AF1A-10F02CDC4EBD)]
     runtimeclass TransferCompletedEventArgs
     {
@@ -99,14 +93,6 @@ namespace Windows.Xbox.Management.Deployment
     {
         void UnknownOne();
         void UnknownTwo();
-    }
-
-    [interface_name("IPackageTransferWatcherTransferInfo", BA1BAD13-11E1-43CE-BE44-845759796A7F)]
-    runtimeclass PackageTransferWatcherTransferInfo
-    {
-        PackageTransferStatus TransferStatus { get; };
-        PackageTransferType TransferType { get; };
-        event Windows.Foundation.TypedEventHandler<PackageTransferWatcher, TransferStatusChangedEventArgs> TransferStatusChanged;
     }
 
     [interface_name("IPackageTransferWatcher", E74B8E43-BA51-4B09-AD3F-01BAFF31F934)]
@@ -128,34 +114,10 @@ namespace Windows.Xbox.Management.Deployment
     	}
     }
 
-    [static_name("IContentUpdateStatics", 8D81C55A-6DC1-492B-8E31-1A71AACDE300)]
-    runtimeclass ContentUpdate
-    {
-        static Windows.Foundation.IAsyncOperation<CheckForUpdateResult> CheckForUpdateAsync(DownloadableContentPackage unk);
-        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdatePackageAsync(DownloadableContentPackage unk);
-        static Windows.Foundation.IAsyncOperation<RequestUpdatePackageResult> RequestUpdateCurrentPackageAsync();
-    }
-
-    [interface_name("IPackageTransferManagerForChunkSpecifiers", 96130573-D1AD-468C-AA25-9967781FB2F3)]
-    runtimeclass PackageTransferManagerForChunkSpecifiers
-    {
-        ChunkSpecifiers AvailableChunkSpecifiers { get; };
-        InstallationState GetInstallationState(Windows.Foundation.Collections.IIterable<UInt32> unk);
-        [default_overload] InstallationState GetInstallationState(ChunkSpecifiers unk);
-        Windows.Foundation.IAsyncOperation<PackageTransferWatcher> AddChunkSpecifiersAsync(ChunkSpecifiers unk);
-        Windows.Foundation.IAsyncAction RemoveChunkSpecifiersAsync(ChunkSpecifiers unk);
-    }
-
-    [interface_name("IPackageTransferManagerTransferInfo", 681618F3-B8BD-4553-8C1E-BA1D992667EB)]
-    runtimeclass PackageTransferManagerTransferInfo
-    {
-	PackageTransferType TransferType{ get; };
-    }
-
     [static_name("PackageTransferWatcherStaticsForChunkSpecifiers", 6603ECCC-2664-4688-8212-922E5BA28716)]
     runtimeclass PackageTransferWatcherStaticsForChunkSpecifiers
     {
-	static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
+	    static PackageTransferWatcher CreateForChunkSpecifiers(Windows.ApplicationModel.Package unk, ChunkSpecifiers unka);
     }
 
     [interface_name("IPackageTransferManager", C2D4B94B-0413-4380-B2F2-AB9872D08285)]
@@ -179,7 +141,7 @@ namespace Windows.Xbox.Management.Deployment
 
     	[interface_name("IPackageTransferManagerTransferInfo", 681618F3-B8BD-4553-8C1E-BA1D992667EB)]
     	{
-		PackageTransferType TransferType{ get; };
+		    PackageTransferType TransferType{ get; };
     	}
 
     	[interface_name("IPackageTransferManagerForChunkSpecifiers", 96130573-D1AD-468C-AA25-9967781FB2F3)]
