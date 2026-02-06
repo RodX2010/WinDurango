@@ -9,13 +9,14 @@ set(FILES
     src/IGraphicsUnknown.cpp
     src/IIDExports.cpp
     include/WinDurango.D3D11X/d3d11.x.h
+    include/WinDurango.D3D11X/d3d11_x.g.h
     include/WinDurango.D3D11X/unknown.g.h
     include/WinDurango.D3D11X/IGraphicsUnknown.h
     include/WinDurango.D3D11X/IIDExports.h
     Exports.def
 )
 
-add_library(WinDurango.D3D11X SHARED ${FILES})
+add_library(WinDurango.D3D11X SHARED ${FILES} "include/WinDurango.D3D11X/ID3D11DeviceChild.h" "src/ID3D11DeviceChild.cpp" "include/WinDurango.D3D11X/ID3D11Resource.h" "src/ID3D11Resource.cpp" "include/WinDurango.D3D11X/ID3D11Shader.h" "src/ID3D11Shader.cpp" "include/WinDurango.D3D11X/ID3D11State.h" "src/ID3D11State.cpp" "include/WinDurango.D3D11X/ID3D11View.h" "src/ID3D11View.cpp" "include/WinDurango.D3D11X/ID3D11DeviceContext.h" "src/ID3D11DeviceContext.cpp" "include/WinDurango.D3D11X/ID3D11DMAEngineContext.h" "src/ID3D11DMAEngineContext.cpp" "include/WinDurango.D3D11X/ID3D11Device.h" "src/ID3D11Device.cpp" "include/WinDurango.D3D11X/ID3D11Runtime.h" "src/dllmain.cpp")
 
 target_link_libraries(WinDurango.D3D11X PRIVATE WinDurango.Common)
 

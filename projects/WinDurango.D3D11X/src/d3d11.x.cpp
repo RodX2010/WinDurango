@@ -1,5 +1,7 @@
 ﻿#include "d3d11.x.h"
 #include "IIDExports.h"
+#include "d3d11_x.g.h"
+#include "ID3D11Runtime.h"
 
 EXTERN_C HRESULT __stdcall EraD3D10CreateBlob()
 {
@@ -12,8 +14,10 @@ EXTERN_C HRESULT __stdcall EraD3D11CreateDevice(void *pAdapter, D3D_DRIVER_TYPE 
                                                 UINT SDKVersion, void **ppDevice, D3D_FEATURE_LEVEL *pFeatureLevel,
                                                 void **ppImmediateContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11Runtime *pRuntime;
+    d3d11CreateInstance<D3D11Runtime>(g_ABI, (void **)&pRuntime);
+    auto hr = pRuntime->CreateDevice((void **)ppDevice, (void **)ppImmediateContext);
+    return hr;
 }
 
 EXTERN_C HRESULT __stdcall EraD3D11CreateDeviceAndSwapChain()
@@ -38,8 +42,10 @@ struct D3D11X_CREATE_DEVICE_PARAMETERS
 EXTERN_C HRESULT __stdcall D3D11XCreateDeviceX(const D3D11X_CREATE_DEVICE_PARAMETERS *pParameters, void **ppDevice,
                                                void **ppImmediateContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11Runtime *pRuntime;
+    d3d11CreateInstance<D3D11Runtime>(g_ABI, (void **)&pRuntime);
+    auto hr = pRuntime->CreateDevice((void **)ppDevice, (void **)ppImmediateContext);
+    return hr;
 }
 
 EXTERN_C HRESULT __stdcall D3D11XCreateDeviceXAndSwapChain1(const D3D11X_CREATE_DEVICE_PARAMETERS *pParameters,
