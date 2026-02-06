@@ -60,6 +60,8 @@ set(FILES
     "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.Product.cpp"
     "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.ProductPurchasedEventArgs.cpp"
     "src/Windows/Xbox/ApplicationModel/Windows.Xbox.ApplicationModel.Help.cpp"
+    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.MultiplayerSessionReference.cpp"
+    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.PartyConfig.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -80,6 +82,7 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel/Core"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel/Store"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Multiplayer"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )

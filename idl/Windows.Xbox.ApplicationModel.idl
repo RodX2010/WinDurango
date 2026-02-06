@@ -23,7 +23,7 @@ namespace Windows.Xbox.ApplicationModel
         }
     }
 
-    [static_name("IHelp", 98999999-8888-7777-6666-555555555555)]
+    [static_name("IHelpStatics", 3691495d-4bea-4c05-8791-7f51a9b2bf6b)]
     runtimeclass Help
     {
         static Windows.Foundation.IAsyncAction Show(Windows.Xbox.System.User usr);
@@ -89,7 +89,7 @@ namespace Windows.Xbox.ApplicationModel
         [uuid(d1f1adca-92a4-4a88-b205-c54ac6152f43)]
         delegate HRESULT ProductPurchasedEventHandler(ProductPurchasedEventArgs unk);
 
-        [static_name("IProductStatics", 98888888-7888-7777-6666-555555555555)]
+        [static_name("IProductStatics", 76efb705-bdd4-4f6a-8d89-a9511d40afe7)]
         runtimeclass Product
         {
             static Windows.Foundation.IAsyncAction ShowPurchaseAsync(Windows.Xbox.System.User unk, String unka);

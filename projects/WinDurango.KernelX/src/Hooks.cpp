@@ -153,8 +153,6 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
 {
     const wchar_t *rawString = WindowsGetStringRawBuffer(classId, nullptr);
 
-    MessageBoxW(nullptr, rawString, L"EraRoGetActivationFactory", MB_OK | MB_ICONERROR);
-
     std::wstring rsws(rawString);
     std::string rss(rsws.begin(), rsws.end());
 
@@ -271,8 +269,14 @@ HRESULT WINAPI GetActivationFactoryRedirect(PCWSTR str, REFIID riid, void **ppFa
 
     hr = EraRoGetActivationFactory(className, riid, ppFactory);
 
+    
+    const wchar_t *rawString = WindowsGetStringRawBuffer(className, nullptr);
+
     if (FAILED(hr))
+    {
+        MessageBoxW(nullptr, rawString, L"EraRoGetActivationFactory", MB_OK | MB_ICONERROR);
         DebugBreak();
+    }
 
     WindowsDeleteString(className);
     return hr;
