@@ -146,9 +146,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-IDXGISwapChain1 *OldSwapChain{};
-winrt::hstring GamePackage = winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName();
-
 template <abi_t ABI>
 HRESULT DXGIFactory2<ABI>::CreateSwapChainForCoreWindow(xbox::IGraphicsUnknown<ABI> *pDevice, IUnknown *pWindow,
                                                         DXGI_SWAP_CHAIN_DESC1 *pDesc, IDXGIOutput *pRestrictToOutput,

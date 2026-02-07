@@ -4,6 +4,7 @@
 #include "CurrentApp.h"
 #include <detours.h>
 #include <wrl.h>
+#include "MMDeviceEnumerator.h"
 
 using namespace ABI::Windows::ApplicationModel::Store;
 
@@ -159,6 +160,22 @@ HWND __stdcall EraCreateWindowInBandEx(DWORD dwExStyle, LPCWSTR lpClassName, LPC
 
     return TrueCreateWindowInBandEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent,
                                     hMenu, hInstance, lpParam, dwBand, dwTypeFlags);
+}
+
+HRESULT __stdcall EraCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid,
+                                      LPVOID *ppv)
+{
+    HRESULT hr = TrueCoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
+    if (FAILED(hr))
+        return hr;
+
+    if (riid == __uuidof(IMMDeviceEnumerator))
+    {
+        *ppv = new MMDeviceEnumeratorWrapper(static_cast<IMMDeviceEnumerator*>(*ppv));
+        return S_OK;
+    }
+
+    return hr;
 }
 
 

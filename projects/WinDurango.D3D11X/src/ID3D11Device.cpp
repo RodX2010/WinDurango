@@ -899,6 +899,13 @@ HRESULT D3D11DeviceX<ABI>::CreatePlacementTexture2D(D3D11_TEXTURE2D_DESC const *
         initialData.clear();
         return hr;
     }
+    else if (pVirtualAddress && pDesc2.SampleDesc.Count > 1)
+    {
+        HRESULT hr = CreateTexture2D(&pDesc2, 0, ppTexture2D);
+        (*ppTexture2D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
     else
     {
         HRESULT hr = CreateTexture2D(&pDesc2, initialData.data(), ppTexture2D);
@@ -982,7 +989,7 @@ HRESULT D3D11DeviceX<ABI>::CreateDeferredContextX(UINT Flags, gfx::ID3D11DeviceC
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::GarbageCollect(UINT Flags)
 {
-    IMPLEMENT_STUB();
+
 }
 
 template <abi_t ABI>

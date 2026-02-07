@@ -67,8 +67,20 @@ typedef HWND(WINAPI *PCreateWindowInBandEx)(DWORD dwExStyle, LPCWSTR lpClassName
                                             int x, int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu,
                                             HINSTANCE hInstance, LPVOID lpParam, DWORD dwBand, DWORD dwTypeFlags);
 
-static PCreateWindowInBandEx TrueCreateWindowInBandEx = 0;
+PCreateWindowInBandEx TrueCreateWindowInBandEx = 0;
 
 HWND WINAPI EraCreateWindowInBandEx(DWORD dwExStyle, LPCWSTR lpClassName, LPCWSTR lpWindowName, DWORD dwStyle, int x,
                                     int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance,
                                     LPVOID lpParam, DWORD dwBand, DWORD dwTypeFlags);
+
+HRESULT(WINAPI *TrueCoCreateInstance)(_In_ REFCLSID rclsid, _In_opt_ LPUNKNOWN pUnkOuter, _In_ DWORD dwClsContext,
+                                      _In_ REFIID riid,
+                                      _COM_Outptr_ _At_(*ppv, _Post_readable_size_(_Inexpressible_(varies)))
+                                          LPVOID FAR *ppv) = CoCreateInstance;
+
+HRESULT __stdcall EraCoCreateInstance(_In_ REFCLSID rclsid, _In_opt_ LPUNKNOWN pUnkOuter, _In_ DWORD dwClsContext,
+                                      _In_ REFIID riid,
+                                      _COM_Outptr_ _At_(*ppv, _Post_readable_size_(_Inexpressible_(varies)))
+                                          LPVOID FAR *ppv);
+
+HMODULE User32 = nullptr;

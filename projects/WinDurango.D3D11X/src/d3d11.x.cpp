@@ -2,6 +2,7 @@
 #include "IIDExports.h"
 #include "d3d11_x.g.h"
 #include "ID3D11Runtime.h"
+#include "kernelx.h"
 
 EXTERN_C HRESULT __stdcall EraD3D10CreateBlob()
 {
@@ -77,8 +78,14 @@ EXTERN_C HRESULT __stdcall D3DFreeGraphicsMemory(void *pAddress)
 
 EXTERN_C HRESULT __stdcall D3DMapEsramMemory(UINT Flags, void *pVirtualAddress, UINT NumPages, const UINT *pPageList)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    DWORD flAllocationType = 0;
+
+    if ((Flags & 1) != 0)
+        flAllocationType = MEM_LARGE_PAGES;
+    else if ((Flags & 2) != 0)
+        flAllocationType = MEM_4MB_PAGES;
+
+    return MapTitleEsramPages(pVirtualAddress, NumPages, flAllocationType, pPageList);
 }
 
 struct DXGIX_FRAME_STATISTICS

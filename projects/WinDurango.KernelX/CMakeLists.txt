@@ -15,7 +15,7 @@ set(FILES
     include/WinDurango.KernelX/Hooks.h
 )
 
-add_library(WinDurango.KernelX SHARED ${FILES} "include/WinDurango.KernelX/EraCoreApplication.h" "src/EraCoreApplication.cpp" "include/WinDurango.KernelX/EraCoreWindow.h" "src/EraCoreWindow.cpp")
+add_library(WinDurango.KernelX SHARED ${FILES} "include/WinDurango.KernelX/EraCoreApplication.h" "src/EraCoreApplication.cpp" "include/WinDurango.KernelX/EraCoreWindow.h" "src/EraCoreWindow.cpp" "include/WinDurango.KernelX/MMDeviceEnumerator.h" "src/MMDeviceEnumerator.cpp")
 
 target_link_libraries(WinDurango.KernelX PRIVATE 
     WinDurango.Common 
