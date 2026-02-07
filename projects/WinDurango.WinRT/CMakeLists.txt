@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(cppwinrt CONFIG REQUIRED HINTS "${CMAKE_SOURCE_DIR}/vcpkg_installed/vcpkg/pkgs/cppwinrt_x64-windows/share/cppwinrt")
 
+add_compile_definitions(_AMD64_)
+
 make_directory(${CMAKE_BINARY_DIR}/WinMetadata)
 file(GLOB IDL_FILES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/idl/*.idl")
 cmake_path(CONVERT "${IDL_FILES}" TO_NATIVE_PATH_LIST IDL_FILES)

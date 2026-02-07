@@ -32,7 +32,21 @@ namespace winrt::Windows::Xbox::System::implementation
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::System::User> User::Users()
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: Users");
-        throw hresult_not_implemented();
+        if (a_users == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::System::User>(nullptr) || a_users.Size() == 0)
+        {
+            a_users = winrt::single_threaded_vector<winrt::Windows::Xbox::System::User>();
+
+            p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::System", "Creating static a_users");
+
+            for (size_t i = 0; i < 4; i++)
+            {
+                p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::System", "Creating user");
+                winrt::Windows::Xbox::System::User user = winrt::make<User>(i);
+                a_users.Append(user);
+            }
+        }
+
+        return a_users.GetView();
     }
 
     winrt::event_token User::UserAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserAddedEventArgs> const& handler)
@@ -239,4 +253,5 @@ namespace winrt::Windows::Xbox::System::implementation
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutStartedEventArgs>> User::m_SignOutStarted{};
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutCompletedEventArgs>> User::m_SignOutCompleted{};
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserDisplayInfoChangedEventArgs>> User::m_UserDisplayInfoChanged{};
+    winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::System::User> User::a_users{};
 }

@@ -20,119 +20,141 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::Windows::Xbox::Input::GamepadButtons GamepadReading::Buttons()
     {
-        return buttons;
+        return reading.Buttons;
     }
 
     bool GamepadReading::IsDPadUpPressed()
     {
-        return (buttons & GamepadButtons::DPadUp) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::DPadUp) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsDPadDownPressed()
     {
-        return (buttons & GamepadButtons::DPadDown) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::DPadDown) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsDPadLeftPressed()
     {
-        return (buttons & GamepadButtons::DPadLeft) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::DPadLeft) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsDPadRightPressed()
     {
-        return (buttons & GamepadButtons::DPadRight) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::DPadRight) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsMenuPressed()
     {
-        return (buttons & GamepadButtons::Menu) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::Menu) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsViewPressed()
     {
-        return (buttons & GamepadButtons::View) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::View) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsLeftThumbstickPressed()
     {
-        return (buttons & GamepadButtons::LeftThumbstick) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::LeftThumbstick) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsRightThumbstickPressed()
     {
-        return (buttons & GamepadButtons::RightThumbstick) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::RightThumbstick) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsLeftShoulderPressed()
     {
-        return (buttons & GamepadButtons::LeftShoulder) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::LeftShoulder) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsRightShoulderPressed()
     {
-        return (buttons & GamepadButtons::RightShoulder) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::RightShoulder) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsAPressed()
     {
-        return (buttons & GamepadButtons::A) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::A) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsBPressed()
     {
-        return (buttons & GamepadButtons::B) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::B) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsXPressed()
     {
-        return (buttons & GamepadButtons::X) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::X) != GamepadButtons::None;
     }
 
     bool GamepadReading::IsYPressed()
     {
-        return (buttons & GamepadButtons::Y) != GamepadButtons::None;
+        return (reading.Buttons & GamepadButtons::Y) != GamepadButtons::None;
     }
 
     float GamepadReading::LeftTrigger()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: LeftTrigger");
-        return 0.0f;
+        return reading.LeftTrigger;
     }
 
     float GamepadReading::RightTrigger()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightTrigger");
-        return 0.0f;
+        return reading.RightTrigger;
     }
 
     float GamepadReading::LeftThumbstickX()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: LeftThumbstickX");
-        return 0.0f;
+        return reading.LeftTrigger;
     }
 
     float GamepadReading::LeftThumbstickY()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: LeftThumbstickY");
-        return 0.0f;
+        return reading.LeftThumbstickY;
     }
 
     float GamepadReading::RightThumbstickX()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickX");
-        return 0.0f;
+        return reading.RightThumbstickX;
     }
 
     float GamepadReading::RightThumbstickY()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
-        return 0.0f;
+        return reading.RightThumbstickY;
     }
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Gamepad> Gamepad::Gamepads()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: Gamepads");
-        throw hresult_not_implemented();
+        if (a_gamepads == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::Gamepad>(nullptr) || a_gamepads.Size() == 0)
+        {
+            a_gamepads = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::Gamepad>();
+
+            p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating static a_gamepads");
+
+            for (size_t i = 0; i < 4; i++)
+            {
+                XINPUT_STATE state{};
+                DWORD result = XInputGetState(0, &state);
+
+                if (result == ERROR_SUCCESS)
+                {
+                    p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
+                    winrt::Windows::Xbox::Input::Gamepad gamepad = winrt::make<Gamepad>(i, true);
+                    a_gamepads.Append(gamepad);
+                }
+            }
+        }
+
+        if (a_gamepads.Size() == 0)
+        {
+            p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating Virtual gamepad");
+            winrt::Windows::Xbox::Input::Gamepad gamepad = winrt::make<Gamepad>(0, false);
+            a_gamepads.Append(gamepad);
+        }
+
+        // I think I need to add mouse capture here
+
+        return a_gamepads.GetView();
     }
 
     winrt::event_token Gamepad::GamepadAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs> const& handler)
@@ -162,46 +184,47 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     hstring Gamepad::Type()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: Type");
         throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::System::User Gamepad::User()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
-        throw hresult_not_implemented();
+        p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating Getting User");
+        return winrt::Windows::Xbox::System::User::Users().GetAt(id);
     }
 
     winrt::Windows::Xbox::Input::INavigationReading Gamepad::GetNavigationReading()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: GetNavigationReading");
         throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::Input::RawNavigationReading Gamepad::GetRawNavigationReading()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: GetRawNavigationReading");
         throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::Input::GamepadVibration Gamepad::SetVibration()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: SetVibration");
         throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::Input::GamepadReading Gamepad::GetCurrentReading()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: GetCurrentReading");
         throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::Input::RawGamepadReading Gamepad::GetRawCurrentReading()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: RightThumbstickY");
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: GetRawCurrentReading");
         throw hresult_not_implemented();
     }
 
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs>> Gamepad::e_GamepadAdded{};
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadRemovedEventArgs>> Gamepad::e_GamepadRemoved{};
+    winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::Gamepad> Gamepad::a_gamepads;
 }

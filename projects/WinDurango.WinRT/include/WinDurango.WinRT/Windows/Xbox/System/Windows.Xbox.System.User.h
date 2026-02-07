@@ -83,6 +83,7 @@ namespace winrt::Windows::Xbox::System::implementation
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutStartedEventArgs>> m_SignOutStarted;
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutCompletedEventArgs>> m_SignOutCompleted;
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserDisplayInfoChangedEventArgs>> m_UserDisplayInfoChanged;
+        static winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::System::User> a_users;
     };
 }
 namespace winrt::Windows::Xbox::System::factory_implementation
