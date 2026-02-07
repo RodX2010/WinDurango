@@ -11,14 +11,17 @@ template <abi_t ABI> HRESULT D3D11SamplerState<ABI>::QueryInterface(REFIID riid,
 
 template <abi_t ABI> ULONG D3D11SamplerState<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11SamplerState<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount)
+        delete this;
+    return RefCount;
 }
 
 //
@@ -61,18 +64,16 @@ HRESULT D3D11SamplerState<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &gui
 //
 template <abi_t ABI> void D3D11SamplerState<ABI>::GetDesc(D3D11_SAMPLER_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 template <abi_t ABI> void D3D11SamplerState<ABI>::GetDescX(gfx::D3D11X_SAMPLER_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
 }
 
 #undef ABI_INTERFACE
 #define ABI_INTERFACE(ABI) D3D11SamplerState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES();
-
 
 //
 // IUnknown
@@ -85,14 +86,17 @@ template <abi_t ABI> HRESULT D3D11RasterizerState<ABI>::QueryInterface(REFIID ri
 
 template <abi_t ABI> ULONG D3D11RasterizerState<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11RasterizerState<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount)
+        delete this;
+    return RefCount;
 }
 
 //
@@ -137,13 +141,12 @@ HRESULT D3D11RasterizerState<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &
 //
 template <abi_t ABI> void D3D11RasterizerState<ABI>::GetDesc(D3D11_RASTERIZER_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE
 #define ABI_INTERFACE(ABI) D3D11RasterizerState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES();
-
 
 //
 // IUnknown
@@ -156,14 +159,17 @@ template <abi_t ABI> HRESULT D3D11BlendState<ABI>::QueryInterface(REFIID riid, v
 
 template <abi_t ABI> ULONG D3D11BlendState<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11BlendState<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount)
+        delete this;
+    return RefCount;
 }
 
 //
@@ -206,13 +212,12 @@ HRESULT D3D11BlendState<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid,
 //
 template <abi_t ABI> void D3D11BlendState<ABI>::GetDesc(D3D11_BLEND_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE
 #define ABI_INTERFACE(ABI) D3D11BlendState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES();
-
 
 //
 // IUnknown
@@ -225,14 +230,17 @@ template <abi_t ABI> HRESULT D3D11DepthStencilState<ABI>::QueryInterface(REFIID 
 
 template <abi_t ABI> ULONG D3D11DepthStencilState<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11DepthStencilState<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount)
+        delete this;
+    return RefCount;
 }
 
 //
@@ -277,12 +285,11 @@ HRESULT D3D11DepthStencilState<ABI>::SetPrivateDataInterfaceGraphics(_GUID const
 //
 template <abi_t ABI> void D3D11DepthStencilState<ABI>::GetDesc(D3D11_DEPTH_STENCIL_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 template <abi_t ABI> void D3D11DepthStencilState<ABI>::GetDescX(D3D11_DEPTH_STENCIL_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
 }
 
 #undef ABI_INTERFACE

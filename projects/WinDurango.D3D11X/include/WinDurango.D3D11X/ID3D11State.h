@@ -4,6 +4,14 @@
 template <abi_t ABI> class D3D11SamplerState : public gfx::ID3D11SamplerState<ABI>
 {
   public:
+    ID3D11SamplerState *m_pFunction = nullptr;
+
+    D3D11SamplerState(ID3D11SamplerState *pState)
+    {
+        m_pFunction = pState;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -19,6 +27,10 @@ template <abi_t ABI> class D3D11SamplerState : public gfx::ID3D11SamplerState<AB
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        return S_OK;
+    }
 
     //
     // ID3D11SamplerState
@@ -31,10 +43,17 @@ template <abi_t ABI> class D3D11SamplerState : public gfx::ID3D11SamplerState<AB
 #define ABI_INTERFACE(ABI) D3D11SamplerState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES(extern);
 
-
 template <abi_t ABI> class D3D11RasterizerState : public gfx::ID3D11RasterizerState<ABI>
 {
   public:
+    ID3D11RasterizerState *m_pFunction = nullptr;
+
+    D3D11RasterizerState(ID3D11RasterizerState *pState)
+    {
+        m_pFunction = pState;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -50,6 +69,10 @@ template <abi_t ABI> class D3D11RasterizerState : public gfx::ID3D11RasterizerSt
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        return S_OK;
+    }
 
     //
     // ID3D11RasterizerState
@@ -61,10 +84,17 @@ template <abi_t ABI> class D3D11RasterizerState : public gfx::ID3D11RasterizerSt
 #define ABI_INTERFACE(ABI) D3D11RasterizerState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES(extern);
 
-
 template <abi_t ABI> class D3D11BlendState : public gfx::ID3D11BlendState<ABI>
 {
   public:
+    ID3D11BlendState *m_pFunction = nullptr;
+
+    D3D11BlendState(ID3D11BlendState *pState)
+    {
+        m_pFunction = pState;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -80,6 +110,10 @@ template <abi_t ABI> class D3D11BlendState : public gfx::ID3D11BlendState<ABI>
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        return S_OK;
+    }
 
     //
     // ID3D11BlendState
@@ -91,10 +125,17 @@ template <abi_t ABI> class D3D11BlendState : public gfx::ID3D11BlendState<ABI>
 #define ABI_INTERFACE(ABI) D3D11BlendState<ABI>
 D3D11_DECLARE_ABI_TEMPLATES(extern);
 
-
 template <abi_t ABI> class D3D11DepthStencilState : public gfx::ID3D11DepthStencilState<ABI>
 {
   public:
+    ID3D11DepthStencilState *m_pFunction = nullptr;
+
+    D3D11DepthStencilState(ID3D11DepthStencilState *pState)
+    {
+        m_pFunction = pState;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -110,6 +151,10 @@ template <abi_t ABI> class D3D11DepthStencilState : public gfx::ID3D11DepthStenc
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        return S_OK;
+    }
 
     //
     // ID3D11DepthStencilState

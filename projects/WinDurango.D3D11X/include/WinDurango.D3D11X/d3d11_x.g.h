@@ -6,6 +6,7 @@
 
 #include "unknown.g.h"
 #include <d3d11_4.h>
+#include <dxgi1_6.h>
 
 namespace gfx
 {
@@ -175,6 +176,12 @@ namespace gfx
     
     template<abi_t ABI>
     struct ID3D11PerformanceContextXVtbl;
+
+    template <abi_t ABI>
+    struct ID3D11UserDefinedAnnotationX;
+
+    template <abi_t ABI>
+    struct ID3D11UserDefinedAnnotationXVtbl;
     
     template<abi_t ABI>
     struct ID3D11Device;
@@ -211,6 +218,78 @@ namespace gfx
     
     template<abi_t ABI>
     struct ID3D11PerformanceDeviceXVtbl;
+
+    template <abi_t ABI>
+    struct IDXGIObject;
+
+    template <abi_t ABI>
+    struct IDXGIObjectVtbl;
+
+    template <abi_t ABI>
+    struct IDXGIDevice;
+
+    template <abi_t ABI>
+    struct IDXGIDeviceVtbl;
+
+    template <abi_t ABI>
+    struct IDXGIDevice1;
+
+    template <abi_t ABI>
+    struct IDXGIDevice1Vtbl;
+
+    template <abi_t ABI>
+    struct IDXGIDevice2;
+
+    template <abi_t ABI>
+    struct IDXGIDevice2Vtbl;
+
+    template <abi_t ABI>
+    struct IDXGIAdapter;
+
+    template <abi_t ABI>
+    struct IDXGIAdapterVtbl;
+
+    template <abi_t ABI>
+    struct IDXGIAdapter1;
+
+    template <abi_t ABI>
+    struct IDXGIAdapter1Vtbl;
+
+    template <abi_t ABI>
+    struct IDXGIDeviceSubObject;
+
+    template <abi_t ABI>
+    struct IDXGIDeviceSubObjectVtbl;
+
+    template <abi_t ABI>
+    struct IDXGISwapChain;
+
+    template <abi_t ABI>
+    struct IDXGISwapChainVtbl;
+
+    template <abi_t ABI>
+    struct IDXGISwapChain1;
+
+    template <abi_t ABI>
+    struct IDXGISwapChain1Vtbl;
+
+    template <abi_t ABI>
+    struct IDXGIFactory;
+
+    template <abi_t ABI>
+    struct IDXGIFactoryVtbl;
+
+    template <abi_t ABI>
+    struct IDXGIFactory1;
+
+    template <abi_t ABI>
+    struct IDXGIFactory1Vtbl;
+
+    template <abi_t ABI>
+    struct IDXGIFactory2;
+
+    template <abi_t ABI>
+    struct IDXGIFactory2Vtbl;
     
 enum D3D11X_IMG_NUM_FORMAT
     {
@@ -764,8 +843,8 @@ enum D3D11X_IMG_NUM_FORMAT
         uint32_t *m_pCeBiasedLimit;
         uint32_t *m_pCeLimit;
         uint32_t m_Reserved2[64];
-        static const uint32_t BiasDwordCount = 128; //Placeholder value
-        static const uint32_t MakeCeSpaceDwordCount = 128; //Placeholder value
+        static const uint32_t BiasDwordCount = 70;
+        static const uint32_t MakeCeSpaceDwordCount = 1024;
     };
 
     template <abi_t ABI>
@@ -786,8 +865,16 @@ enum D3D11X_IMG_NUM_FORMAT
 
     class ID3D11ComputeContextX;
     
-    template<abi_t ABI>
-    struct ID3D11DeviceChild : xbox::IGraphicsUnknown<ABI>
+    namespace details
+    {
+        template <abi_t ABI> struct ID3D11DeviceChildData
+        {
+            gfx::ID3D11Device<ABI> *m_pDevice;
+            void *m_pPrivateData;
+        };
+    }
+
+    template<abi_t ABI> struct ID3D11DeviceChild : xbox::IGraphicsUnknown<ABI>, details::ID3D11DeviceChildData<ABI>
     {
         virtual void GetDevice(gfx::ID3D11Device<ABI> **ppDevice) = 0;
         virtual HRESULT GetPrivateData(_GUID const &guid, uint32_t *pDataSize, void *pData) = 0;
@@ -906,13 +993,13 @@ enum D3D11X_IMG_NUM_FORMAT
     template<abi_t ABI>
     struct ID3D11Buffer : gfx::ID3D11Resource<ABI>, details::ID3D11BufferData<ABI>
     {
-        virtual void GetDesc(D3D11_TEXTURE1D_DESC *pDesc) = 0;
+        virtual void GetDesc(D3D11_BUFFER_DESC *pDesc) = 0;
     };
     
     template<abi_t ABI>
     struct ID3D11BufferVtbl : gfx::ID3D11ResourceVtbl<ABI>
     {
-        void(*GetDesc)(void *, D3D11_TEXTURE1D_DESC *pDesc);
+        void (*GetDesc)(void *, D3D11_BUFFER_DESC *pDesc);
     };
     
     template<abi_t ABI>
@@ -1259,7 +1346,7 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual void PSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
         virtual void IASetInputLayout(ID3D11InputLayout *pInputLayout) = 0;
         virtual void IASetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets) = 0;
-        virtual void IASetIndexBuffer(UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT Offset) = 0;
+        virtual void IASetIndexBuffer(gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset) = 0;
         virtual void DrawIndexedInstanced(UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount) = 0;
         virtual void DrawInstanced(UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount) = 0;
         virtual void GSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
@@ -1485,7 +1572,7 @@ enum D3D11X_IMG_NUM_FORMAT
         void(*PSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
         void(*IASetInputLayout)(void *, ID3D11InputLayout *pInputLayout);
         void(*IASetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets);
-        void(*IASetIndexBuffer)(void *, UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT Offset);
+        void (*IASetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset);
         void(*DrawIndexedInstanced)(void *, UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount);
         void(*DrawInstanced)(void *, UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount);
         void(*GSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
@@ -2199,6 +2286,16 @@ enum D3D11X_IMG_NUM_FORMAT
     struct ID3D11PerformanceContextXVtbl : gfx::ID3D11DeviceContextXVtbl<ABI>
     {
     };
+
+    template <abi_t ABI>
+    struct ID3D11UserDefinedAnnotationX : gfx::ID3D11DeviceContextX<ABI>
+    {
+    };
+
+    template <abi_t ABI>
+    struct ID3D11UserDefinedAnnotationXVtbl : gfx::ID3D11DeviceContextXVtbl<ABI>
+    {
+    };
     
     template<abi_t ABI>
     struct ID3D11Device : xbox::IGraphicsUnknown<ABI>
@@ -2526,6 +2623,294 @@ enum D3D11X_IMG_NUM_FORMAT
     struct ID3D11PerformanceDeviceXVtbl : gfx::ID3D11DeviceXVtbl<ABI>
     {
     };
+
+    namespace details
+    {
+        template <abi_t ABI> struct IDXGIObjectData
+        {
+            void *m_pPrivateData;
+        };
+    }
+
+    template <abi_t ABI> struct IDXGIObject : xbox::IGraphicsUnknown<ABI>, details::IDXGIObjectData<ABI>
+    {
+        virtual HRESULT SetPrivateData(GUID const &Name, uint32_t DataSize, void const *pData) = 0;
+        virtual HRESULT SetPrivateDataInterface(GUID const &Name, IUnknown const *pUnknown) = 0;
+        virtual HRESULT SetPrivateDataInterfaceGraphics(_GUID const &Name,
+                                                        xbox::IGraphicsUnknown<ABI> const *pData) = 0;
+        virtual HRESULT GetPrivateData(_GUID const &Name, UINT *pDataSize, void *pData) = 0;
+        virtual HRESULT GetParent(_GUID const &riid, void **ppParent) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIObjectVtbl : xbox::IGraphicsUnknownVtbl<ABI>
+    {
+        HRESULT (*SetPrivateData)(void *, GUID const &Name, uint32_t DataSize, void const *pData);
+        HRESULT (*SetPrivateDataInterface)(void *, GUID const &Name, IUnknown const *pUnknown);
+        HRESULT (*SetPrivateDataInterfaceGraphics)(void *, _GUID const &Name, xbox::IGraphicsUnknown<ABI> const *pData);
+        HRESULT (*GetPrivateData)(void *, _GUID const &Name, UINT *pDataSize, void *pData);
+        HRESULT (*GetParent)(void *, _GUID const &riid, void **ppParent);
+    };
+
+    template <abi_t ABI>
+        requires(ABI >= abi_t{10, 0, 14393, 2152})
+    struct IDXGIObject<ABI> : xbox::IGraphicsUnknown<ABI>, details::IDXGIObjectData<ABI>
+    {
+        virtual HRESULT SetPrivateData(GUID const &Name, uint32_t DataSize, void const *pData) = 0;
+        virtual HRESULT SetPrivateDataInterface(GUID const &Name, IUnknown const *pUnknown) = 0;
+        virtual HRESULT GetPrivateData(_GUID const &Name, UINT *pDataSize, void *pData) = 0;
+        virtual HRESULT GetParent(_GUID const &riid, void **ppParent) = 0;
+    };
+
+    template <abi_t ABI>
+        requires(ABI >= abi_t{10, 0, 14393, 2152})
+    struct IDXGIObjectVtbl<ABI> : xbox::IGraphicsUnknownVtbl<ABI>
+    {
+        HRESULT (*SetPrivateData)(void *, GUID const &Name, uint32_t DataSize, void const *pData);
+        HRESULT (*SetPrivateDataInterface)(void *, GUID const &Name, IUnknown const *pUnknown);
+        HRESULT (*GetPrivateData)(void *, _GUID const &Name, UINT *pDataSize, void *pData);
+        HRESULT (*GetParent)(void *, _GUID const &riid, void **ppParent);
+    };
+
+    namespace details
+    {
+        template <abi_t ABI> struct IDXGIDeviceData
+        {
+            gfx::ID3D11Device<ABI> *m_pDevice;
+        };
+    }
+
+    template <abi_t ABI> struct IDXGIDevice : gfx::IDXGIObject<ABI>, details::IDXGIDeviceData<ABI>
+    {
+        virtual HRESULT GetAdapter(gfx::IDXGIAdapter<ABI> **pAdapter) = 0;
+        virtual HRESULT CreateSurface(DXGI_SURFACE_DESC const *pDesc, uint32_t NumSurfaces, DXGI_USAGE Usage,
+                                      DXGI_SHARED_RESOURCE const *pSharedResource, IDXGISurface **ppSurface) = 0;
+        virtual HRESULT QueryResourceResidency(xbox::IGraphicsUnknown<ABI> **ppResources,
+                                               DXGI_RESIDENCY *pResidencyStatus, uint32_t NumResources) = 0;
+        virtual HRESULT SetGPUThreadPriority(int Priority) = 0;
+        virtual HRESULT GetGPUThreadPriority(int *pPriority) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIDeviceVtbl : gfx::IDXGIObjectVtbl<ABI>
+    {
+        HRESULT (*GetAdapter)(void *, gfx::IDXGIAdapter<ABI> **pAdapter);
+        HRESULT (*CreateSurface)(void *, DXGI_SURFACE_DESC const *pDesc, uint32_t NumSurfaces, DXGI_USAGE Usage,
+                                 DXGI_SHARED_RESOURCE const *pSharedResource, IDXGISurface **ppSurface);
+        HRESULT (*QueryResourceResidency)(void *, xbox::IGraphicsUnknown<ABI> **ppResources,
+                                          DXGI_RESIDENCY *pResidencyStatus, uint32_t NumResources);
+        HRESULT (*SetGPUThreadPriority)(void *, int Priority);
+        HRESULT (*GetGPUThreadPriority)(void *, int *pPriority);
+    };
+
+    template <abi_t ABI> struct IDXGIDevice1 : gfx::IDXGIDevice<ABI>
+    {
+        virtual HRESULT SetMaximumFrameLatency(uint32_t MaxLatency) = 0;
+        virtual HRESULT GetMaximumFrameLatency(uint32_t *pMaxLatency) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIDevice1Vtbl : gfx::IDXGIDeviceVtbl<ABI>
+    {
+        HRESULT (*SetMaximumFrameLatency)(void *, uint32_t MaxLatency);
+        HRESULT (*GetMaximumFrameLatency)(void *, uint32_t *pMaxLatency);
+    };
+
+    template <abi_t ABI> struct IDXGIDevice2 : gfx::IDXGIDevice1<ABI>
+    {
+        virtual HRESULT OfferResources(uint32_t NumResources, IDXGIResource *const *ppResources,
+                                       DXGI_OFFER_RESOURCE_PRIORITY Priority) = 0;
+        virtual HRESULT ReclaimResources(uint32_t NumResources, IDXGIResource *const *ppResources,
+                                         bool *pDiscarded) = 0;
+        virtual HRESULT EnqueueSetEvent(void *hEvent) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIDevice2Vtbl : gfx::IDXGIDevice1Vtbl<ABI>
+    {
+        HRESULT (*OfferResources)(void *, uint32_t NumResources, IDXGIResource *const *ppResources,
+                                  DXGI_OFFER_RESOURCE_PRIORITY Priority);
+        HRESULT (*ReclaimResources)(void *, uint32_t NumResources, IDXGIResource *const *ppResources, bool *pDiscarded);
+        HRESULT (*EnqueueSetEvent)(void *, void *hEvent);
+    };
+
+    template <abi_t ABI> struct IDXGIAdapter : gfx::IDXGIObject<ABI>
+    {
+        virtual HRESULT EnumOutputs(UINT Output, IDXGIOutput **ppOutput) = 0;
+        virtual HRESULT GetDesc(DXGI_ADAPTER_DESC *pDesc) = 0;
+        virtual HRESULT CheckInterfaceSupport(_GUID const &InterfaceName, LARGE_INTEGER *pUMDVersion) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIAdapterVtbl : gfx::IDXGIObjectVtbl<ABI>
+    {
+        HRESULT (*EnumOutputs)(void *, UINT Output, IDXGIOutput **ppOutput);
+        HRESULT (*GetDesc)(void *, DXGI_ADAPTER_DESC *pDesc);
+        HRESULT (*CheckInterfaceSupport)(void *, _GUID const &InterfaceName, LARGE_INTEGER *pUMDVersion);
+    };
+
+    template <abi_t ABI> struct IDXGIAdapter1 : gfx::IDXGIAdapter<ABI>
+    {
+        virtual HRESULT GetDesc1(DXGI_ADAPTER_DESC1 *pDesc) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIAdapter1Vtbl : gfx::IDXGIAdapterVtbl<ABI>
+    {
+        HRESULT (*GetDesc1)(void *, DXGI_ADAPTER_DESC1 *pDesc);
+    };
+
+    template <abi_t ABI> struct IDXGIDeviceSubObject : gfx::IDXGIObject<ABI>
+    {
+        virtual HRESULT GetDevice(REFIID riid, void **ppDevice) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIDeviceSubObjectVtbl : gfx::IDXGIObjectVtbl<ABI>
+    {
+        HRESULT (*GetDevice)(void *, REFIID riid, void **ppDevice);
+    };
+
+    template <abi_t ABI> struct IDXGISwapChain : gfx::IDXGIDeviceSubObject<ABI>
+    {
+        virtual HRESULT Present(uint32_t SyncInterval, uint32_t Flags) = 0;
+        virtual HRESULT GetBuffer(UINT Buffer, REFIID riid, void **ppSurface) = 0;
+        virtual HRESULT SetFullscreenState(bool Fullscreen, IDXGIOutput *pTarget) = 0;
+        virtual HRESULT GetFullscreenState(bool *pFullscreen, IDXGIOutput **ppTarget) = 0;
+        virtual HRESULT GetDesc(DXGI_SWAP_CHAIN_DESC *pDesc) = 0;
+        virtual HRESULT ResizeBuffers(uint32_t BufferCount, uint32_t Width, uint32_t Height, DXGI_FORMAT NewFormat,
+                                      uint32_t SwapChainFlags) = 0;
+        virtual HRESULT ResizeTarget(DXGI_MODE_DESC const *pNewTargetParameters) = 0;
+        virtual HRESULT GetContainingOutput(IDXGIOutput **ppOutput) = 0;
+        virtual HRESULT GetFrameStatistics(DXGI_FRAME_STATISTICS *pStats) = 0;
+        virtual HRESULT GetLastPresentCount(uint32_t *pLastPresentCount) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGISwapChainVtbl : gfx::IDXGIDeviceSubObjectVtbl<ABI>
+    {
+        HRESULT (*Present)(void *, uint32_t SyncInterval, uint32_t Flags);
+        HRESULT (*GetBuffer)(void *, UINT Buffer, REFIID riid, void **ppSurface);
+        HRESULT (*SetFullscreenState)(void *, bool Fullscreen, IDXGIOutput *pTarget);
+        HRESULT (*GetFullscreenState)(void *, bool *pFullscreen, IDXGIOutput **ppTarget);
+        HRESULT (*GetDesc)(void *, DXGI_SWAP_CHAIN_DESC *pDesc);
+        HRESULT (*ResizeBuffers)(void *, uint32_t BufferCount, uint32_t Width, uint32_t Height, DXGI_FORMAT NewFormat,
+                                 uint32_t SwapChainFlags);
+        HRESULT (*ResizeTarget)(void *, DXGI_MODE_DESC const *pNewTargetParameters);
+        HRESULT (*GetContainingOutput)(void *, IDXGIOutput **ppOutput);
+        HRESULT (*GetFrameStatistics)(void *, DXGI_FRAME_STATISTICS *pStats);
+        HRESULT (*GetLastPresentCount)(void *, uint32_t *pLastPresentCount);
+    };
+
+    template <abi_t ABI> struct IDXGISwapChain1 : gfx::IDXGISwapChain<ABI>
+    {
+        virtual HRESULT GetDesc1(DXGI_SWAP_CHAIN_DESC1 *pDesc) = 0;
+        virtual HRESULT GetFullscreenDesc(DXGI_SWAP_CHAIN_FULLSCREEN_DESC *pDesc) = 0;
+        virtual HRESULT GetHwnd(HWND *pHwnd) = 0;
+        virtual HRESULT GetCoreWindow(REFIID refiid, void **ppUnk) = 0;
+        virtual HRESULT Present1(uint32_t SyncInterval, uint32_t PresentFlags,
+                                 DXGI_PRESENT_PARAMETERS const *pPresentParameters) = 0;
+        virtual bool IsTemporaryMonoSupported() = 0;
+        virtual HRESULT GetRestrictToOutput(IDXGIOutput **ppRestrictToOutput) = 0;
+        virtual HRESULT SetBackgroundColor(DXGI_RGBA const *pColor) = 0;
+        virtual HRESULT GetBackgroundColor(DXGI_RGBA *pColor) = 0;
+        virtual HRESULT SetRotation(DXGI_MODE_ROTATION Rotation) = 0;
+        virtual HRESULT GetRotation(DXGI_MODE_ROTATION *pRotation) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGISwapChain1Vtbl : gfx::IDXGISwapChainVtbl<ABI>
+    {
+        HRESULT (*GetDesc1)(void *, DXGI_SWAP_CHAIN_DESC1 *pDesc);
+        HRESULT (*GetFullscreenDesc)(void *, DXGI_SWAP_CHAIN_FULLSCREEN_DESC *pDesc);
+        HRESULT (*GetHwnd)(void *, HWND *pHwnd);
+        HRESULT (*GetCoreWindow)(void *, REFIID refiid, void **ppUnk);
+        HRESULT (*Present1)(void *, uint32_t SyncInterval, uint32_t PresentFlags,
+                            DXGI_PRESENT_PARAMETERS const *pPresentParameters);
+        bool (*IsTemporaryMonoSupported)(void *);
+        HRESULT (*GetRestrictToOutput)(void *, IDXGIOutput **ppRestrictToOutput);
+        HRESULT (*SetBackgroundColor)(void *, DXGI_RGBA const *pColor);
+        HRESULT (*GetBackgroundColor)(void *, DXGI_RGBA *pColor);
+        HRESULT (*SetRotation)(void *, DXGI_MODE_ROTATION Rotation);
+        HRESULT (*GetRotation)(void *, DXGI_MODE_ROTATION *pRotation);
+    };
+
+    namespace details
+    {
+        template <abi_t ABI> struct IDXGIFactoryData
+        {
+            IDXGIAdapter2 *m_pAdapter;
+        };
+    } // namespace details
+
+    template <abi_t ABI> struct IDXGIFactory : gfx::IDXGIObject<ABI>, details::IDXGIFactoryData<ABI>
+    {
+        virtual HRESULT EnumAdapters(UINT Adapter, gfx::IDXGIAdapter<ABI> **ppAdapter) = 0;
+        virtual HRESULT MakeWindowAssociation(HWND WindowHandle, UINT Flags) = 0;
+        virtual HRESULT GetWindowAssociation(HWND *pWindowHandle) = 0;
+        virtual HRESULT CreateSwapChain(xbox::IGraphicsUnknown<ABI> *pDevice, DXGI_SWAP_CHAIN_DESC *pDesc,
+                                        gfx::IDXGISwapChain<ABI> **ppSwapChain) = 0;
+        virtual HRESULT CreateSoftwareAdapter(HMODULE Module, gfx::IDXGIAdapter<ABI> **ppAdapter) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIFactoryVtbl : gfx::IDXGIObjectVtbl<ABI>
+    {
+        HRESULT (*EnumAdapters)(void *, UINT Adapter, gfx::IDXGIAdapter<ABI> **ppAdapter);
+        HRESULT (*MakeWindowAssociation)(void *, HWND WindowHandle, UINT Flags);
+        HRESULT (*GetWindowAssociation)(void *, HWND *pWindowHandle);
+        HRESULT (*CreateSwapChain)(void *, xbox::IGraphicsUnknown<ABI> *pDevice, DXGI_SWAP_CHAIN_DESC *pDesc,
+                                   gfx::IDXGISwapChain<ABI> **ppSwapChain);
+        HRESULT (*CreateSoftwareAdapter)(void *, HMODULE Module, gfx::IDXGIAdapter<ABI> **ppAdapter);
+    };
+
+    template <abi_t ABI> struct IDXGIFactory1 : gfx::IDXGIFactory<ABI>
+    {
+        virtual HRESULT EnumAdapters1(UINT Adapter, gfx::IDXGIAdapter1<ABI> **ppAdapter) = 0;
+        virtual bool IsCurrent() = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIFactory1Vtbl : gfx::IDXGIFactoryVtbl<ABI>
+    {
+        HRESULT (*EnumAdapters1)(void *, UINT Adapter, gfx::IDXGIAdapter1<ABI> **ppAdapter);
+        bool (*IsCurrent)(void *);
+    };
+
+    template <abi_t ABI> struct IDXGIFactory2 : gfx::IDXGIFactory1<ABI>
+    {
+        virtual bool IsWindowedStereoEnabled() = 0;
+        virtual HRESULT CreateSwapChainForHwnd(xbox::IGraphicsUnknown<ABI> *pDevice, HWND hWnd,
+                                               DXGI_SWAP_CHAIN_DESC1 const *pDesc,
+                                               DXGI_SWAP_CHAIN_FULLSCREEN_DESC const *pFullscreenDesc,
+                                               IDXGIOutput *pRestrictToOutput,
+                                               gfx::IDXGISwapChain1<ABI> **ppSwapChain) = 0;
+        virtual HRESULT CreateSwapChainForCoreWindow(xbox::IGraphicsUnknown<ABI> *pDevice, IUnknown *pWindow,
+                                                     DXGI_SWAP_CHAIN_DESC1 *pDesc, IDXGIOutput *pRestrictToOutput,
+                                                     gfx::IDXGISwapChain1<ABI> **ppSwapChain) = 0;
+        virtual HRESULT GetSharedResourceAdapterLuid(void *hResource, _LUID *pLuid) = 0;
+        virtual HRESULT RegisterStereoStatusWindow(HWND WindowHandle, uint32_t wMsg, uint32_t *pdwCookie) = 0;
+        virtual HRESULT RegisterStereoStatusEvent(void *hEvent, uint32_t *pdwCookie) = 0;
+        virtual void UnregisterStereoStatus(uint32_t dwCookie) = 0;
+        virtual HRESULT RegisterOcclusionStatusWindow(HWND WindowHandle, uint32_t wMsg, uint32_t *pdwCookie) = 0;
+        virtual HRESULT RegisterOcclusionStatusEvent(void *hEvent, uint32_t *pdwCookie) = 0;
+        virtual void UnregisterOcclusionStatus(uint32_t dwCookie) = 0;
+        virtual HRESULT CreateSwapChainForComposition(xbox::IGraphicsUnknown<ABI> *pDevice,
+                                                      DXGI_SWAP_CHAIN_DESC1 const *pDesc,
+                                                      IDXGIOutput *pRestrictToOutput,
+                                                      gfx::IDXGISwapChain1<ABI> **ppSwapChain) = 0;
+    };
+
+    template <abi_t ABI> struct IDXGIFactory2Vtbl : gfx::IDXGIFactory1Vtbl<ABI>
+    {
+        bool (*IsWindowedStereoEnabled)(void *);
+        HRESULT (*CreateSwapChainForHwnd)(void *, xbox::IGraphicsUnknown<ABI> *pDevice, HWND hWnd,
+                                          DXGI_SWAP_CHAIN_DESC1 const *pDesc,
+                                          DXGI_SWAP_CHAIN_FULLSCREEN_DESC const *pFullscreenDesc,
+                                          IDXGIOutput *pRestrictToOutput, gfx::IDXGISwapChain1<ABI> **ppSwapChain);
+        HRESULT (*CreateSwapChainForCoreWindow)(void *, xbox::IGraphicsUnknown<ABI> *pDevice, IUnknown *pWindow,
+                                                DXGI_SWAP_CHAIN_DESC1 *pDesc, IDXGIOutput *pRestrictToOutput,
+                                                gfx::IDXGISwapChain1<ABI> **ppSwapChain);
+        HRESULT (*GetSharedResourceAdapterLuid)(void *, void *hResource, _LUID *pLuid);
+        HRESULT (*RegisterStereoStatusWindow)(void *, HWND WindowHandle, uint32_t wMsg, uint32_t *pdwCookie);
+        HRESULT (*RegisterStereoStatusEvent)(void *, void *hEvent, uint32_t *pdwCookie);
+        void (*UnregisterStereoStatus)(void *, uint32_t dwCookie);
+        HRESULT (*RegisterOcclusionStatusWindow)(void *, HWND WindowHandle, uint32_t wMsg, uint32_t *pdwCookie);
+        HRESULT (*RegisterOcclusionStatusEvent)(void *, void *hEvent, uint32_t *pdwCookie);
+        void (*UnregisterOcclusionStatus)(void *, uint32_t dwCookie);
+        HRESULT (*CreateSwapChainForComposition)(void *, xbox::IGraphicsUnknown<ABI> *pDevice,
+                                                 DXGI_SWAP_CHAIN_DESC1 const *pDesc, IDXGIOutput *pRestrictToOutput,
+                                                 gfx::IDXGISwapChain1<ABI> **ppSwapChain);
+    };
 }
 
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11DeviceChild, 0x1841E5C8,0x16B0,0x489B,0xBC,0xC8,0x44,0xCF,0xB0,0xD5,0xDE,0xAE)
@@ -2580,6 +2965,8 @@ DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11DeviceContextX, 0x48800095,0x7134,0x4BE7,0x
 
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11PerformanceContextX, 0x9458FE06,0xC78D,0x47F7,0x96,0xA0,0xEC,0x7B,0x72,0x7B,0xE1,0xE9)
 
+DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11UserDefinedAnnotationX, 0xB2DAAD8B, 0x03D4, 0x4DBF, 0x95, 0xEB, 0x32, 0xAB, 0x4B, 0x63, 0xD0, 0xAB)
+
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11Device, 0xDB6F6DDB,0xAC77,0x4E88,0x82,0x53,0x81,0x9D,0xF9,0xBB,0xF1,0x40)
 
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11Device1, 0xA04BFB29,0x08EF,0x43D6,0xA4,0x9C,0xA9,0xBD,0xBD,0xCB,0xE6,0x86)
@@ -2591,6 +2978,30 @@ DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11DMAEngineContextX, 0x1841E5C8,0x16B0,0x489B
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11DeviceX, 0x177700F9,0x876A,0x4436,0xB3,0x68,0x36,0xA6,0x04,0xF8,0x2C,0xEF)
 
 DECLARE_ABI_UUIDOF_HELPER(gfx::ID3D11PerformanceDeviceX, 0x88671610,0x712E,0x4F1E,0x84,0xAB,0x01,0xB5,0x94,0x8B,0xD3,0x73)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIObject, 0xAEC22FB8, 0x76F3, 0x4639, 0x9B, 0xE0, 0x28, 0xEB, 0x43, 0xA6, 0x7A, 0x2E)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIDevice, 0x54EC77FA, 0x1377, 0x44E6, 0x8C, 0x32, 0x88, 0xFD, 0x5F, 0x44, 0xC8, 0x4C)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIDevice1, 0x77DB970F, 0x6276, 0x48BA, 0xBA, 0x28, 0x07, 0x01, 0x43, 0xB4, 0x39, 0x2C)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIDevice2, 0x05008617, 0xFBFD, 0x4051, 0xA7, 0x90, 0x14, 0x48, 0x84, 0xB4, 0xF6, 0xA9)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIAdapter, 0x2411E7E1, 0x12AC, 0x4CCF, 0xBD, 0x14, 0x97, 0x98, 0xE8, 0x53, 0x4D, 0xC0)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIAdapter1, 0x29038F61, 0x3839, 0x4626, 0x91, 0xFD, 0x08, 0x68, 0x79, 0x01, 0x1A, 0x05)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIDeviceSubObject, 0x3D3E0379, 0xF9DE, 0x4D58, 0xBB, 0x6C, 0x18, 0xD6, 0x29, 0x92, 0xF1, 0xA6)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGISwapChain, 0x310D36A0, 0xD2E7, 0x4C0A, 0xAA, 0x04, 0x6A, 0x9D, 0x23, 0xB8, 0x88, 0x6A)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGISwapChain1, 0x310D36A0, 0xD2E7, 0x4C0A, 0xAA, 0x04, 0x6A, 0x9D, 0x23, 0xB8, 0x88, 0x6A)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIFactory, 0x7B7166EC, 0x21C7, 0x44AE, 0xB2, 0x1A, 0xC9, 0xAE, 0x32, 0x1A, 0xE3, 0x69)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIFactory1, 0x29038F61, 0x3839, 0x4626, 0x91, 0xFD, 0x08, 0x68, 0x79, 0x01, 0x1A, 0x05)
+
+DECLARE_ABI_UUIDOF_HELPER(gfx::IDXGIFactory2, 0x29038F61, 0x3839, 0x4626, 0x91, 0xFD, 0x08, 0x68, 0x79, 0x01, 0x1A, 0x05)
 
 template<template<abi_t> typename T>
 inline HRESULT d3d11CreateInstance(abi_t ABI, void **ppvObject)

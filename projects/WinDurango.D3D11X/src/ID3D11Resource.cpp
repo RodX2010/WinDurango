@@ -11,14 +11,16 @@ template <abi_t ABI> HRESULT D3D11Resource<ABI>::QueryInterface(REFIID riid, voi
 
 template <abi_t ABI> ULONG D3D11Resource<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11Resource<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount) delete this;
+    return RefCount;
 }
 
 //
@@ -59,7 +61,7 @@ HRESULT D3D11Resource<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid, x
 //
 template <abi_t ABI> void D3D11Resource<ABI>::GetType(D3D11_RESOURCE_DIMENSION *pDimension)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetType(pDimension);
 }
 
 template <abi_t ABI> void D3D11Resource<ABI>::SetEvictionPriority(uint32_t EvictionPriority)
@@ -88,20 +90,30 @@ D3D11_DECLARE_ABI_TEMPLATES();
 //
 template <abi_t ABI> HRESULT D3D11Texture1D<ABI>::QueryInterface(REFIID riid, void **ppvObject)
 {
+    if (riid == xcom::guid_of<gfx::ID3D11Texture1D>() || riid == xcom::guid_of<gfx::ID3D11Resource>())
+    {
+        *ppvObject = this;
+        AddRef();
+        return S_OK;
+    }
+
     IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    *ppvObject = nullptr;
+    return E_NOINTERFACE;
 }
 
 template <abi_t ABI> ULONG D3D11Texture1D<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11Texture1D<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount) delete this;
+    return RefCount;
 }
 
 //
@@ -144,7 +156,7 @@ HRESULT D3D11Texture1D<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid,
 //
 template <abi_t ABI> void D3D11Texture1D<ABI>::GetType(D3D11_RESOURCE_DIMENSION *pDimension)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetType(pDimension);
 }
 
 template <abi_t ABI> void D3D11Texture1D<ABI>::SetEvictionPriority(uint32_t EvictionPriority)
@@ -168,7 +180,7 @@ template <abi_t ABI> void D3D11Texture1D<ABI>::GetDescriptor(gfx::D3D11X_DESCRIP
 //
 template <abi_t ABI> void D3D11Texture1D<ABI>::GetDesc(D3D11_TEXTURE1D_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE
@@ -181,20 +193,30 @@ D3D11_DECLARE_ABI_TEMPLATES();
 //
 template <abi_t ABI> HRESULT D3D11Texture2D<ABI>::QueryInterface(REFIID riid, void **ppvObject)
 {
+    if (riid == xcom::guid_of<gfx::ID3D11Texture2D>() || riid == xcom::guid_of<gfx::ID3D11Resource>())
+    {
+        *ppvObject = this;
+        AddRef();
+        return S_OK;
+    }
+
     IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    *ppvObject = nullptr;
+    return E_NOINTERFACE;
 }
 
 template <abi_t ABI> ULONG D3D11Texture2D<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11Texture2D<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount) delete this;
+    return RefCount;
 }
 
 //
@@ -237,7 +259,7 @@ HRESULT D3D11Texture2D<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid,
 //
 template <abi_t ABI> void D3D11Texture2D<ABI>::GetType(D3D11_RESOURCE_DIMENSION *pDimension)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetType(pDimension);
 }
 
 template <abi_t ABI> void D3D11Texture2D<ABI>::SetEvictionPriority(uint32_t EvictionPriority)
@@ -261,7 +283,7 @@ template <abi_t ABI> void D3D11Texture2D<ABI>::GetDescriptor(gfx::D3D11X_DESCRIP
 //
 template <abi_t ABI> void D3D11Texture2D<ABI>::GetDesc(D3D11_TEXTURE2D_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE
@@ -274,20 +296,30 @@ D3D11_DECLARE_ABI_TEMPLATES();
 //
 template <abi_t ABI> HRESULT D3D11Texture3D<ABI>::QueryInterface(REFIID riid, void **ppvObject)
 {
+    if (riid == xcom::guid_of<gfx::ID3D11Texture3D>() || riid == xcom::guid_of<gfx::ID3D11Resource>())
+    {
+        *ppvObject = this;
+        AddRef();
+        return S_OK;
+    }
+
     IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    *ppvObject = nullptr;
+    return E_NOINTERFACE;
 }
 
 template <abi_t ABI> ULONG D3D11Texture3D<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11Texture3D<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount) delete this;
+    return RefCount;
 }
 
 //
@@ -330,7 +362,7 @@ HRESULT D3D11Texture3D<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid,
 //
 template <abi_t ABI> void D3D11Texture3D<ABI>::GetType(D3D11_RESOURCE_DIMENSION *pDimension)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetType(pDimension);
 }
 
 template <abi_t ABI> void D3D11Texture3D<ABI>::SetEvictionPriority(uint32_t EvictionPriority)
@@ -354,7 +386,7 @@ template <abi_t ABI> void D3D11Texture3D<ABI>::GetDescriptor(gfx::D3D11X_DESCRIP
 //
 template <abi_t ABI> void D3D11Texture3D<ABI>::GetDesc(D3D11_TEXTURE3D_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE
@@ -373,14 +405,16 @@ template <abi_t ABI> HRESULT D3D11Buffer<ABI>::QueryInterface(REFIID riid, void 
 
 template <abi_t ABI> ULONG D3D11Buffer<ABI>::AddRef()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->AddRef();
+    return InterlockedIncrement(&this->m_RefCount);
 }
 
 template <abi_t ABI> ULONG D3D11Buffer<ABI>::Release()
 {
-    IMPLEMENT_STUB();
-    return {};
+    m_pFunction->Release();
+    ULONG RefCount = InterlockedDecrement(&this->m_RefCount);
+    if (!RefCount) delete this;
+    return RefCount;
 }
 
 //
@@ -421,7 +455,7 @@ HRESULT D3D11Buffer<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &guid, xbo
 //
 template <abi_t ABI> void D3D11Buffer<ABI>::GetType(D3D11_RESOURCE_DIMENSION *pDimension)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetType(pDimension);
 }
 
 template <abi_t ABI> void D3D11Buffer<ABI>::SetEvictionPriority(uint32_t EvictionPriority)
@@ -443,9 +477,9 @@ template <abi_t ABI> void D3D11Buffer<ABI>::GetDescriptor(gfx::D3D11X_DESCRIPTOR
 //
 // ID3D11Buffer
 //
-template <abi_t ABI> void D3D11Buffer<ABI>::GetDesc(D3D11_TEXTURE1D_DESC *pDesc)
+template <abi_t ABI> void D3D11Buffer<ABI>::GetDesc(D3D11_BUFFER_DESC *pDesc)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->GetDesc(pDesc);
 }
 
 #undef ABI_INTERFACE

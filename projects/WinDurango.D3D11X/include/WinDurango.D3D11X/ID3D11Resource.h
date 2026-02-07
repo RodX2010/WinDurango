@@ -3,7 +3,16 @@
 
 template <abi_t ABI> class D3D11Resource : public gfx::ID3D11Resource<ABI>
 {
-  public:
+public:
+    ID3D11Resource *m_pFunction = nullptr;
+    bool m_IsDirty = false;
+
+    D3D11Resource(ID3D11Resource *pResource)
+    {
+        m_pFunction = pResource;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -36,7 +45,16 @@ D3D11_DECLARE_ABI_TEMPLATES(extern);
 
 template <abi_t ABI> class D3D11Texture1D : public gfx::ID3D11Texture1D<ABI>
 {
-  public:
+public:
+    ID3D11Texture1D *m_pFunction = nullptr;
+    bool m_IsDirty = false;
+
+    D3D11Texture1D(ID3D11Texture1D *pResource)
+    {
+        m_pFunction = pResource;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -75,6 +93,15 @@ D3D11_DECLARE_ABI_TEMPLATES(extern);
 template <abi_t ABI> class D3D11Texture2D : public gfx::ID3D11Texture2D<ABI>
 {
   public:
+    ID3D11Texture2D *m_pFunction = nullptr;
+    bool m_IsDirty = false;
+
+    D3D11Texture2D(ID3D11Texture2D *pResource)
+    {
+        m_pFunction = pResource;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -112,7 +139,16 @@ D3D11_DECLARE_ABI_TEMPLATES(extern);
 
 template <abi_t ABI> class D3D11Texture3D : public gfx::ID3D11Texture3D<ABI>
 {
-  public:
+public:
+    ID3D11Texture3D *m_pFunction = nullptr;
+    bool m_IsDirty = false;
+
+    D3D11Texture3D(ID3D11Texture3D *pResource)
+    {
+        m_pFunction = pResource;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -150,7 +186,16 @@ D3D11_DECLARE_ABI_TEMPLATES(extern);
 
 template <abi_t ABI> class D3D11Buffer : public gfx::ID3D11Buffer<ABI>
 {
-  public:
+public:
+    ID3D11Buffer *m_pFunction = nullptr;
+    bool m_IsDirty = false;
+
+    D3D11Buffer(ID3D11Buffer *pResource)
+    {
+        m_pFunction = pResource;
+        InterlockedIncrement(&this->m_RefCount);
+    }
+
     //
     // IUnknown
     //
@@ -178,7 +223,7 @@ template <abi_t ABI> class D3D11Buffer : public gfx::ID3D11Buffer<ABI>
     //
     // ID3D11Buffer
     //
-    void GetDesc(D3D11_TEXTURE1D_DESC *pDesc);
+    void GetDesc(D3D11_BUFFER_DESC *pDesc);
 };
 
 #undef ABI_INTERFACE

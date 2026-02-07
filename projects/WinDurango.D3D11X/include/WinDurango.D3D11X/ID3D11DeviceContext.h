@@ -48,6 +48,7 @@ public:
     void IASetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers,
                             UINT const *pStrides, UINT const *pOffsets);
     void IASetIndexBuffer(UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT Offset);
+    void IASetIndexBuffer(gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT hardwareIndexFormat, UINT Offset);
     void DrawIndexedInstanced(UINT StartIndexLocationAndIndexCountPerInstance,
                               UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount);
     void DrawInstanced(UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation,

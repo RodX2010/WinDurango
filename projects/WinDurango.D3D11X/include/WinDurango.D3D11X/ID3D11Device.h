@@ -1,6 +1,30 @@
 #pragma once
 #include "d3d11_x.g.h"
 
+#define D3D11X_MISC_FLAGS_MASK (0x4000000 | 0x8000000 | 0x20000 | 0x40000 | 0x80000 | 0x100000 | 0x200000)
+#define D3D11_MISC_FLAGS_MASK                                                                                          \
+    (D3D11_RESOURCE_MISC_GENERATE_MIPS | D3D11_RESOURCE_MISC_SHARED | D3D11_RESOURCE_MISC_TEXTURECUBE |                \
+     D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS | D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS |                              \
+     D3D11_RESOURCE_MISC_BUFFER_STRUCTURED | D3D11_RESOURCE_MISC_RESOURCE_CLAMP |                                      \
+     D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX | D3D11_RESOURCE_MISC_GDI_COMPATIBLE |                                      \
+     D3D11_RESOURCE_MISC_SHARED_NTHANDLE | D3D11_RESOURCE_MISC_RESTRICTED_CONTENT |                                    \
+     D3D11_RESOURCE_MISC_RESTRICT_SHARED_RESOURCE | D3D11_RESOURCE_MISC_RESTRICT_SHARED_RESOURCE_DRIVER |              \
+     D3D11_RESOURCE_MISC_GUARDED)
+#define D3D11_CREATE_DEFERRED_CONTEXT_DRAW_BUNDLES 0x20000
+
+inline UINT ConvertMiscFlags(UINT MiscFlags)
+{
+    UINT Flags = (MiscFlags & ~D3D11X_MISC_FLAGS_MASK) & D3D11_MISC_FLAGS_MASK;
+
+    if (MiscFlags & 0x4000000)
+        Flags |= D3D11_RESOURCE_MISC_TILE_POOL;
+
+    if (MiscFlags & 0x8000000)
+        Flags |= D3D11_RESOURCE_MISC_TILED;
+
+    return Flags;
+}
+
 template <abi_t ABI> class D3D11DeviceX : public gfx::ID3D11DeviceX<ABI>
 {
 public:
