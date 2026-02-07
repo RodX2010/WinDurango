@@ -258,7 +258,7 @@ namespace Windows.Xbox.Input
         NavigationController();
     }
 
-    [uuid(E0422A66-C480-4C70-9F99-F8371DCC3E30)]
+    [uuid(082e402c-07df-45e1-a5ab-a3127af197b5)]
     interface IGamepad requires INavigationController
     {
         GamepadVibration SetVibration();
@@ -266,7 +266,7 @@ namespace Windows.Xbox.Input
         RawGamepadReading GetRawCurrentReading();
     }
 
-    [static_name("IGamepadStatics", AACAAAAB-AAAA-AAAA-AAAA-AFADCAAAFAAA)]
+    [static_name("IGamepadStatics", 8c4c1bcd-fdab-4bf8-bde9-abb2b1d6fdd3)]
     runtimeclass Gamepad : [default] IGamepad
     {
         static Windows.Foundation.Collections.IVectorView<Gamepad> Gamepads { get; };
