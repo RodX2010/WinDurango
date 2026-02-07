@@ -1,6 +1,7 @@
 #pragma once
 #include "ID3D11Device.h"
 #include "ID3D11DeviceContext.h"
+#include "IDXGISwapChain.h"
 
 static ID3D11Device2 *pDev2 = nullptr;
 static ID3D11DeviceContext2 *pCtx2 = nullptr;
@@ -44,3 +45,24 @@ template <abi_t ABI> struct D3D11Runtime : public ID3D11Runtime
         return hr;
     };
 };
+
+
+struct IDXGIXPresentArrayHelper
+{
+    virtual void PresentArray(void **ppSwapChains, UINT NumSwapChains, UINT SyncInterval) = 0;
+};
+
+template <abi_t ABI> struct DXGIXPresentArrayHelper : public IDXGIXPresentArrayHelper
+{
+    void PresentArray(void **ppSwapChains, UINT NumSwapChains, UINT SyncInterval) override
+    {
+        for (UINT SwapChainIndex = 0; SwapChainIndex < NumSwapChains; SwapChainIndex++)
+        {
+            DXGISwapChain1<ABI> *SwapChain = static_cast<DXGISwapChain1<ABI> *>(ppSwapChains[SwapChainIndex]);
+            SwapChain->Present(SyncInterval, 0);
+        }
+    }
+
+};
+
+static IDXGIXPresentArrayHelper *g_PresentArrayHelper = nullptr;

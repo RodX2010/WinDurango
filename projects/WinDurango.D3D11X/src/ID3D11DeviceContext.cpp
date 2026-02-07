@@ -4,6 +4,7 @@
 #include "ID3D11Resource.h"
 #include "ID3D11Shader.h"
 #include "ID3D11State.h"
+#include "d3d11.x.h"
 
 //
 // IUnknown
@@ -48,7 +49,13 @@ template <abi_t ABI> ULONG D3D11DeviceContextX<ABI>::Release()
 //
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::GetDevice(gfx::ID3D11Device<ABI> **ppDevice)
 {
-    IMPLEMENT_STUB();
+    ID3D11Device *pDevice = nullptr;
+    ID3D11Device2 *pDevice2 = nullptr;
+    m_pFunction->GetDevice(&pDevice);
+
+    if (pDevice) pDevice->QueryInterface(IID_PPV_ARGS(&pDevice2));
+
+    *ppDevice = new D3D11DeviceX<ABI>(pDevice2);
 }
 
 template <abi_t ABI>
@@ -82,6 +89,88 @@ HRESULT D3D11DeviceContextX<ABI>::SetPrivateDataInterfaceGraphics(_GUID const &g
 //
 // ID3D11DeviceContext
 //
+
+template <abi_t ABI> 
+void D3D11DeviceContextX<ABI>::CheckDirtyFlags()
+{
+    if constexpr (requires { this->m_ShaderUserDataManagerDraw; })
+    {
+        // Topology
+        if (this->m_ShaderUserDataManagerDraw.m_DirtyFlags & 0x46)
+        {
+            this->m_ShaderUserDataManagerDraw.m_DirtyFlags &= ~0x46;
+            int topology = D3D11X_HARDWARE_TO_TOPOLOGY_MAP.at(this->m_ShaderUserDataManagerDraw.m_Topology);
+            m_pFunction->IASetPrimitiveTopology(static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topology));
+        }
+
+        // Input Layout
+        if (this->m_ShaderUserDataManagerDraw.m_DirtyFlags & 0x89)
+        {
+            this->m_ShaderUserDataManagerDraw.m_DirtyFlags &= ~0x89;
+            m_pFunction->IASetInputLayout(this->m_ShaderUserDataManagerDraw.m_pInputLayout);
+        }
+
+        // VS
+        if (this->m_ShaderUserDataManagerDraw.m_DirtyFlags & 0x91)
+        {
+            this->m_ShaderUserDataManagerDraw.m_DirtyFlags &= ~0x91;
+            VSSetShader(this->m_ShaderUserDataManagerDraw.m_pVs);
+        }
+
+        // PS
+        if (this->m_ShaderUserDataManagerDraw.m_DirtyFlags & 0x121)
+        {
+            this->m_ShaderUserDataManagerDraw.m_DirtyFlags &= ~0x121;
+            PSSetShader(this->m_ShaderUserDataManagerDraw.m_pPs);
+        }
+    }
+
+    ExecuteBackgroundContexts();
+}
+
+template <abi_t ABI> 
+void D3D11DeviceContextX<ABI>::ExecuteBackgroundContexts()
+{
+    std::lock_guard lock(m_BkgCtxLock);
+
+    for (auto it = m_BkgContexts.begin(); it != m_BkgContexts.end();)
+    {
+        if ((*it)->ExecuteContext())
+        {
+            // This background context has finished executing, so we can remove
+            // it from the array. If it starts executing again it will be re-added.
+            it = m_BkgContexts.erase(it);
+        }
+        else
+        {
+            it++;
+        }
+    }
+}
+
+template <abi_t ABI> 
+void D3D11DeviceContextX<ABI>::AddBackgroundContext(ID3D11BackgroundContext *pContext)
+{
+    std::lock_guard lock(m_BkgCtxLock);
+
+    for (auto it : m_BkgContexts)
+    {
+        if (it == pContext)
+        {
+            // Context already exists
+            return;
+        }
+    }
+
+    m_BkgContexts.push_back(pContext);
+}
+
+template <abi_t ABI> 
+void D3D11DeviceContextX<ABI>::RemoveBackgroundContext(ID3D11BackgroundContext *pContext)
+{
+    std::lock_guard lock(m_BkgCtxLock);
+}
+
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::VSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
                                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers)
@@ -161,14 +250,25 @@ template <abi_t ABI> void D3D11DeviceContextX<ABI>::VSSetShader(gfx::ID3D11Verte
 }
 
 template <abi_t ABI>
+void D3D11DeviceContextX<ABI>::DrawIndexed(UINT IndexCount, UINT StartIndexLocation, INT BaseVertexLocation)
+{
+    CheckDirtyFlags();
+    m_pFunction->DrawIndexed(IndexCount, StartIndexLocation, BaseVertexLocation);
+}
+
+template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::DrawIndexed(UINT64 StartIndexLocationAndIndexCount, INT BaseVertexLocation)
 {
-    IMPLEMENT_STUB();
+    CheckDirtyFlags();
+    UINT StartIndexLocation = StartIndexLocationAndIndexCount & 0xFFFFFFFF;
+    UINT IndexCount = (StartIndexLocationAndIndexCount >> 32) & 0xFFFFFFFF;
+    m_pFunction->DrawIndexed(IndexCount, StartIndexLocation, BaseVertexLocation);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::Draw(UINT VertexCount, UINT StartVertexLocation)
 {
-    IMPLEMENT_STUB();
+    CheckDirtyFlags();
+    m_pFunction->Draw(VertexCount, StartVertexLocation);
 }
 
 template <abi_t ABI>
@@ -298,6 +398,48 @@ void D3D11DeviceContextX<ABI>::IASetIndexBuffer(gfx::ID3D11Buffer<ABI> *pIndexBu
 }
 
 template <abi_t ABI>
+void D3D11DeviceContextX<ABI>::DrawIndexedInstanced(UINT IndexCountPerInstance, UINT InstanceCount,
+                                                    UINT StartIndexLocation, INT BaseVertexLocation,
+                                                    UINT StartInstanceLocation)
+{
+    CheckDirtyFlags();
+    m_pFunction->DrawIndexedInstanced(IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation,
+                                      StartInstanceLocation);
+}
+
+template <abi_t ABI>
+void D3D11DeviceContextX<ABI>::DrawIndexedInstanced(UINT64 StartIndexLocationAndIndexCountPerInstance,
+                                                    UINT64 BaseVertexLocationAndStartInstanceLocation,
+                                                    UINT InstanceCount)
+{
+    CheckDirtyFlags();
+    UINT StartInstanceLocation = (BaseVertexLocationAndStartInstanceLocation >> 32) & 0xFFFFFFFF;
+    UINT BaseVertexLocation = BaseVertexLocationAndStartInstanceLocation & 0xFFFFFFFF;
+    UINT IndexCountPerInstance = (StartIndexLocationAndIndexCountPerInstance >> 32) & 0xFFFFFFFF;
+    UINT StartIndexLocation = StartIndexLocationAndIndexCountPerInstance & 0xFFFFFFFF;
+    m_pFunction->DrawIndexedInstanced(IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation,
+                                      StartInstanceLocation);
+}
+
+template <abi_t ABI>
+void D3D11DeviceContextX<ABI>::DrawInstanced(UINT VertexCountPerInstance, UINT InstanceCount, UINT StartVertexLocation,
+                                             UINT StartInstanceLocation)
+{
+    CheckDirtyFlags();
+    m_pFunction->DrawInstanced(VertexCountPerInstance, InstanceCount, StartVertexLocation, StartInstanceLocation);
+}
+
+template <abi_t ABI>
+void D3D11DeviceContextX<ABI>::DrawInstanced(UINT VertexCountPerInstance,
+                                             UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount)
+{
+    CheckDirtyFlags();
+    UINT StartInstanceLocation = (StartVertexLocationAndStartInstanceLocation >> 32) & 0xFFFFFFFF;
+    UINT StartVertexLocation = StartVertexLocationAndStartInstanceLocation & 0xFFFFFFFF;
+    m_pFunction->DrawInstanced(VertexCountPerInstance, InstanceCount, StartVertexLocation, StartInstanceLocation);
+}
+
+template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::IASetIndexBuffer(UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer,
                                                 UINT Offset)
 {
@@ -311,21 +453,6 @@ void D3D11DeviceContextX<ABI>::IASetIndexBuffer(UINT HardwareIndexFormat, gfx::I
     }
 
     m_pFunction->IASetIndexBuffer(Buffer, Format, Offset);
-}
-
-template <abi_t ABI>
-void D3D11DeviceContextX<ABI>::DrawIndexedInstanced(UINT StartIndexLocationAndIndexCountPerInstance,
-                                                    UINT64 BaseVertexLocationAndStartInstanceLocation,
-                                                    UINT64 InstanceCount)
-{
-    IMPLEMENT_STUB();
-}
-
-template <abi_t ABI>
-void D3D11DeviceContextX<ABI>::DrawInstanced(UINT VertexCountPerInstance,
-                                             UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount)
-{
-    IMPLEMENT_STUB();
 }
 
 template <abi_t ABI>
@@ -359,7 +486,7 @@ template <abi_t ABI> void D3D11DeviceContextX<ABI>::GSSetShader(gfx::ID3D11Geome
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->IASetPrimitiveTopology(PrimitiveTopology);
 }
 
 template <abi_t ABI>
@@ -593,7 +720,14 @@ void D3D11DeviceContextX<ABI>::DispatchIndirect(gfx::ID3D11Buffer<ABI> *pBufferF
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::RSSetState(gfx::ID3D11RasterizerState<ABI> *pRasterizerState)
 {
-    IMPLEMENT_STUB();
+    ID3D11RasterizerState *pState = nullptr;
+
+    if (pRasterizerState)
+    {
+        pState = static_cast<D3D11RasterizerState<ABI>*>(pRasterizerState)->m_pFunction;
+    }
+
+    m_pFunction->RSSetState(pState);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::RSSetViewports(UINT NumViewports, D3D11_VIEWPORT const *pViewports)
@@ -603,7 +737,7 @@ template <abi_t ABI> void D3D11DeviceContextX<ABI>::RSSetViewports(UINT NumViewp
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::RSSetScissorRects(UINT NumRects, D3D11_RECT const *pRects)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->RSSetScissorRects(NumRects, pRects);
 }
 
 template <abi_t ABI>
@@ -671,28 +805,40 @@ template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::ClearRenderTargetView(gfx::ID3D11RenderTargetView<ABI> *pRenderTargetView,
                                                      FLOAT const ColorRGBA[4])
 {
-    IMPLEMENT_STUB();
+    if (pRenderTargetView)
+    {
+        m_pFunction->ClearRenderTargetView(static_cast<D3D11RenderTargetView<ABI>*>(pRenderTargetView)->m_pFunction, ColorRGBA);
+    }
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::ClearUnorderedAccessViewUint(gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
                                                             UINT const Values[4])
 {
-    IMPLEMENT_STUB();
+    if (pUnorderedAccessView)
+    {
+        m_pFunction->ClearUnorderedAccessViewUint(static_cast<D3D11UnorderedAccessView<ABI> *>(pUnorderedAccessView)->m_pFunction, Values);
+    }
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::ClearUnorderedAccessViewFloat(gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
                                                              FLOAT const Values[4])
 {
-    IMPLEMENT_STUB();
+    if (pUnorderedAccessView)
+    {
+        m_pFunction->ClearUnorderedAccessViewFloat(static_cast<D3D11UnorderedAccessView<ABI> *>(pUnorderedAccessView)->m_pFunction, Values);
+    }
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::ClearDepthStencilView(gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView,
                                                      UINT ClearFlags, FLOAT Depth, UINT8 Stencil)
 {
-    IMPLEMENT_STUB();
+    if (pDepthStencilView)
+    {
+        m_pFunction->ClearDepthStencilView(static_cast<D3D11DepthStencilView<ABI>*>(pDepthStencilView)->m_pFunction, ClearFlags, Depth, Stencil);
+    }
 }
 
 template <abi_t ABI>
@@ -723,7 +869,7 @@ void D3D11DeviceContextX<ABI>::ResolveSubresource(gfx::ID3D11Resource<ABI> *pDst
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::ExecuteCommandList(ID3D11CommandList *pCommandList, BOOL RestoreContextState)
 {
-    IMPLEMENT_STUB();
+    m_pFunction->ExecuteCommandList(pCommandList, RestoreContextState);
 }
 
 template <abi_t ABI>
@@ -1207,31 +1353,28 @@ void D3D11DeviceContextX<ABI>::CSGetConstantBuffers(UINT StartSlot, UINT NumBuff
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::ClearState()
 {
-    IMPLEMENT_STUB();
+    m_pFunction->ClearState();
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::Flush()
 {
-    IMPLEMENT_STUB();
+    m_pFunction->Flush();
 }
 
 template <abi_t ABI> D3D11_DEVICE_CONTEXT_TYPE D3D11DeviceContextX<ABI>::GetType()
 {
-    IMPLEMENT_STUB();
-    return {};
+    return m_pFunction->GetType();
 }
 
 template <abi_t ABI> UINT D3D11DeviceContextX<ABI>::GetContextFlags()
 {
-    IMPLEMENT_STUB();
-    return {};
+    return m_pFunction->GetContextFlags();
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceContextX<ABI>::FinishCommandList(BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return m_pFunction->FinishCommandList(RestoreDeferredContextState, ppCommandList);
 }
 
 //
@@ -1525,13 +1668,19 @@ template <abi_t ABI> void D3D11DeviceContextX<ABI>::InsertWaitUntilIdle(UINT Fla
 
 template <abi_t ABI> UINT64 D3D11DeviceContextX<ABI>::InsertFence(UINT Flags)
 {
-    IMPLEMENT_STUB();
-    return {};
+    ExecuteBackgroundContexts();
+    return (UINT64)&m_Fence;
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::InsertWaitOnFence(UINT Flags, UINT64 Fence)
 {
-    IMPLEMENT_STUB();
+    if (Fence)
+    {
+        while (!*reinterpret_cast<BOOL volatile *>(Fence))
+        {
+            ExecuteBackgroundContexts();
+        }
+    }
 }
 
 template <abi_t ABI>
@@ -1565,121 +1714,124 @@ template <abi_t ABI> void D3D11DeviceContextX<ABI>::RemapVertexBufferInheritance
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::PSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    PSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::PSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    PSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::PSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    PSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::VSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    VSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::VSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    VSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::VSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    VSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::GSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    GSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::GSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    GSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::GSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    GSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::CSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    CSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::CSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    CSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::CSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    CSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::HSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    HSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::HSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    HSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::HSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    HSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::DSSetFastConstantBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pConstantBuffer)
 {
-    IMPLEMENT_STUB();
+    DSSetConstantBuffers(Slot, 1, &pConstantBuffer);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::DSSetFastShaderResource(UINT Slot,
                                                        gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView)
 {
-    IMPLEMENT_STUB();
+    DSSetShaderResources(Slot, 1, &pShaderResourceView);
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::DSSetFastSampler(UINT Slot, gfx::ID3D11SamplerState<ABI> *pSampler)
 {
-    IMPLEMENT_STUB();
+    DSSetSamplers(Slot, 1, &pSampler);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::IASetFastVertexBuffer(UINT Slot, gfx::ID3D11Buffer<ABI> *pVertexBuffer, UINT Stride)
 {
-    IMPLEMENT_STUB();
+    UINT Offset = 0;
+    IASetVertexBuffers(Slot, 1, &pVertexBuffer, &Stride, &Offset);
 }
 
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::IASetFastIndexBuffer(UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer)
 {
-    IMPLEMENT_STUB();
+    HardwareIndexFormat = HardwareIndexFormat != 0 ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
+
+    IASetIndexBuffer(pIndexBuffer, HardwareIndexFormat, 0);
 }
 
 template <abi_t ABI>
@@ -1802,12 +1954,12 @@ void D3D11DeviceContextX<ABI>::HSGetLastUsedTessellationParameters(
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::CSEnableAutomaticGpuFlush(BOOL Enable)
 {
-    IMPLEMENT_STUB();
+
 }
 
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::GpuSendPipelinedEvent(gfx::D3D11X_GPU_PIPELINED_EVENT Event)
 {
-    IMPLEMENT_STUB();
+
 }
 
 template <abi_t ABI> HRESULT D3D11DeviceContextX<ABI>::Suspend(UINT Flags)

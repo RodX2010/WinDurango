@@ -131,28 +131,18 @@ namespace winrt::Windows::Xbox::Input::implementation
 
             p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating static a_gamepads");
 
-            for (size_t i = 0; i < 4; i++)
+            for (DWORD gamepad = 0; gamepad < XUSER_MAX_COUNT; gamepad++)
             {
-                XINPUT_STATE state{};
-                DWORD result = XInputGetState(0, &state);
-
-                if (result == ERROR_SUCCESS)
+                XINPUT_CAPABILITIES capabilities;
+                if (XInputGetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities) == ERROR_SUCCESS)
                 {
                     p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
-                    winrt::Windows::Xbox::Input::Gamepad gamepad = winrt::make<Gamepad>(i, true);
-                    a_gamepads.Append(gamepad);
+                    winrt::Windows::Xbox::Input::Gamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
+                    a_gamepads.Append(NewGamepad);
+                    continue;
                 }
             }
         }
-
-        if (a_gamepads.Size() == 0)
-        {
-            p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating Virtual gamepad");
-            winrt::Windows::Xbox::Input::Gamepad gamepad = winrt::make<Gamepad>(0, false);
-            a_gamepads.Append(gamepad);
-        }
-
-        // I think I need to add mouse capture here
 
         return a_gamepads.GetView();
     }

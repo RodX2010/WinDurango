@@ -1339,7 +1339,7 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual void PSSetShader(gfx::ID3D11PixelShader<ABI> *pPixelShader) = 0;
         virtual void PSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
         virtual void VSSetShader(gfx::ID3D11VertexShader<ABI> *pVertexShader) = 0;
-        virtual void DrawIndexed(UINT64 StartIndexLocationAndIndexCount, INT BaseVertexLocation) = 0;
+        virtual void DrawIndexed(UINT IndexCount, UINT StartIndexLocation, INT BaseVertexLocation) = 0;
         virtual void Draw(UINT VertexCount, UINT StartVertexLocation) = 0;
         virtual HRESULT Map(gfx::ID3D11Resource<ABI> *pResource, UINT Subresource, D3D11_MAP MapType, UINT MapFlags, D3D11_MAPPED_SUBRESOURCE *pMappedResource) = 0;
         virtual void Unmap(gfx::ID3D11Resource<ABI> *pResource, UINT Subresource) = 0;
@@ -1347,7 +1347,7 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual void IASetInputLayout(ID3D11InputLayout *pInputLayout) = 0;
         virtual void IASetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets) = 0;
         virtual void IASetIndexBuffer(gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset) = 0;
-        virtual void DrawIndexedInstanced(UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount) = 0;
+        virtual void DrawIndexedInstanced(UINT IndexCountPerInstance, UINT InstanceCount, UINT StartIndexLocation, INT BaseVertexLocation, UINT StartInstanceLocation) = 0;
         virtual void DrawInstanced(UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount) = 0;
         virtual void GSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
         virtual void GSSetShader(gfx::ID3D11GeometryShader<ABI> *pShader) = 0;
@@ -1443,6 +1443,189 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual UINT GetContextFlags() = 0;
         virtual HRESULT FinishCommandList(BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList) = 0;
     };
+
+    template <abi_t ABI>
+        requires(ABI >= abi_t{6,2,11064,0} && ABI < abi_t{6,2,11294,0})
+    struct ID3D11DeviceContext<ABI> : gfx::ID3D11DeviceChild<ABI>, details::ID3D11DeviceContextData<ABI>
+    {
+        virtual void VSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void PSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void PSSetShader(gfx::ID3D11PixelShader<ABI> *pPixelShader) = 0;
+        virtual void PSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void VSSetShader(gfx::ID3D11VertexShader<ABI> *pVertexShader) = 0;
+        virtual void DrawIndexed(UINT64 StartIndexLocationAndIndexCount, INT BaseVertexLocation) = 0;
+        virtual void Draw(UINT VertexCount, UINT StartVertexLocation) = 0;
+        virtual HRESULT Map(gfx::ID3D11Resource<ABI> *pResource, UINT Subresource, D3D11_MAP MapType, UINT MapFlags,
+                            D3D11_MAPPED_SUBRESOURCE *pMappedResource) = 0;
+        virtual void Unmap(gfx::ID3D11Resource<ABI> *pResource, UINT Subresource) = 0;
+        virtual void PSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void IASetInputLayout(ID3D11InputLayout *pInputLayout) = 0;
+        virtual void IASetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers,
+                                        UINT const *pStrides, UINT const *pOffsets) = 0;
+        virtual void IASetIndexBuffer(gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset) = 0;
+        virtual void DrawIndexedInstanced(UINT64 StartIndexLocationAndIndexCountPerInstance,
+                                          UINT64 BaseVertexLocationAndStartInstanceLocation, UINT InstanceCount) = 0;
+        virtual void DrawInstanced(UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation,
+                                   UINT InstanceCount) = 0;
+        virtual void GSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void GSSetShader(gfx::ID3D11GeometryShader<ABI> *pShader) = 0;
+        virtual void IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology) = 0;
+        virtual void VSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void VSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void Begin(ID3D11Asynchronous *pAsync) = 0;
+        virtual void End(ID3D11Asynchronous *pAsync) = 0;
+        virtual HRESULT GetData(ID3D11Asynchronous *pAsync, void *pData, UINT DataSize, UINT GetDataFlags) = 0;
+        virtual void SetPredication(ID3D11Predicate *pPredicate, BOOL PredicateValue) = 0;
+        virtual void GSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void GSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void OMSetRenderTargets(UINT NumViews, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+                                        gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView) = 0;
+        virtual void OMSetRenderTargetsAndUnorderedAccessViews(
+            UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+            gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT UAVStartSlot, UINT NumUAVs,
+            gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews, UINT const *pUAVInitialCounts) = 0;
+        virtual void OMSetBlendState(gfx::ID3D11BlendState<ABI> *pBlendState, FLOAT const BlendFactor[4],
+                                     UINT SampleMask) = 0;
+        virtual void OMSetDepthStencilState(gfx::ID3D11DepthStencilState<ABI> *pDepthStencilState, UINT StencilRef) = 0;
+        virtual void SOSetTargets(UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppSOTargets,
+                                  UINT const *pOffsets) = 0;
+        virtual void DrawAuto() = 0;
+        virtual void DrawIndexedInstancedIndirect(gfx::ID3D11Buffer<ABI> *pBufferForArgs,
+                                                  UINT AlignedByteOffsetForArgs) = 0;
+        virtual void DrawInstancedIndirect(gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs) = 0;
+        virtual void Dispatch(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ) = 0;
+        virtual void DispatchIndirect(gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs) = 0;
+        virtual void RSSetState(gfx::ID3D11RasterizerState<ABI> *pRasterizerState) = 0;
+        virtual void RSSetViewports(UINT NumViewports, D3D11_VIEWPORT const *pViewports) = 0;
+        virtual void RSSetScissorRects(UINT NumRects, D3D11_RECT const *pRects) = 0;
+        virtual void CopySubresourceRegion(gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, UINT DstX,
+                                           UINT DstY, UINT DstZ, gfx::ID3D11Resource<ABI> *pSrcResource,
+                                           UINT SrcSubresource, D3D11_BOX const *pSrcBox) = 0;
+        virtual void CopyResource(gfx::ID3D11Resource<ABI> *pDstResource, gfx::ID3D11Resource<ABI> *pSrcResource) = 0;
+        virtual void UpdateSubresource(gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                       D3D11_BOX const *pDstBox, void const *pSrcData, UINT SrcRowPitch,
+                                       UINT SrcDepthPitch) = 0;
+        virtual void CopyStructureCount(gfx::ID3D11Buffer<ABI> *pDstBuffer, UINT DstAlignedByteOffset,
+                                        gfx::ID3D11UnorderedAccessView<ABI> *pSrcView) = 0;
+        virtual void ClearRenderTargetView(gfx::ID3D11RenderTargetView<ABI> *pRenderTargetView,
+                                           FLOAT const ColorRGBA[4]) = 0;
+        virtual void ClearUnorderedAccessViewUint(gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                                  UINT const Values[4]) = 0;
+        virtual void ClearUnorderedAccessViewFloat(gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                                   FLOAT const Values[4]) = 0;
+        virtual void ClearDepthStencilView(gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT ClearFlags,
+                                           FLOAT Depth, UINT8 Stencil) = 0;
+        virtual void GenerateMips(gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView) = 0;
+        virtual void SetResourceMinLOD(gfx::ID3D11Resource<ABI> *pResource, FLOAT MinLOD) = 0;
+        virtual FLOAT GetResourceMinLOD(gfx::ID3D11Resource<ABI> *pResource) = 0;
+        virtual void ResolveSubresource(gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                        gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource,
+                                        DXGI_FORMAT Format) = 0;
+        virtual void ExecuteCommandList(ID3D11CommandList *pCommandList, BOOL RestoreContextState) = 0;
+        virtual void HSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void HSSetShader(gfx::ID3D11HullShader<ABI> *pHullShader) = 0;
+        virtual void HSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void HSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void DSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void DSSetShader(gfx::ID3D11DomainShader<ABI> *pDomainShader) = 0;
+        virtual void DSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void DSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void CSSetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews) = 0;
+        virtual void CSSetUnorderedAccessViews(UINT StartSlot, UINT NumUAVs,
+                                               gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews,
+                                               UINT const *pUAVInitialCounts) = 0;
+        virtual void CSSetShader(gfx::ID3D11ComputeShader<ABI> *pComputeShader) = 0;
+        virtual void CSSetSamplers(UINT StartSlot, UINT NumSamplers,
+                                   gfx::ID3D11SamplerState<ABI> *const *ppSamplers) = 0;
+        virtual void CSSetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
+        virtual void VSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void PSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void PSGetShader(gfx::ID3D11PixelShader<ABI> **ppPixelShader, ID3D11ClassInstance **ppClassInstances,
+                                 UINT *pNumClassInstances) = 0;
+        virtual void PSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void VSGetShader(gfx::ID3D11VertexShader<ABI> **ppVertexShader, ID3D11ClassInstance **ppClassInstances,
+                                 UINT *pNumClassInstances) = 0;
+        virtual void PSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void IAGetInputLayout(ID3D11InputLayout **ppInputLayout) = 0;
+        virtual void IAGetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppVertexBuffers,
+                                        UINT *pStrides, UINT *pOffsets) = 0;
+        virtual void IAGetIndexBuffer(gfx::ID3D11Buffer<ABI> **pIndexBuffer, DXGI_FORMAT *Format, UINT *Offset) = 0;
+        virtual void GSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void GSGetShader(gfx::ID3D11GeometryShader<ABI> **ppGeometryShader,
+                                 ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances) = 0;
+        virtual void IAGetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY *pTopology) = 0;
+        virtual void VSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void VSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void GetPredication(ID3D11Predicate **ppPredicate, BOOL *pPredicateValue) = 0;
+        virtual void GSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void GSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void OMGetRenderTargets(UINT NumViews, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+                                        gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView) = 0;
+        virtual void OMGetRenderTargetsAndUnorderedAccessViews(
+            UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+            gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView, UINT UAVStartSlot, UINT NumUAVs,
+            gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews) = 0;
+        virtual void OMGetBlendState(gfx::ID3D11BlendState<ABI> **ppBlendState, FLOAT BlendFactor[4],
+                                     UINT *pSampleMask) = 0;
+        virtual void OMGetDepthStencilState(gfx::ID3D11DepthStencilState<ABI> **ppDepthStencilState,
+                                            UINT *pStencilRef) = 0;
+        virtual void SOGetTargets(UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppSOTargets) = 0;
+        virtual void RSGetState(gfx::ID3D11RasterizerState<ABI> **ppRasterizerState) = 0;
+        virtual void RSGetViewports(UINT *pNumViewports, D3D11_VIEWPORT *pViewports) = 0;
+        virtual void RSGetScissorRects(UINT *pNumRects, D3D11_RECT *pRects) = 0;
+        virtual void HSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void HSGetShader(gfx::ID3D11HullShader<ABI> **ppHullShader, ID3D11ClassInstance **ppClassInstances,
+                                 UINT *pNumClassInstances) = 0;
+        virtual void HSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void HSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void DSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void DSGetShader(gfx::ID3D11DomainShader<ABI> **ppDomainShader, ID3D11ClassInstance **ppClassInstances,
+                                 UINT *pNumClassInstances) = 0;
+        virtual void DSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void DSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void CSGetShaderResources(UINT StartSlot, UINT NumViews,
+                                          gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews) = 0;
+        virtual void CSGetUnorderedAccessViews(UINT StartSlot, UINT NumUAVs,
+                                               gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews) = 0;
+        virtual void CSGetShader(gfx::ID3D11ComputeShader<ABI> **ppComputeShader,
+                                 ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances) = 0;
+        virtual void CSGetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers) = 0;
+        virtual void CSGetConstantBuffers(UINT StartSlot, UINT NumBuffers,
+                                          gfx::ID3D11Buffer<ABI> **ppConstantBuffers) = 0;
+        virtual void ClearState() = 0;
+        virtual void Flush() = 0;
+        virtual D3D11_DEVICE_CONTEXT_TYPE GetType() = 0;
+        virtual UINT GetContextFlags() = 0;
+        virtual HRESULT FinishCommandList(BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList) = 0;
+    };
+
     
     template<abi_t ABI>
     requires (ABI >= abi_t{6,2,11294,0})
@@ -1461,7 +1644,7 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual void IASetInputLayout(ID3D11InputLayout *pInputLayout) = 0;
         virtual void IASetVertexBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets) = 0;
         virtual void IASetIndexBuffer(UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT Offset) = 0;
-        virtual void DrawIndexedInstanced(UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount) = 0;
+        virtual void DrawIndexedInstanced(UINT64 StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT InstanceCount) = 0;
         virtual void DrawInstanced(UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount) = 0;
         virtual void GSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers) = 0;
         virtual void GSSetShader(gfx::ID3D11GeometryShader<ABI> *pShader) = 0;
@@ -1557,117 +1740,365 @@ enum D3D11X_IMG_NUM_FORMAT
         virtual HRESULT FinishCommandList(BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList) = 0;
     };
     
-    template<abi_t ABI>
-    struct ID3D11DeviceContextVtbl : gfx::ID3D11DeviceChildVtbl<ABI>
+    template <abi_t ABI> struct ID3D11DeviceContextVtbl : gfx::ID3D11DeviceChildVtbl<ABI>
     {
-        void(*VSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*PSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*PSSetShader)(void *, gfx::ID3D11PixelShader<ABI> *pPixelShader);
-        void(*PSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*VSSetShader)(void *, gfx::ID3D11VertexShader<ABI> *pVertexShader);
-        void(*DrawIndexed)(void *, UINT64 StartIndexLocationAndIndexCount, INT BaseVertexLocation);
-        void(*Draw)(void *, UINT VertexCount, UINT StartVertexLocation);
-        HRESULT(*Map)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource, D3D11_MAP MapType, UINT MapFlags, D3D11_MAPPED_SUBRESOURCE *pMappedResource);
-        void(*Unmap)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource);
-        void(*PSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*IASetInputLayout)(void *, ID3D11InputLayout *pInputLayout);
-        void(*IASetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets);
+        void (*VSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*PSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*PSSetShader)(void *, gfx::ID3D11PixelShader<ABI> *pPixelShader);
+        void (*PSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*VSSetShader)(void *, gfx::ID3D11VertexShader<ABI> *pVertexShader);
+        void (*DrawIndexed)(void *, UINT IndexCount, UINT StartIndexLocation, INT BaseVertexLocation);
+        void (*Draw)(void *, UINT VertexCount, UINT StartVertexLocation);
+        HRESULT (*Map)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource, D3D11_MAP MapType, UINT MapFlags,
+                       D3D11_MAPPED_SUBRESOURCE *pMappedResource);
+        void (*Unmap)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource);
+        void (*PSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*IASetInputLayout)(void *, ID3D11InputLayout *pInputLayout);
+        void (*IASetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                   gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides,
+                                   UINT const *pOffsets);
         void (*IASetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset);
-        void(*DrawIndexedInstanced)(void *, UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount);
-        void(*DrawInstanced)(void *, UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount);
-        void(*GSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*GSSetShader)(void *, gfx::ID3D11GeometryShader<ABI> *pShader);
-        void(*IASetPrimitiveTopology)(void *, D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology);
-        void(*VSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*VSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*Begin)(void *, ID3D11Asynchronous *pAsync);
-        void(*End)(void *, ID3D11Asynchronous *pAsync);
-        HRESULT(*GetData)(void *, ID3D11Asynchronous *pAsync, void *pData, UINT DataSize, UINT GetDataFlags);
-        void(*SetPredication)(void *, ID3D11Predicate *pPredicate, BOOL PredicateValue);
-        void(*GSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*GSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*OMSetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> *const *, gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView);
-        void(*OMSetRenderTargetsAndUnorderedAccessViews)(void *, UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> *const *ppRenderTargetViews, gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT UAVStartSlot, UINT NumUAVs, gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews, UINT const *pUAVInitialCounts);
-        void(*OMSetBlendState)(void *, gfx::ID3D11BlendState<ABI> *pBlendState, FLOAT const BlendFactor[4], UINT SampleMask);
-        void(*OMSetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> *pDepthStencilState, UINT StencilRef);
-        void(*SOSetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppSOTargets, UINT const *pOffsets);
-        void(*DrawAuto)(void *);
-        void(*DrawIndexedInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
-        void(*DrawInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
-        void(*Dispatch)(void *, UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
-        void(*DispatchIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
-        void(*RSSetState)(void *, gfx::ID3D11RasterizerState<ABI> *pRasterizerState);
-        void(*RSSetViewports)(void *, UINT NumViewports, D3D11_VIEWPORT const *pViewports);
-        void(*RSSetScissorRects)(void *, UINT NumRects, D3D11_RECT const *pRects);
-        void(*CopySubresourceRegion)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, UINT DstX, UINT DstY, UINT DstZ, gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource, D3D11_BOX const *pSrcBox);
-        void(*CopyResource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, gfx::ID3D11Resource<ABI> *pSrcResource);
-        void(*UpdateSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, D3D11_BOX const *pDstBox, void const *pSrcData, UINT SrcRowPitch, UINT SrcDepthPitch);
-        void(*CopyStructureCount)(void *, gfx::ID3D11Buffer<ABI> *pDstBuffer, UINT DstAlignedByteOffset, gfx::ID3D11UnorderedAccessView<ABI> *pSrcView);
-        void(*ClearRenderTargetView)(void *, gfx::ID3D11RenderTargetView<ABI> *pRenderTargetView, FLOAT const ColorRGBA[4]);
-        void(*ClearUnorderedAccessViewUint)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView, UINT const Values[4]);
-        void(*ClearUnorderedAccessViewFloat)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView, FLOAT const Values[4]);
-        void(*ClearDepthStencilView)(void *, gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT ClearFlags, FLOAT Depth, UINT8 Stencil);
-        void(*GenerateMips)(void *, gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView);
-        void(*SetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource, FLOAT MinLOD);
-        FLOAT(*GetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource);
-        void(*ResolveSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource, DXGI_FORMAT Format);
-        void(*ExecuteCommandList)(void *, ID3D11CommandList *pCommandList, BOOL RestoreContextState);
-        void(*HSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*HSSetShader)(void *, gfx::ID3D11HullShader<ABI> *pHullShader);
-        void(*HSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*HSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*DSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*DSSetShader)(void *, gfx::ID3D11DomainShader<ABI> *pDomainShader);
-        void(*DSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*DSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*CSSetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
-        void(*CSSetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs, gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews, UINT const *pUAVInitialCounts);
-        void(*CSSetShader)(void *, gfx::ID3D11ComputeShader<ABI> *pComputeShader);
-        void(*CSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
-        void(*CSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
-        void(*VSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*PSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*PSGetShader)(void *, gfx::ID3D11PixelShader<ABI> **ppPixelShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*PSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*VSGetShader)(void *, gfx::ID3D11VertexShader<ABI> **ppVertexShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*PSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*IAGetInputLayout)(void *, ID3D11InputLayout **ppInputLayout);
-        void(*IAGetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppVertexBuffers, UINT *pStrides, UINT *pOffsets);
-        void(*IAGetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> **pIndexBuffer, DXGI_FORMAT *Format, UINT *Offset);
-        void(*GSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*GSGetShader)(void *, gfx::ID3D11GeometryShader<ABI> **ppGeometryShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*IAGetPrimitiveTopology)(void *, D3D11_PRIMITIVE_TOPOLOGY *pTopology);
-        void(*VSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*VSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*GetPredication)(void *, ID3D11Predicate **ppPredicate, BOOL *pPredicateValue);
-        void(*GSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*GSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*OMGetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews, gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView);
-        void(*OMGetRenderTargetsAndUnorderedAccessViews)(void *, UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews, gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView, UINT UAVStartSlot, UINT NumUAVs, gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
-        void(*OMGetBlendState)(void *, gfx::ID3D11BlendState<ABI> **ppBlendState, FLOAT BlendFactor[4], UINT *pSampleMask);
-        void(*OMGetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> **ppDepthStencilState, UINT *pStencilRef);
-        void(*SOGetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppSOTargets);
-        void(*RSGetState)(void *, gfx::ID3D11RasterizerState<ABI> **ppRasterizerState);
-        void(*RSGetViewports)(void *, UINT *pNumViewports, D3D11_VIEWPORT *pViewports);
-        void(*RSGetScissorRects)(void *, UINT *pNumRects, D3D11_RECT *pRects);
-        void(*HSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*HSGetShader)(void *, gfx::ID3D11HullShader<ABI> **ppHullShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*HSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*HSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*DSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*DSGetShader)(void *, gfx::ID3D11DomainShader<ABI> **ppDomainShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*DSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*DSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*CSGetShaderResources)(void *, UINT StartSlot, UINT NumViews, gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
-        void(*CSGetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs, gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
-        void(*CSGetShader)(void *, gfx::ID3D11ComputeShader<ABI> **ppComputeShader, ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
-        void(*CSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
-        void(*CSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
-        void(*ClearState)(void *);
-        void(*Flush)(void *);
-        D3D11_DEVICE_CONTEXT_TYPE(*GetType)(void *);
-        UINT(*GetContextFlags)(void *);
-        HRESULT(*FinishCommandList)(void *, BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList);
+        void (*DrawIndexedInstanced)(void *, UINT IndexCountPerInstance, UINT InstanceCount, UINT StartIndexLocation,
+                                     INT BaseVertexLocation, UINT StartInstanceLocation);
+        void (*DrawInstanced)(void *, UINT VertexCountPerInstance, UINT InstanceCount, UINT StartVertexLocation,
+                              UINT StartInstanceLocation);
+        void (*GSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*GSSetShader)(void *, gfx::ID3D11GeometryShader<ABI> *pShader);
+        void (*IASetPrimitiveTopology)(void *, D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology);
+        void (*VSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*VSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*Begin)(void *, ID3D11Asynchronous *pAsync);
+        void (*End)(void *, ID3D11Asynchronous *pAsync);
+        HRESULT (*GetData)(void *, ID3D11Asynchronous *pAsync, void *pData, UINT DataSize, UINT GetDataFlags);
+        void (*SetPredication)(void *, ID3D11Predicate *pPredicate, BOOL PredicateValue);
+        void (*GSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*GSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*OMSetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+                                   gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView);
+        void (*OMSetRenderTargetsAndUnorderedAccessViews)(
+            void *, UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+            gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT UAVStartSlot, UINT NumUAVs,
+            gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews, UINT const *pUAVInitialCounts);
+        void (*OMSetBlendState)(void *, gfx::ID3D11BlendState<ABI> *pBlendState, FLOAT const BlendFactor[4],
+                                UINT SampleMask);
+        void (*OMSetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> *pDepthStencilState, UINT StencilRef);
+        void (*SOSetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppSOTargets, UINT const *pOffsets);
+        void (*DrawAuto)(void *);
+        void (*DrawIndexedInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs,
+                                             UINT AlignedByteOffsetForArgs);
+        void (*DrawInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
+        void (*Dispatch)(void *, UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+        void (*DispatchIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
+        void (*RSSetState)(void *, gfx::ID3D11RasterizerState<ABI> *pRasterizerState);
+        void (*RSSetViewports)(void *, UINT NumViewports, D3D11_VIEWPORT const *pViewports);
+        void (*RSSetScissorRects)(void *, UINT NumRects, D3D11_RECT const *pRects);
+        void (*CopySubresourceRegion)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, UINT DstX,
+                                      UINT DstY, UINT DstZ, gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource,
+                                      D3D11_BOX const *pSrcBox);
+        void (*CopyResource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, gfx::ID3D11Resource<ABI> *pSrcResource);
+        void (*UpdateSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                  D3D11_BOX const *pDstBox, void const *pSrcData, UINT SrcRowPitch, UINT SrcDepthPitch);
+        void (*CopyStructureCount)(void *, gfx::ID3D11Buffer<ABI> *pDstBuffer, UINT DstAlignedByteOffset,
+                                   gfx::ID3D11UnorderedAccessView<ABI> *pSrcView);
+        void (*ClearRenderTargetView)(void *, gfx::ID3D11RenderTargetView<ABI> *pRenderTargetView,
+                                      FLOAT const ColorRGBA[4]);
+        void (*ClearUnorderedAccessViewUint)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                             UINT const Values[4]);
+        void (*ClearUnorderedAccessViewFloat)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                              FLOAT const Values[4]);
+        void (*ClearDepthStencilView)(void *, gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT ClearFlags,
+                                      FLOAT Depth, UINT8 Stencil);
+        void (*GenerateMips)(void *, gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView);
+        void (*SetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource, FLOAT MinLOD);
+        FLOAT (*GetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource);
+        void (*ResolveSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                   gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource, DXGI_FORMAT Format);
+        void (*ExecuteCommandList)(void *, ID3D11CommandList *pCommandList, BOOL RestoreContextState);
+        void (*HSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*HSSetShader)(void *, gfx::ID3D11HullShader<ABI> *pHullShader);
+        void (*HSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*HSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*DSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*DSSetShader)(void *, gfx::ID3D11DomainShader<ABI> *pDomainShader);
+        void (*DSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*DSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*CSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*CSSetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs,
+                                          gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews,
+                                          UINT const *pUAVInitialCounts);
+        void (*CSSetShader)(void *, gfx::ID3D11ComputeShader<ABI> *pComputeShader);
+        void (*CSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*CSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*VSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*PSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*PSGetShader)(void *, gfx::ID3D11PixelShader<ABI> **ppPixelShader, ID3D11ClassInstance **ppClassInstances,
+                            UINT *pNumClassInstances);
+        void (*PSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*VSGetShader)(void *, gfx::ID3D11VertexShader<ABI> **ppVertexShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*PSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*IAGetInputLayout)(void *, ID3D11InputLayout **ppInputLayout);
+        void (*IAGetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppVertexBuffers,
+                                   UINT *pStrides, UINT *pOffsets);
+        void (*IAGetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> **pIndexBuffer, DXGI_FORMAT *Format, UINT *Offset);
+        void (*GSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*GSGetShader)(void *, gfx::ID3D11GeometryShader<ABI> **ppGeometryShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*IAGetPrimitiveTopology)(void *, D3D11_PRIMITIVE_TOPOLOGY *pTopology);
+        void (*VSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*VSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*GetPredication)(void *, ID3D11Predicate **ppPredicate, BOOL *pPredicateValue);
+        void (*GSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*GSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*OMGetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+                                   gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView);
+        void (*OMGetRenderTargetsAndUnorderedAccessViews)(void *, UINT NumRTVs,
+                                                          gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+                                                          gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView,
+                                                          UINT UAVStartSlot, UINT NumUAVs,
+                                                          gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
+        void (*OMGetBlendState)(void *, gfx::ID3D11BlendState<ABI> **ppBlendState, FLOAT BlendFactor[4],
+                                UINT *pSampleMask);
+        void (*OMGetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> **ppDepthStencilState,
+                                       UINT *pStencilRef);
+        void (*SOGetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppSOTargets);
+        void (*RSGetState)(void *, gfx::ID3D11RasterizerState<ABI> **ppRasterizerState);
+        void (*RSGetViewports)(void *, UINT *pNumViewports, D3D11_VIEWPORT *pViewports);
+        void (*RSGetScissorRects)(void *, UINT *pNumRects, D3D11_RECT *pRects);
+        void (*HSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*HSGetShader)(void *, gfx::ID3D11HullShader<ABI> **ppHullShader, ID3D11ClassInstance **ppClassInstances,
+                            UINT *pNumClassInstances);
+        void (*HSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*HSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*DSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*DSGetShader)(void *, gfx::ID3D11DomainShader<ABI> **ppDomainShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*DSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*DSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*CSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*CSGetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs,
+                                          gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
+        void (*CSGetShader)(void *, gfx::ID3D11ComputeShader<ABI> **ppComputeShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*CSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*CSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*ClearState)(void *);
+        void (*Flush)(void *);
+        D3D11_DEVICE_CONTEXT_TYPE (*GetType)(void *);
+        UINT (*GetContextFlags)(void *);
+        HRESULT (*FinishCommandList)(void *, BOOL RestoreDeferredContextState,
+                                     ID3D11CommandList **ppCommandList);
+    };
+
+    template <abi_t ABI>
+        requires(ABI >= abi_t{6,2,11064,0} && ABI < abi_t{6,2,11294,0})
+    struct ID3D11DeviceContextVtbl<ABI> : gfx::ID3D11DeviceChildVtbl<ABI>
+    {
+        void (*VSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*PSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*PSSetShader)(void *, gfx::ID3D11PixelShader<ABI> *pPixelShader);
+        void (*PSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*VSSetShader)(void *, gfx::ID3D11VertexShader<ABI> *pVertexShader);
+        void (*DrawIndexed)(void *, UINT64 StartIndexLocationAndIndexCount, INT BaseVertexLocation);
+        void (*Draw)(void *, UINT VertexCount, UINT StartVertexLocation);
+        HRESULT (*Map)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource, D3D11_MAP MapType, UINT MapFlags,
+                       D3D11_MAPPED_SUBRESOURCE *pMappedResource);
+        void (*Unmap)(void *, gfx::ID3D11Resource<ABI> *pResource, UINT Subresource);
+        void (*PSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*IASetInputLayout)(void *, ID3D11InputLayout *pInputLayout);
+        void (*IASetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                   gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides,
+                                   UINT const *pOffsets);
+        void (*IASetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT HardwareIndexFormat, UINT Offset);
+        void (*DrawIndexedInstanced)(void *, UINT64 StartIndexLocationAndIndexCountPerInstance,
+                                     UINT64 BaseVertexLocationAndStartInstanceLocation, UINT InstanceCount);
+        void (*DrawInstanced)(void *, UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation,
+                              UINT InstanceCount);
+        void (*GSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*GSSetShader)(void *, gfx::ID3D11GeometryShader<ABI> *pShader);
+        void (*IASetPrimitiveTopology)(void *, D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology);
+        void (*VSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*VSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*Begin)(void *, ID3D11Asynchronous *pAsync);
+        void (*End)(void *, ID3D11Asynchronous *pAsync);
+        HRESULT (*GetData)(void *, ID3D11Asynchronous *pAsync, void *pData, UINT DataSize, UINT GetDataFlags);
+        void (*SetPredication)(void *, ID3D11Predicate *pPredicate, BOOL PredicateValue);
+        void (*GSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*GSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*OMSetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+                                   gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView);
+        void (*OMSetRenderTargetsAndUnorderedAccessViews)(
+            void *, UINT NumRTVs, gfx::ID3D11RenderTargetView<ABI> *const *ppRTVs,
+            gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT UAVStartSlot, UINT NumUAVs,
+            gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews, UINT const *pUAVInitialCounts);
+        void (*OMSetBlendState)(void *, gfx::ID3D11BlendState<ABI> *pBlendState, FLOAT const BlendFactor[4],
+                                UINT SampleMask);
+        void (*OMSetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> *pDepthStencilState, UINT StencilRef);
+        void (*SOSetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppSOTargets, UINT const *pOffsets);
+        void (*DrawAuto)(void *);
+        void (*DrawIndexedInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs,
+                                             UINT AlignedByteOffsetForArgs);
+        void (*DrawInstancedIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
+        void (*Dispatch)(void *, UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+        void (*DispatchIndirect)(void *, gfx::ID3D11Buffer<ABI> *pBufferForArgs, UINT AlignedByteOffsetForArgs);
+        void (*RSSetState)(void *, gfx::ID3D11RasterizerState<ABI> *pRasterizerState);
+        void (*RSSetViewports)(void *, UINT NumViewports, D3D11_VIEWPORT const *pViewports);
+        void (*RSSetScissorRects)(void *, UINT NumRects, D3D11_RECT const *pRects);
+        void (*CopySubresourceRegion)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource, UINT DstX,
+                                      UINT DstY, UINT DstZ, gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource,
+                                      D3D11_BOX const *pSrcBox);
+        void (*CopyResource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, gfx::ID3D11Resource<ABI> *pSrcResource);
+        void (*UpdateSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                  D3D11_BOX const *pDstBox, void const *pSrcData, UINT SrcRowPitch, UINT SrcDepthPitch);
+        void (*CopyStructureCount)(void *, gfx::ID3D11Buffer<ABI> *pDstBuffer, UINT DstAlignedByteOffset,
+                                   gfx::ID3D11UnorderedAccessView<ABI> *pSrcView);
+        void (*ClearRenderTargetView)(void *, gfx::ID3D11RenderTargetView<ABI> *pRenderTargetView,
+                                      FLOAT const ColorRGBA[4]);
+        void (*ClearUnorderedAccessViewUint)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                             UINT const Values[4]);
+        void (*ClearUnorderedAccessViewFloat)(void *, gfx::ID3D11UnorderedAccessView<ABI> *pUnorderedAccessView,
+                                              FLOAT const Values[4]);
+        void (*ClearDepthStencilView)(void *, gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView, UINT ClearFlags,
+                                      FLOAT Depth, UINT8 Stencil);
+        void (*GenerateMips)(void *, gfx::ID3D11ShaderResourceView<ABI> *pShaderResourceView);
+        void (*SetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource, FLOAT MinLOD);
+        FLOAT (*GetResourceMinLOD)(void *, gfx::ID3D11Resource<ABI> *pResource);
+        void (*ResolveSubresource)(void *, gfx::ID3D11Resource<ABI> *pDstResource, UINT DstSubresource,
+                                   gfx::ID3D11Resource<ABI> *pSrcResource, UINT SrcSubresource, DXGI_FORMAT Format);
+        void (*ExecuteCommandList)(void *, ID3D11CommandList *pCommandList, BOOL RestoreContextState);
+        void (*HSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*HSSetShader)(void *, gfx::ID3D11HullShader<ABI> *pHullShader);
+        void (*HSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*HSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*DSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*DSSetShader)(void *, gfx::ID3D11DomainShader<ABI> *pDomainShader);
+        void (*DSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*DSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*CSSetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+        void (*CSSetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs,
+                                          gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews,
+                                          UINT const *pUAVInitialCounts);
+        void (*CSSetShader)(void *, gfx::ID3D11ComputeShader<ABI> *pComputeShader);
+        void (*CSSetSamplers)(void *, UINT StartSlot, UINT NumSamplers,
+                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
+        void (*CSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
+        void (*VSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*PSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*PSGetShader)(void *, gfx::ID3D11PixelShader<ABI> **ppPixelShader, ID3D11ClassInstance **ppClassInstances,
+                            UINT *pNumClassInstances);
+        void (*PSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*VSGetShader)(void *, gfx::ID3D11VertexShader<ABI> **ppVertexShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*PSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*IAGetInputLayout)(void *, ID3D11InputLayout **ppInputLayout);
+        void (*IAGetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppVertexBuffers,
+                                   UINT *pStrides, UINT *pOffsets);
+        void (*IAGetIndexBuffer)(void *, gfx::ID3D11Buffer<ABI> **pIndexBuffer, DXGI_FORMAT *Format, UINT *Offset);
+        void (*GSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*GSGetShader)(void *, gfx::ID3D11GeometryShader<ABI> **ppGeometryShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*IAGetPrimitiveTopology)(void *, D3D11_PRIMITIVE_TOPOLOGY *pTopology);
+        void (*VSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*VSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*GetPredication)(void *, ID3D11Predicate **ppPredicate, BOOL *pPredicateValue);
+        void (*GSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*GSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*OMGetRenderTargets)(void *, UINT NumViews, gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+                                   gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView);
+        void (*OMGetRenderTargetsAndUnorderedAccessViews)(void *, UINT NumRTVs,
+                                                          gfx::ID3D11RenderTargetView<ABI> **ppRenderTargetViews,
+                                                          gfx::ID3D11DepthStencilView<ABI> **ppDepthStencilView,
+                                                          UINT UAVStartSlot, UINT NumUAVs,
+                                                          gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
+        void (*OMGetBlendState)(void *, gfx::ID3D11BlendState<ABI> **ppBlendState, FLOAT BlendFactor[4],
+                                UINT *pSampleMask);
+        void (*OMGetDepthStencilState)(void *, gfx::ID3D11DepthStencilState<ABI> **ppDepthStencilState,
+                                       UINT *pStencilRef);
+        void (*SOGetTargets)(void *, UINT NumBuffers, gfx::ID3D11Buffer<ABI> **ppSOTargets);
+        void (*RSGetState)(void *, gfx::ID3D11RasterizerState<ABI> **ppRasterizerState);
+        void (*RSGetViewports)(void *, UINT *pNumViewports, D3D11_VIEWPORT *pViewports);
+        void (*RSGetScissorRects)(void *, UINT *pNumRects, D3D11_RECT *pRects);
+        void (*HSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*HSGetShader)(void *, gfx::ID3D11HullShader<ABI> **ppHullShader, ID3D11ClassInstance **ppClassInstances,
+                            UINT *pNumClassInstances);
+        void (*HSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*HSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*DSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*DSGetShader)(void *, gfx::ID3D11DomainShader<ABI> **ppDomainShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*DSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*DSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*CSGetShaderResources)(void *, UINT StartSlot, UINT NumViews,
+                                     gfx::ID3D11ShaderResourceView<ABI> **ppShaderResourceViews);
+        void (*CSGetUnorderedAccessViews)(void *, UINT StartSlot, UINT NumUAVs,
+                                          gfx::ID3D11UnorderedAccessView<ABI> **ppUnorderedAccessViews);
+        void (*CSGetShader)(void *, gfx::ID3D11ComputeShader<ABI> **ppComputeShader,
+                            ID3D11ClassInstance **ppClassInstances, UINT *pNumClassInstances);
+        void (*CSGetSamplers)(void *, UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> **ppSamplers);
+        void (*CSGetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers,
+                                     gfx::ID3D11Buffer<ABI> **ppConstantBuffers);
+        void (*ClearState)(void *);
+        void (*Flush)(void *);
+        D3D11_DEVICE_CONTEXT_TYPE (*GetType)(void *);
+        UINT (*GetContextFlags)(void *);
+        HRESULT (*FinishCommandList)(void *, BOOL RestoreDeferredContextState, ID3D11CommandList **ppCommandList);
     };
     
     template<abi_t ABI>
@@ -1687,7 +2118,7 @@ enum D3D11X_IMG_NUM_FORMAT
         void(*IASetInputLayout)(void *, ID3D11InputLayout *pInputLayout);
         void(*IASetVertexBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppVertexBuffers, UINT const *pStrides, UINT const *pOffsets);
         void(*IASetIndexBuffer)(void *, UINT HardwareIndexFormat, gfx::ID3D11Buffer<ABI> *pIndexBuffer, UINT Offset);
-        void(*DrawIndexedInstanced)(void *, UINT StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT64 InstanceCount);
+        void(*DrawIndexedInstanced)(void *, UINT64 StartIndexLocationAndIndexCountPerInstance, UINT64 BaseVertexLocationAndStartInstanceLocation, UINT InstanceCount);
         void(*DrawInstanced)(void *, UINT VertexCountPerInstance, UINT64 StartVertexLocationAndStartInstanceLocation, UINT InstanceCount);
         void(*GSSetConstantBuffers)(void *, UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
         void(*GSSetShader)(void *, gfx::ID3D11GeometryShader<ABI> *pShader);

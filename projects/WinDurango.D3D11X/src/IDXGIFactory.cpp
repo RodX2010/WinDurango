@@ -160,6 +160,14 @@ HRESULT DXGIFactory2<ABI>::CreateSwapChainForCoreWindow(xbox::IGraphicsUnknown<A
     IUnknown *dev{};
     HRESULT hr = 0;
 
+    if (pDesc->SwapEffect == DXGI_SWAP_EFFECT_DISCARD || pDesc->SwapEffect == DXGI_SWAP_EFFECT_SEQUENTIAL)
+    {
+        if (pDesc->SwapEffect == DXGI_SWAP_EFFECT_DISCARD)
+            pDesc2.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        else if (pDesc->SwapEffect == DXGI_SWAP_EFFECT_SEQUENTIAL)
+            pDesc2.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+    }
+
     if (pDevice)
     {
         pDevice->QueryInterface(__uuidof(xbox::IGraphicsUnwrap), (void **)&dev);

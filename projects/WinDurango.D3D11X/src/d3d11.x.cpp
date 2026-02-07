@@ -130,17 +130,17 @@ struct DXGIX_PRESENTARRAY_PARAMETERS
     UINT Flags;
 };
 
-void PresentArray(UINT NumSwapChains, void **SwapChains, UINT SyncInterval)
-{
-    // TODO
-}
-
 EXTERN_C HRESULT __stdcall DXGIXPresentArray(UINT SyncInterval, UINT PresentImmediateThreshold, UINT Flags,
                                              UINT NumSwapChains, void **ppSwapChains,
                                              const DXGIX_PRESENTARRAY_PARAMETERS *pPresentParameters)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    if (!g_PresentArrayHelper)
+    {
+        d3d11CreateInstance<DXGIXPresentArrayHelper>(g_ABI, (void **)&g_PresentArrayHelper);
+    }
+
+    g_PresentArrayHelper->PresentArray(ppSwapChains, NumSwapChains, SyncInterval);
+    return S_OK;
 }
 
 EXTERN_C HRESULT __stdcall DXGIXSetVLineNotification(UINT VLineCounter, UINT VLineNum, HANDLE hEvent)

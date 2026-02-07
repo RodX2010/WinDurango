@@ -5,11 +5,30 @@ static DWORD ReasonForCall = 0;
 
 void KernelxInitialize(HINSTANCE hinstDLL)
 {
+    if (!GetConsoleWindow())
+    {
+        AllocConsole();
+        FILE *f;
+        freopen_s(&f, "CONOUT$", "w", stdout);
+        freopen_s(&f, "CONOUT$", "w", stderr);
+        freopen_s(&f, "CONIN$", "r", stdin);
+
+        SetConsoleTitleW(L"WinDurango");
+    }
+
     if (ReasonForCall == DLL_PROCESS_ATTACH || ReasonForCall == DLL_THREAD_ATTACH)
     {
         XWinePatchImport(GetModuleHandleW(nullptr), GetRuntimeModule(),
                          "?GetActivationFactoryByPCWSTR@@YAJPEAXAEAVGuid@Platform@@PEAPEAX@Z",
                          GetActivationFactoryRedirect);
+    }
+
+    HMODULE User32 = LoadLibraryA("user32.dll");
+    if (User32)
+    {
+        FARPROC CreateWindowInBandEx = GetProcAddress(User32, "CreateWindowInBandEx");
+        TrueCreateWindowInBandEx = reinterpret_cast<PCreateWindowInBandEx>(CreateWindowInBandEx);
+        DetourAttach(&reinterpret_cast<PVOID &>(TrueCreateWindowInBandEx), EraCreateWindowInBandEx);
     }
 }
 

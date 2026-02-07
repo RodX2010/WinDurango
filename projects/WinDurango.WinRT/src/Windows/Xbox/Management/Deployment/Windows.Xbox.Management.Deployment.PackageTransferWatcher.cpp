@@ -19,13 +19,11 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
     }
     winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher PackageTransferWatcher::Create(winrt::Windows::ApplicationModel::Package const& unk, winrt::Windows::Foundation::Collections::IIterable<uint32_t> const& unka)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: Create");
-        throw hresult_not_implemented();
+        return winrt::make<PackageTransferWatcher>();
     }
     winrt::Windows::Xbox::Management::Deployment::PackageTransferWatcher PackageTransferWatcher::Create(winrt::Windows::ApplicationModel::Package const& unk)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: Create(Package)");
-        throw hresult_not_implemented();
+        return winrt::make<PackageTransferWatcher>();
     }
     winrt::Windows::Xbox::Management::Deployment::PackageTransferStatus PackageTransferWatcher::TransferStatus()
     {

@@ -6,6 +6,8 @@
 #include "ID3D11Shader.h"
 #include "ID3D11DeviceContext.h"
 #include "ID3D11Runtime.h"
+#include "ID3D11DMAEngineContext.h"
+#include "d3d11.x.h"
 
 //
 // IUnknown
@@ -787,8 +789,8 @@ template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDmaEngineContext(gfx::D3D11_DMA_ENGINE_CONTEXT_DESC const *pDmaEngineContextDesc,
                                                   gfx::ID3D11DMAEngineContextX<ABI> **ppDmaDeviceContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    *ppDmaDeviceContext = new D3D11DMAEngineContextX<ABI>();
+    return S_OK;
 }
 
 template <abi_t ABI> BOOL D3D11DeviceX<ABI>::IsFencePending(UINT64 Fence)
@@ -807,32 +809,147 @@ template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreatePlacementBuffer(D3D11_BUFFER_DESC const *pDesc, void *pVirtualAddress,
                                                  gfx::ID3D11Buffer<ABI> **ppBuffer)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    D3D11_SUBRESOURCE_DATA initialData{};
+    initialData.pSysMem = pVirtualAddress;
+    initialData.SysMemPitch = 0;
+    initialData.SysMemSlicePitch = 0;
+
+    auto pDesc2 = *pDesc;
+    if (pDesc2.Usage == D3D11_USAGE_IMMUTABLE)
+    {
+        pDesc2.Usage = D3D11_USAGE_DEFAULT;
+    }
+
+    HRESULT hr = CreateBuffer(&pDesc2, &initialData, ppBuffer);
+    (*ppBuffer)->m_pAllocationStart = pVirtualAddress;
+
+    return hr;
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreatePlacementTexture1D(D3D11_TEXTURE1D_DESC const *pDesc, UINT TileModeIndex, UINT Pitch,
                                                     void *pVirtualAddress, gfx::ID3D11Texture1D<ABI> **ppTexture1D)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    std::vector<D3D11_SUBRESOURCE_DATA> initialData(pDesc->ArraySize);
+    UINT RowPitch = 0;
+    UINT SlicePitch = 0;
+    auto pDesc2 = *pDesc;
+    pDesc2.MipLevels = 1;
+    if (pDesc2.Usage == D3D11_USAGE_IMMUTABLE)
+    {
+        pDesc2.Usage = D3D11_USAGE_DEFAULT;
+    }
+
+    for (int i = 0; i < initialData.size(); i++)
+    {
+        initialData[i].pSysMem = pVirtualAddress;
+        CalculatePitch(pDesc2.Width, 1, pDesc2.Format, &RowPitch, &SlicePitch);
+        initialData[i].SysMemPitch = RowPitch;
+        initialData[i].SysMemSlicePitch = SlicePitch;
+    }
+
+    MEMORY_BASIC_INFORMATION mbi{};
+    if (!VirtualQuery(pVirtualAddress, &mbi, sizeof(mbi)) || mbi.RegionSize < SlicePitch ||
+        (mbi.State & MEM_COMMIT) != MEM_COMMIT || (mbi.Protect & (PAGE_READWRITE | PAGE_READONLY)) == 0)
+    {
+        HRESULT hr = CreateTexture1D(&pDesc2, 0, ppTexture1D);
+        (*ppTexture1D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+    else
+    {
+        HRESULT hr = CreateTexture1D(&pDesc2, initialData.data(), ppTexture1D);
+        (*ppTexture1D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+
+    return S_OK;
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreatePlacementTexture2D(D3D11_TEXTURE2D_DESC const *pDesc, UINT TileModeIndex, UINT Pitch,
                                                     void *pVirtualAddress, gfx::ID3D11Texture2D<ABI> **ppTexture2D)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    std::vector<D3D11_SUBRESOURCE_DATA> initialData(pDesc->ArraySize);
+    UINT RowPitch = 0;
+    UINT SlicePitch = 0;
+    auto pDesc2 = *pDesc;
+    pDesc2.MipLevels = 1;
+    if (pDesc2.Usage == D3D11_USAGE_IMMUTABLE)
+    {
+        pDesc2.Usage = D3D11_USAGE_DEFAULT;
+    }
+
+    for (int i = 0; i < initialData.size(); i++)
+    {
+        initialData[i].pSysMem = pVirtualAddress;
+        CalculatePitch(pDesc2.Width, pDesc2.Height, pDesc2.Format, &RowPitch, &SlicePitch);
+        initialData[i].SysMemPitch = RowPitch;
+        initialData[i].SysMemSlicePitch = SlicePitch;
+    }
+
+    MEMORY_BASIC_INFORMATION mbi{};
+    if (!VirtualQuery(pVirtualAddress, &mbi, sizeof(mbi)) || mbi.RegionSize < SlicePitch ||
+        (mbi.State & MEM_COMMIT) != MEM_COMMIT || (mbi.Protect & (PAGE_READWRITE | PAGE_READONLY)) == 0)
+    {
+        HRESULT hr = CreateTexture2D(&pDesc2, 0, ppTexture2D);
+        (*ppTexture2D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+    else
+    {
+        HRESULT hr = CreateTexture2D(&pDesc2, initialData.data(), ppTexture2D);
+        (*ppTexture2D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+
+    return S_OK;
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreatePlacementTexture3D(D3D11_TEXTURE3D_DESC const *pDesc, UINT TileModeIndex, UINT Pitch,
                                                     void *pVirtualAddress, gfx::ID3D11Texture3D<ABI> **ppTexture3D)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    std::vector<D3D11_SUBRESOURCE_DATA> initialData(1);
+    UINT RowPitch = 0;
+    UINT SlicePitch = 0;
+    auto pDesc2 = *pDesc;
+    pDesc2.MipLevels = 1;
+    if (pDesc2.Usage == D3D11_USAGE_IMMUTABLE)
+    {
+        pDesc2.Usage = D3D11_USAGE_DEFAULT;
+    }
+
+    for (int i = 0; i < initialData.size(); i++)
+    {
+        initialData[i].pSysMem = pVirtualAddress;
+        CalculatePitch(pDesc2.Width, pDesc2.Height, pDesc2.Format, &RowPitch, &SlicePitch);
+        initialData[i].SysMemPitch = RowPitch;
+        initialData[i].SysMemSlicePitch = SlicePitch;
+    }
+
+    MEMORY_BASIC_INFORMATION mbi{};
+    if (!VirtualQuery(pVirtualAddress, &mbi, sizeof(mbi)) || mbi.RegionSize < SlicePitch ||
+        (mbi.State & MEM_COMMIT) != MEM_COMMIT || (mbi.Protect & (PAGE_READWRITE | PAGE_READONLY)) == 0)
+    {
+        HRESULT hr = CreateTexture3D(&pDesc2, 0, ppTexture3D);
+        (*ppTexture3D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+    else
+    {
+        HRESULT hr = CreateTexture3D(&pDesc2, initialData.data(), ppTexture3D);
+        (*ppTexture3D)->m_pAllocationStart = pVirtualAddress;
+        initialData.clear();
+        return hr;
+    }
+
+    return S_OK;
 }
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::GetTimestamps(UINT64 *pGpuTimestamp, UINT64 *pCpuRdtscTimestamp)

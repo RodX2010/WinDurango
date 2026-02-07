@@ -1,9 +1,64 @@
 #pragma once
+#include "ID3D11DeviceContext.h"
 #include "d3d11_x.g.h"
+#include <vector>
 
-template <abi_t ABI> class D3D11DMAEngineContextX : public gfx::ID3D11DMAEngineContextX<ABI>
+BOOL DMAFences[1024]{};
+UINT DMAFenceIndex = 0;
+
+template <abi_t ABI> struct CopyResourceCommand;
+
+template <abi_t ABI> struct CopySubresourceRegionCommand;
+
+template <abi_t ABI> struct DMAInsertFenceCommand;
+
+template <abi_t ABI> struct DMAInsertWaitOnFenceCommand;
+
+template <abi_t ABI> struct LZDecompressMemoryCommand;
+
+template <abi_t ABI> struct FillMemoryWithValueCommand;
+
+template <abi_t ABI> struct CopyLastErrorCodeToMemoryCommand;
+
+template <abi_t ABI> struct DMACommands
 {
   public:
+    enum class DMACommandType
+    {
+        CopyResource,
+        CopySubresourceRegion,
+        DMAInsertFence,
+        DMAInsertWaitOnFence,
+        LZDecompressMemory,
+        FillMemoryWithValue,
+        CopyLastErrorCodeToMemory,
+    };
+
+    union {
+        CopyResourceCommand<ABI> CopyResource;
+        CopySubresourceRegionCommand<ABI> CopySubresourceRegion;
+        DMAInsertFenceCommand<ABI> DMAInsertFence;
+        DMAInsertWaitOnFenceCommand<ABI> DMAInsertWaitOnFence;
+        LZDecompressMemoryCommand<ABI> LZDecompressMemory;
+        FillMemoryWithValueCommand<ABI> FillMemoryWithValue;
+        CopyLastErrorCodeToMemoryCommand<ABI> CopyLastErrorCodeToMemory;
+    };
+
+    DMACommandType m_DMACommandType;
+};
+
+template <abi_t ABI> class D3D11DMAEngineContextX : public gfx::ID3D11DMAEngineContextX<ABI>, ID3D11BackgroundContext
+{
+  public:
+    std::vector<DMACommands<ABI>> m_DMACommandQueue;
+    D3D11DeviceContextX<ABI> *m_pImmediateContext;
+
+    D3D11DMAEngineContextX()
+    {
+        AddRef();
+        m_pImmediateContext = new D3D11DeviceContextX<ABI>();
+    }
+
     //
     // IUnknown
     //
@@ -19,6 +74,10 @@ template <abi_t ABI> class D3D11DMAEngineContextX : public gfx::ID3D11DMAEngineC
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        return S_OK;
+    }
 
     //
     // ID3D11DMAEngineContextX
@@ -51,6 +110,100 @@ template <abi_t ABI> class D3D11DMAEngineContextX : public gfx::ID3D11DMAEngineC
     void WriteTimestampToBuffer(gfx::ID3D11Buffer<ABI> *v1, uint32_t v2);
     void WriteValueBottomOfPipe(void *v1, uint32_t v2);
     void InsertWaitOnMemory(void const *v1, uint32_t v2, D3D11_COMPARISON_FUNC v3, uint32_t v4, uint32_t v5);
+
+    BOOL ExecuteContext() override;
+    UINT m_CommandIndex = 0;
+};
+
+template <abi_t ABI> struct CopyResourceCommand
+{
+    gfx::ID3D11Resource<ABI> *pDstResource;
+    gfx::ID3D11Resource<ABI> *pSrcResource;
+    UINT Flags;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        pDmaContext->m_pImmediateContext->CopyResource(pDstResource, pSrcResource);
+        return FALSE;
+    }
+};
+
+template <abi_t ABI> struct CopySubresourceRegionCommand
+{
+    gfx::ID3D11Resource<ABI> *pDstResource;
+    UINT DstSubresource;
+    UINT DstX;
+    UINT DstY;
+    UINT DstZ;
+    gfx::ID3D11Resource<ABI> *pSrcResource;
+    UINT SrcSubresource;
+    const D3D11_BOX *pSrcBox;
+    UINT Flags;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        pDmaContext->m_pImmediateContext->CopySubresourceRegion(pDstResource, DstSubresource, DstX, DstY, DstZ,
+                                                                pSrcResource, SrcSubresource, pSrcBox);
+        return FALSE;
+    }
+};
+
+template <abi_t ABI> struct DMAInsertFenceCommand
+{
+    UINT Flags;
+    UINT64 Fence;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        return !*reinterpret_cast<BOOL volatile *>(Fence);
+    }
+};
+
+template <abi_t ABI> struct DMAInsertWaitOnFenceCommand
+{
+    UINT Flags;
+    UINT64 Fence;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        return !*reinterpret_cast<BOOL volatile *>(Fence);
+    }
+};
+
+template <abi_t ABI> struct LZDecompressMemoryCommand
+{
+    void *NextIn;
+    void *NextOut;
+    UINT AvailIn;
+    UINT Flags;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        //TODO: Install zlib
+        return FALSE;
+    }
+};
+
+template <abi_t ABI> struct FillMemoryWithValueCommand
+{
+    void *pDstAddress;
+    UINT64 SizeBytes;
+    UINT FillValue;
+
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        pDmaContext->m_pImmediateContext->FillMemoryWithValue(pDstAddress, SizeBytes, FillValue);
+        return FALSE;
+    }
+};
+
+template <abi_t ABI> struct CopyLastErrorCodeToMemoryCommand
+{
+    void *pDstAddress;
+    BOOL Execute(D3D11DMAEngineContextX<ABI> *pDmaContext)
+    {
+        return FALSE;
+    }
 };
 
 #undef ABI_INTERFACE

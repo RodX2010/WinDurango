@@ -148,6 +148,20 @@ HRESULT __stdcall EraGetForCurrentThread(ICoreWindowStatic *pThis, CoreWindow **
     return hr;
 }
 
+HWND __stdcall EraCreateWindowInBandEx(DWORD dwExStyle, LPCWSTR lpClassName, LPCWSTR lpWindowName, DWORD dwStyle, int x,
+                                       int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu,
+                                       HINSTANCE hInstance, LPVOID lpParam, DWORD dwBand, DWORD dwTypeFlags)
+{
+    if (dwExStyle & WS_EX_NOREDIRECTIONBITMAP)
+    {
+        dwExStyle &= ~WS_EX_NOREDIRECTIONBITMAP;
+    }
+
+    return TrueCreateWindowInBandEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent,
+                                    hMenu, hInstance, lpParam, dwBand, dwTypeFlags);
+}
+
+
 
 inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, void **factory)
 {

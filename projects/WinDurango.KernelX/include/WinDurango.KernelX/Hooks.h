@@ -62,3 +62,13 @@ inline BOOL IsXboxAddress(const PVOID Address)
 HRESULT(STDMETHODCALLTYPE *TrueGetForCurrentThread)(ICoreWindowStatic *staticWindow, CoreWindow **window);
 
 HRESULT STDMETHODCALLTYPE EraGetForCurrentThread(ICoreWindowStatic *pThis, CoreWindow **ppWindow);
+
+typedef HWND(WINAPI *PCreateWindowInBandEx)(DWORD dwExStyle, LPCWSTR lpClassName, LPCWSTR lpWindowName, DWORD dwStyle,
+                                            int x, int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu,
+                                            HINSTANCE hInstance, LPVOID lpParam, DWORD dwBand, DWORD dwTypeFlags);
+
+static PCreateWindowInBandEx TrueCreateWindowInBandEx = 0;
+
+HWND WINAPI EraCreateWindowInBandEx(DWORD dwExStyle, LPCWSTR lpClassName, LPCWSTR lpWindowName, DWORD dwStyle, int x,
+                                    int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance,
+                                    LPVOID lpParam, DWORD dwBand, DWORD dwTypeFlags);
