@@ -1,4 +1,5 @@
 #include "Windows.Xbox.Input.Controller.h"
+#include "Windows.Xbox.Input.Gamepad.h"
 #include "WinDurangoWinRT.h"
 
 namespace winrt::Windows::Xbox::Input::implementation
@@ -30,8 +31,14 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Controller> Controller::Controllers()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: Controllers");
-        throw hresult_not_implemented();
+        auto vector = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::Controller>();
+
+        for (auto const &gamepad : Gamepad::Gamepads())
+        {
+            vector.Append(gamepad.as<winrt::Windows::Xbox::Input::Controller>());
+        }
+
+        return vector.GetView();
     }
 
     winrt::event_token Controller::ControllerAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerAddedEventArgs> const& handler)
@@ -99,8 +106,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     hstring Controller::Type()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: Type");
-        throw hresult_not_implemented();
+        return L"";
     }
 
     winrt::Windows::Xbox::System::User Controller::User()

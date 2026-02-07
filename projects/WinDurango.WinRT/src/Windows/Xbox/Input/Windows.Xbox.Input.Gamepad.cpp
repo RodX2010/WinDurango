@@ -174,8 +174,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     hstring Gamepad::Type()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: Type");
-        throw hresult_not_implemented();
+        return L"";
     }
 
     winrt::Windows::Xbox::System::User Gamepad::User()
