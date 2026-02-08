@@ -3,6 +3,7 @@
 #include "Windows.Xbox.System.UserAddedEventArgs.g.h"
 #include "Windows.Xbox.System.UserRemovedEventArgs.g.h"
 #include "Windows.Xbox.System.UserDisplayInfo.h"
+#include "Windows.Xbox.System.h"
 
 namespace winrt::Windows::Xbox::System::implementation
 {

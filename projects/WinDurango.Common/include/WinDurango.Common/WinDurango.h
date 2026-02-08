@@ -23,10 +23,10 @@ namespace wd::common
 
         Config config;
         Logging log;
+        std::shared_ptr<interfaces::storage::Directory> rootDir;
 
       private:
         bool _inited = false;
-        std::shared_ptr<interfaces::storage::Directory> rootDir;
         std::shared_ptr<interfaces::storage::Directory> WinDurangoRoot;
     };
 } // namespace wd::common

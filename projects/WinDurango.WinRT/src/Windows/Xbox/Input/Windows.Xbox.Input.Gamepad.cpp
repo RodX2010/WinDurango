@@ -179,7 +179,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::Windows::Xbox::System::User Gamepad::User()
     {
-        p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating Getting User");
+        p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Getting User");
         return winrt::Windows::Xbox::System::User::Users().GetAt(id);
     }
 
