@@ -68,6 +68,7 @@ set(FILES
     "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ConnectedStorageContainer.cpp"
     "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ConnectedStorageSpace.cpp"
     "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ContainerInfoQueryResult.cpp"
+    "src/Windows/Xbox/Services/Windows.Xbox.Services.XboxLiveConfiguration.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -90,6 +91,7 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/ApplicationModel/Store"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Multiplayer"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Storage"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Services"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )

@@ -1,4 +1,5 @@
 #include "IDXGISwapChain.h"
+#include "d3d11.x.h"
 
 //
 // IUnknown
@@ -72,6 +73,7 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::GetDevice(REFIID riid, void **
 //
 template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval, uint32_t Flags)
 {
+    p_wd->gui.Render();
     return m_pFunction->Present(SyncInterval, Flags);
 }
 
@@ -182,9 +184,9 @@ HRESULT DXGISwapChain1<ABI>::Present1(uint32_t SyncInterval, uint32_t PresentFla
                                       DXGI_PRESENT_PARAMETERS const *pPresentParameters)
 {
     if (!pPresentParameters)
-        return Present(SyncInterval, PresentFlags);
+        return m_pFunction->Present(SyncInterval, PresentFlags);
     else
-        return Present1(SyncInterval, PresentFlags, pPresentParameters);
+        return m_pFunction->Present1(SyncInterval, PresentFlags, pPresentParameters);
 }
 
 template <abi_t ABI> bool DXGISwapChain1<ABI>::IsTemporaryMonoSupported()

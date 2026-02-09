@@ -7,6 +7,7 @@
 #include "Interfaces/Storage/Directory.h"
 #include "Logging.h"
 #include "exports.h"
+#include "GUI.h"
 #include <ctime>
 
 namespace wd::common
@@ -24,6 +25,7 @@ namespace wd::common
         Config config;
         Logging log;
         std::shared_ptr<interfaces::storage::Directory> rootDir;
+        GUI gui;
 
       private:
         bool _inited = false;

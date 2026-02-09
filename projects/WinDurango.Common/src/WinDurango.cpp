@@ -3,6 +3,8 @@
 //
 #include "WinDurango.Common/WinDurango.h"
 
+#undef CreateFile
+
 namespace wd::common
 {
     std::shared_ptr<WinDurango> WinDurango::GetInstance()
