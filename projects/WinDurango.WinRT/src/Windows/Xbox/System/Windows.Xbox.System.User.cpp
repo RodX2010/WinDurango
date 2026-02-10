@@ -83,19 +83,14 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureForAllUsersAsync(hstring method, hstring url, hstring headers, winrt::Windows::Foundation::Collections::IVector<uint8_t> body)
     {
-        std::string s;
-        for (auto b : body)
-        {
-            s += std::to_string(+b) + " ";
-        }
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync({}, {}, {}, array<uint8_t>{})", to_string(method), to_string(url), to_string(headers), s);
-        co_return winrt::make<winrt::Windows::Xbox::System::implementation::GetTokenAndSignatureResult>();
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync(hstring, hstring, hstring, array<uint8_t>");
+        throw hresult_not_implemented();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureForAllUsersAsync(hstring method, hstring url, hstring headers, hstring body)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync({}, {}, {}, {})", to_string(method), to_string(url), to_string(headers), to_string(body));
-        co_return winrt::make<winrt::Windows::Xbox::System::implementation::GetTokenAndSignatureResult>();
+        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync(hstring, hstring, hstring, hstring)");
+        throw hresult_not_implemented();
     }
 
     winrt::event_token User::AudioDeviceAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::AudioDeviceAddedEventArgs> const& handler)

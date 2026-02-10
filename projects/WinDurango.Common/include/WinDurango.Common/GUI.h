@@ -1,10 +1,11 @@
 #pragma once
 #include <d3d11.h>
 #include <dxgi1_2.h>
+#include "exports.h"
 
 namespace wd::common
 {
-    class GUI
+    class WD_API GUI
     {
     public:
         void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, IDXGISwapChain1* pSwapchain);
