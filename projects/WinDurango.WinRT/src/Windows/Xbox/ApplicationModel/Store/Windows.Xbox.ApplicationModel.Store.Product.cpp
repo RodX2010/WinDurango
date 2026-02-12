@@ -3,6 +3,10 @@
 
 namespace winrt::Windows::Xbox::ApplicationModel::Store::implementation
 {
+    hstring ProductPurchasedEventArgs::Receipt()
+    {
+        return receipt;
+    }
     winrt::Windows::Foundation::IAsyncAction Product::ShowPurchaseAsync(winrt::Windows::Xbox::System::User unk, hstring unka)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::ApplicationModel::Store", "Unimplemented: ShowPurchaseAsync");

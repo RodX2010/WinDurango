@@ -1,5 +1,16 @@
 namespace Windows.Xbox.Multiplayer
 {
+    enum PartyErrorStatus {
+        InternalError = -2016673791,
+        BadToken = -2016673790,
+        InvalidSecureDeviceAddress = -2016673787,
+        EmptyParty = -2016673785,
+        PartyActionRestricted = -2016673784,
+        PartyAlreadyInTitle = -2016673783,
+        QualityOfSerivceFailed = -2016673782,
+        PartyJoinFailure = -2016673781,
+    };
+
     // From @Zombie
     enum SuppressGameSessionReadyToastMode
     {
@@ -47,5 +58,16 @@ namespace Windows.Xbox.Multiplayer
     runtimeclass PartyChatView
     {
         Windows.Foundation.Collections.IVectorView<PartyChatMember> Members { get; };
+    }
+
+    [interface_name("IPartyChatStatics", AAAAAAAA-1A34-459B-973A-8C183714642B)]
+    runtimeclass PartyChat
+    {
+        Windows.Foundation.IAsyncOperation<PartyChatView> GetPartyChatViewAsync();
+        event Windows.Foundation.EventHandler<Object> PartyChatViewChanged;
+        Boolean IsPartyChatActive { get; };
+        Boolean IsPartyChatSuppressed { get; set; };
+        event Windows.Foundation.EventHandler<Boolean> IsPartyChatActiveChanged;
+        event Windows.Foundation.EventHandler<Boolean> IsPartyChatSuppressedChanged;
     }
 }

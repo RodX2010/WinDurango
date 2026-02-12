@@ -95,7 +95,7 @@ namespace Windows.Xbox.System
         String XboxUserId { get; };
         // https://learn.microsoft.com/en-us/dotnet/api/microsoft.xbox.services.system.xboxliveuser.gettokenandsignatureasync
         Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(String method, String url, String headers);
-        Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(String method, String url, String headers, Windows.Foundation.Collections.IVector<UInt8> body);
+        Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(String method, String url, String headers, UInt32 __bodySize, [size_is(__bodySize)] UInt8 body);
         [default_overload] Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(String method, String url, String headers, String body);
     }
 

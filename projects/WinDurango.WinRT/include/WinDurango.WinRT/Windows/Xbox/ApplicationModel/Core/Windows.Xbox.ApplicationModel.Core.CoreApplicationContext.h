@@ -8,7 +8,12 @@ namespace winrt::Windows::Xbox::ApplicationModel::Core::implementation
     {
         CoreApplicationContext() = default;
 
+        void SetCurrentUser(winrt::Windows::Xbox::System::User const& value);
+        winrt::Windows::Xbox::System::User CurrentSystemUser();
+        winrt::event_token CurrentSystemUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
+        void CurrentSystemUserChanged(winrt::event_token const& token) noexcept;
         winrt::Windows::Xbox::System::User CurrentUser();
+        winrt::Windows::Xbox::System::User PreviousUser();
         winrt::event_token CurrentUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
         void CurrentUserChanged(winrt::event_token const& token) noexcept;
     private:
