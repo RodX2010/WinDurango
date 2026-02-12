@@ -232,7 +232,7 @@ namespace winrt::Windows::Xbox::System::implementation
         throw hresult_not_implemented();
     }
 
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, winrt::Windows::Foundation::Collections::IVector<uint8_t> body)
+    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, uint32_t __bodySize, uint8_t body)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureAsync(hstring, hstring, hstring, array<uint8_t>)");
         throw hresult_not_implemented();

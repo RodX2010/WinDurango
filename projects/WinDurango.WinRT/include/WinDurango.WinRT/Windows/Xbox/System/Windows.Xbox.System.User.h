@@ -70,7 +70,7 @@ namespace winrt::Windows::Xbox::System::implementation
         hstring XboxUserHash();
         hstring XboxUserId();
         winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers);
-        winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, winrt::Windows::Foundation::Collections::IVector<uint8_t> body);
+        winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, uint32_t __bodySize, uint8_t body);
         winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, hstring body);
     private:
         uint32_t id = 0;

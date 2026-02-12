@@ -21,7 +21,7 @@ namespace wd::common
         return _inited;
     }
 
-    void WinDurango::Init(std::shared_ptr<interfaces::storage::Directory> rootDir)
+    void WinDurango::Init(std::shared_ptr<interfaces::storage::Directory> root)
     {
         if (this->_inited)
         {
@@ -29,6 +29,7 @@ namespace wd::common
         }
         try
         {
+            rootDir = root;
             rootDir->open();
 
             std::time_t timestamp = std::time(nullptr);
