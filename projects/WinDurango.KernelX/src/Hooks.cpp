@@ -10,6 +10,8 @@ using namespace ABI::Windows::ApplicationModel::Store;
 
 std::shared_ptr<wd::common::WinDurango> winDurango;
 GetActivationFactory_t p_GetActivationFactory;
+GetActivationFactory_t p_ServicesGetActivationFactory;
+GetActivationFactory_t p_GameChatGetActivationFactory;
 
 HRESULT XWineGetImport(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _In_ LPCSTR Import,
                        _Out_ PIMAGE_THUNK_DATA *pThunk)
@@ -266,6 +268,44 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
         }
     }
 
+    if (!p_ServicesGetActivationFactory)
+    {
+        HINSTANCE hGetActivationFactoryDLL = LoadLibrary("Microsoft.Xbox.Services.dll");
+
+        if (!hGetActivationFactoryDLL) 
+        {
+            winDurango->log.Error("WinDurango::KernelX", "Failed to load Microsoft.Xbox.Services.dll");
+            return EXIT_FAILURE;
+        }
+
+        p_ServicesGetActivationFactory = (GetActivationFactory_t)GetProcAddress(hGetActivationFactoryDLL, "DllGetActivationFactory");
+
+        if (!p_ServicesGetActivationFactory) 
+        {
+            winDurango->log.Error("WinDurango::KernelX", "Failed to load DllGetActivationFactory");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (!p_GameChatGetActivationFactory)
+    {
+        HINSTANCE hGetActivationFactoryDLL = LoadLibrary("Microsoft.Xbox.GameChat.dll");
+
+        if (!hGetActivationFactoryDLL) 
+        {
+            winDurango->log.Error("WinDurango::KernelX", "Failed to load Microsoft.Xbox.GameChat.dll");
+            return EXIT_FAILURE;
+        }
+
+        p_GameChatGetActivationFactory = (GetActivationFactory_t)GetProcAddress(hGetActivationFactoryDLL, "DllGetActivationFactory");
+
+        if (!p_GameChatGetActivationFactory) 
+        {
+            winDurango->log.Error("WinDurango::KernelX", "Failed to load DllGetActivationFactory");
+            return EXIT_FAILURE;
+        }
+    }
+
     Microsoft::WRL::ComPtr<IActivationFactory> i_factory;
 
     HRESULT hr = p_GetActivationFactory(classId, i_factory.GetAddressOf());
@@ -273,6 +313,22 @@ inline HRESULT WINAPI EraRoGetActivationFactory(HSTRING classId, REFIID iid, voi
     if (SUCCEEDED(hr))
     {
         return i_factory.CopyTo(iid, factory);
+    }
+
+    Microsoft::WRL::ComPtr<IActivationFactory> i_Servicesfactory;
+
+    hr = p_ServicesGetActivationFactory(classId, i_Servicesfactory.GetAddressOf());
+    if (SUCCEEDED(hr))
+    {
+        return i_Servicesfactory.CopyTo(iid, factory);
+    }
+
+    Microsoft::WRL::ComPtr<IActivationFactory> i_GameChatfactory;
+
+    hr = p_GameChatGetActivationFactory(classId, i_GameChatfactory.GetAddressOf());
+    if (SUCCEEDED(hr))
+    {
+        return i_GameChatfactory.CopyTo(iid, factory);
     }
 
     return RoGetActivationFactory(classId, iid, factory);
