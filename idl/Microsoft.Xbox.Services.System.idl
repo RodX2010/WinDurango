@@ -1,0 +1,180 @@
+namespace Microsoft.Xbox.Services.System
+{
+    enum GamingPrivilege
+    {
+        Broadcast = 190,
+        ViewFriendsList = 197,
+        GameDVR = 198,
+        ShareKinectContent = 199,
+        MultiplayerParties = 203,
+        CommunicationVoiceIngame = 205,
+        CommunicationVoiceSkype = 206,
+        CloudGamingManageSession = 207,
+        CloudGamingJoinSession = 208,
+        CloudSavedGames = 209,
+        ShareContent = 211,
+        PremiumContent = 214,
+        SubscriptionContent = 219,
+        SocialNetworkSharing = 220,
+        PremiumVideo = 224,
+        VideoCommunications = 235,
+        PurchaseContent = 245,
+        UserCreatedContent = 247,
+        ProfileViewing = 249,
+        Communications = 252,
+        MultiplayerSessions = 254,
+        AddFriend = 255,
+    };
+
+    enum SignInStatus
+    {
+        Success,
+        UserInteractionRequired,
+        UserCancel,
+    };
+
+    enum VerifyStringResultCode
+    {
+        Success,
+        Offensive,
+        TooLong,
+        UnknownError,
+    };
+
+    [interface_name("__IGetTokenAndSignatureResultPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass GetTokenAndSignatureResult
+    {
+        String Token { get; };
+        String Signature { get; };
+        String XboxUserId { get; };
+        String Gamertag { get; };
+        String XboxUserHash { get; };
+        String AgeGroup { get; };
+        String Privileges { get; };
+        String WebAccountId { get; };
+    }
+
+    [interface_name("__ISignInResultPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass SignInResult
+    {
+        SignInStatus Status { get; };
+    }
+
+    [interface_name("__ISignOutCompletedEventArgsPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass SignOutCompletedEventArgs
+    {
+        XboxLiveUser User { get; };
+    }
+
+    [interface_name("__IStringServicePublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass StringService
+    {
+        Windows.Foundation.IAsyncOperation<VerifyStringResult> VerifyStringAsync(String stringToVerify);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<VerifyStringResult>> VerifyStringsAsync(Windows.Foundation.Collections.IVectorView<String> stringsToVerify);
+    }
+
+    [interface_name("__ITitleCallableUIPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    [static_name("__ITitleCallableUIStatics", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass TitleCallableUI
+    {
+        static Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<String>> ShowPlayerPickerUI(
+            String promptDisplayText,
+            Windows.Foundation.Collections.IVectorView<String> xboxUserIds,
+            Windows.Foundation.Collections.IVectorView<String> preselectedXboxUserIds,
+            UInt32 minSelectionCount,
+            UInt32 maxSelectionCount);
+        static Windows.Foundation.IAsyncAction ShowGameInviteUIAsync(
+            MultiplayerSessionReference sessionReference,
+            String contextStringId);
+        static Windows.Foundation.IAsyncAction ShowProfileCardUIAsync(String targetXboxUserId);
+        static Windows.Foundation.IAsyncAction ShowChangeFriendRelationshipUIAsync(String targetXboxUserId);
+        static Windows.Foundation.IAsyncAction ShowTitleAchievementsUIAsync(UInt32 titleId);
+        static Boolean CheckGamingPrivilegeSilently(GamingPrivilege privilege);
+        static Windows.Foundation.IAsyncOperation<Boolean> CheckGamingPrivilegeWithUI(
+            GamingPrivilege privilege,
+            String friendlyMessage);
+        static Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<String>> ShowPlayerPickerUIForUser(
+            String promptDisplayText,
+            Windows.Foundation.Collections.IVectorView<String> xboxUserIds,
+            Windows.Foundation.Collections.IVectorView<String> preselectedXboxUserIds,
+            UInt32 minSelectionCount,
+            UInt32 maxSelectionCount,
+            User user);
+        [method_name("ShowGameInviteUIForUserAsync2")]
+        static Windows.Foundation.IAsyncAction ShowGameInviteUIForUserAsync(
+            MultiplayerSessionReference sessionReference,
+            String invitationDisplayText,
+            String contextStringId,
+            User user);
+        [method_name("ShowGameInviteUIForUserAsync1")]
+        static Windows.Foundation.IAsyncAction ShowGameInviteUIForUserAsync(
+            MultiplayerSessionReference sessionReference,
+            String invitationDisplayText,
+            User user);
+        static Windows.Foundation.IAsyncAction ShowProfileCardUIForUserAsync(String targetXboxUserId, User user);
+        static Windows.Foundation.IAsyncAction ShowChangeFriendRelationshipUIForUserAsync(String targetXboxUserId, User user);
+        static Windows.Foundation.IAsyncAction ShowTitleAchievementsUIForUserAsync(UInt32 titleId, User user);
+        static Boolean CheckGamingPrivilegeSilentlyForUser(GamingPrivilege privilege, User user);
+        static Windows.Foundation.IAsyncOperation<Boolean> CheckGamingPrivilegeWithUIForUser(
+            GamingPrivilege privilege,
+            String friendlyMessage,
+            User user);
+    }
+
+    [interface_name("__IVerifyStringResultPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass VerifyStringResult
+    {
+        VerifyStringResultCode ResultCode { get; };
+        String FirstOffendingSubstring { get; };
+    }
+
+    [interface_name("__IXboxLiveServicesSettingsPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    [static_name("__IXboxLiveServicesSettingsStatics", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass XboxLiveServicesSettings
+    {
+        [interface_name("__IXboxLiveServicesSettingsProtectedNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+        {
+        }
+        static XboxLiveServicesSettings SingletonInstance { get; };
+        event Windows.Foundation.EventHandler<XboxLiveLogCallEventArgs> LogCallRouted;
+        XboxServicesDiagnosticsTraceLevel DiagnosticsTraceLevel { get; set; }
+        event Windows.Foundation.EventHandler<XboxLiveWnsEventArgs> WnsEventRecevied;
+    }
+
+    [interface_name("__IXboxLiveUserPublicNonVirtuals", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    [static_name("__IXboxLiveUserStatics", 63E20CA3-78E1-3587-A3DB-F1E6EC6FA1E9)]
+    runtimeclass XboxLiveUser
+    {
+        XboxLiveUser();
+        [constructor_name("__IXboxLiveUserFactory", 2E34C2E3-BE7D-3E11-A46F-32AD47F80203)]
+        {
+            XboxLiveUser(User systemUser);
+        }
+        static event Windows.Foundation.EventHandler<SignOutCompletedEventArgs> SignOutCompleted;
+        Windows.Foundation.IAsyncOperation<SignInResult> SignInAsync(Object coreDispatcher);
+        Windows.Foundation.IAsyncOperation<SignInResult> SignInSilentlyAsync(Object coreDispatcher);
+        [method_name("GetTokenAndSignatureAsync2")]
+        Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(
+            String httpMethod,
+            String url,
+            String headers);
+        [method_name("GetTokenAndSignatureAsync1")]
+        Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(
+            String httpMethod,
+            String url,
+            String headers,
+            String body);
+        Windows.Foundation.IAsyncOperation<GetTokenAndSignatureResult> GetTokenAndSignatureArrayAsync(
+            String httpMethod,
+            String url,
+            String headers,
+            UInt8[] requestBodyArray);
+        String XboxUserId { get; };
+        String Gamertag { get; };
+        String AgeGroup { get; };
+        String Privileges { get; };
+        Boolean IsSignedIn { get; };
+        String WebAccountId { get; };
+        User WindowsSystemUser { get; };
+    }
+}

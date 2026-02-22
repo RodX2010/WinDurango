@@ -1,0 +1,11 @@
+namespace Microsoft.Xbox.Services.Events
+{
+    [interface_name("__IEventsServicePublicNonVirtuals", 260EC3FB-ABB2-3670-AC97-EBCDC85325B8)]
+    runtimeclass EventsService
+    {
+        [method_name("WriteInGameEvent2")] 
+        void WriteInGameEvent(String eventName);
+        [method_name("WriteInGameEvent1")] 
+        void WriteInGameEvent(String eventName, Windows.Foundation.Collections.PropertySet dimensions, Windows.Foundation.Collections.PropertySet measurements);
+    }
+}

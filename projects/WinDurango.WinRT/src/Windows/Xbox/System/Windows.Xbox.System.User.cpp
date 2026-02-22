@@ -229,19 +229,19 @@ namespace winrt::Windows::Xbox::System::implementation
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureAsync(hstring, hstring, hstring)");
-        throw hresult_not_implemented();
+        co_return winrt::make<GetTokenAndSignatureResult>();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, uint32_t __bodySize, uint8_t body)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureAsync(hstring, hstring, hstring, array<uint8_t>)");
-        throw hresult_not_implemented();
+        co_return winrt::make<GetTokenAndSignatureResult>();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers, hstring body)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureAsync(hstring, hstring, hstring, hstring)");
-        throw hresult_not_implemented();
+        co_return winrt::make<GetTokenAndSignatureResult>();
     }
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::OnlineStateChangedEventArgs>> User::m_OnlineStateChanged{};
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserAddedEventArgs>> User::m_UserAdded{};

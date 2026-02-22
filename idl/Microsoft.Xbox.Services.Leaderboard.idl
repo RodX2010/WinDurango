@@ -1,0 +1,170 @@
+namespace Microsoft.Xbox.Services.Leaderboard
+{
+    enum SortOrder
+    {
+        Ascending,
+        Descending,
+    };
+
+    [interface_name("__ILeaderboardColumnPublicNonVirtuals", 5AA7B403-39AB-358C-AFB7-F7161F958D49)]
+    runtimeclass LeaderboardColumn
+    {
+        String DisplayName { get; };
+        String StatisticName { get; };
+        Windows.Foundation.PropertyType StatisticType { get; };
+    }
+
+    [interface_name("__ILeaderboardQueryPublicNonVirtuals", FDA27C92-0698-36B7-8901-C94284C3CB1F)]
+    runtimeclass LeaderboardQuery
+    {
+        Boolean SkipResultToMe { get; set; };
+        UInt32 SkipResultToRank { get; set; };
+        UInt32 MaxItems { get; set; };
+        SortOrder Order { get; set; };
+        String StatName { get; };
+        String SocialGroup { get; };
+        Boolean HasNext { get; };
+    }
+
+    [interface_name("__ILeaderboardResultPublicNonVirtuals", 11BBB68A-409E-37AF-B493-22205E5DF3C8)]
+    runtimeclass LeaderboardResult
+    {
+        String DisplayName { get; };
+        UInt32 TotalRowCount { get; };
+        Windows.Foundation.Collections.IVectorView<LeaderboardColumn> Columns { get; };
+        Windows.Foundation.Collections.IVectorView<LeaderboardRow> Rows { get; };
+        Boolean HasNext { get; };
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetNextAsync(UInt32 maxItems);
+        LeaderboardQuery GetNextQuery();
+    }
+
+    [interface_name("__ILeaderboardRowPublicNonVirtuals", BB067BA4-AA51-3FF1-9FD9-E26FC027DA62)]
+    runtimeclass LeaderboardRow
+    {
+        String Gamertag { get; };
+        String XboxUserId { get; };
+        Double Percentile { get; };
+        UInt32 Rank { get; };
+        Windows.Foundation.Collections.IVectorView<String> Values { get; };
+    }
+
+    [interface_name("__ILeaderboardServicePublicNonVirtuals", 37BD7FF3-0B31-3DAF-BC3F-B0F5301F2173)]
+    runtimeclass LeaderboardService
+    {
+        [method_name("GetLeaderboardAsync4")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardAsync(
+            String serviceConfigurationId,
+            String leaderboardName);
+        [method_name("GetLeaderboardAsync3")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            UInt32 skipToRank,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardAsync2")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardAsync1")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            UInt32 skipToRank,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithAdditionalColumnsAsync4")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns);
+        [method_name("GetLeaderboardWithAdditionalColumnsAsync3")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithAdditionalColumnsAsync2")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            UInt32 skipToRank,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithAdditionalColumnsAsync1")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            UInt32 skipToRank,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithSkipToUserAsync2")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithSkipToUserAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String skipToXboxUserId,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithSkipToUserAsync1")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithSkipToUserAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            String skipToXboxUserId,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithSkipToUserWithAdditionalColumnsAsync2")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithSkipToUserWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String skipToXboxUserId,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardWithSkipToUserWithAdditionalColumnsAsync1")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardWithSkipToUserWithAdditionalColumnsAsync(
+            String serviceConfigurationId,
+            String leaderboardName,
+            String xuid,
+            String socialGroup,
+            String skipToXboxUserId,
+            Windows.Foundation.Collections.IVectorView<String> additionalColumns,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardForSocialGroupAsync2")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardForSocialGroupAsync(
+            String xboxUserId,
+            String serviceConfigurationId,
+            String statisticName,
+            String socialGroup,
+            UInt32 maxItems);
+        [method_name("GetLeaderboardForSocialGroupAsync1")]
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardForSocialGroupAsync(
+            String xboxUserId,
+            String serviceConfigurationId,
+            String statisticName,
+            String socialGroup,
+            String sortOrder,
+            UInt32 maxItems);
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardForSocialGroupWithSkipToRankAsync(
+            String xboxUserId,
+            String serviceConfigurationId,
+            String statisticName,
+            String socialGroup,
+            UInt32 skipToRank,
+            String sortOrder,
+            UInt32 maxItems);
+        Windows.Foundation.IAsyncOperation<LeaderboardResult> GetLeaderboardForSocialGroupWithSkipToUserAsync(
+            String xboxUserId,
+            String serviceConfigurationId,
+            String statisticName,
+            String socialGroup,
+            String skipToXboxUserId,
+            String sortOrder,
+            UInt32 maxItems);
+    }
+}

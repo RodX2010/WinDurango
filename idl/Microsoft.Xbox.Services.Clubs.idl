@@ -1,0 +1,253 @@
+namespace Microsoft.Xbox.Services.Clubs
+{
+    enum ClubRole
+    {
+        Nonmember,
+        Member,
+        Moderator,
+        Owner,
+        RequestedToJoin,
+        Recommended,
+        Invited,
+        Banned,
+        Follower,
+    };
+
+    enum ClubType
+    {
+        Unknown,
+        Public,
+        Private,
+        Hidden,
+    };
+
+    enum ClubUserPresence
+    {
+        NotInClub,
+        InClub,
+        Chat,
+        Feed,
+        Roster,
+        Play,
+        InGame,
+    };
+
+    [interface_name("__IClubPublicNonVirtuals", BDC5FD5A-B3A0-3E4B-995A-CCE8545DF7B2)]
+    runtimeclass Club
+    {
+        String Id { get; };
+        ClubType Type { get; };
+        Windows.Foundation.DateTime Created { get; };
+        String Owner { get; };
+        String TitleFamilyId { get; };
+        String TitleFamilyName { get; };
+        String ShortName { get; };
+        ClubProfile Profile { get; };
+        String GlyphImageUrl { get; };
+        String BannerImageUrl { get; };
+        Boolean IsClubSuspended { get; };
+        Windows.Foundation.DateTime SuspendedUntil { get; };
+        String FounderXuid { get; };
+        UInt32 FollowersCount { get; };
+        UInt32 PresenceCount { get; };
+        UInt32 PresenceTodayCount { get; };
+        UInt32 MembersCount { get; };
+        UInt32 ModeratorsCount { get; };
+        UInt32 RecommendedCount { get; };
+        UInt32 RequestedToJoinCount { get; };
+        UInt32 ReportCount { get; };
+        UInt32 ReporteItemsCount { get; };
+        ClubActionSettings ActionSettings { get; };
+        Windows.Foundation.Collections.IVectorView<ClubRole> ViewerRoles { get; };
+        Windows.Foundation.IAsyncOperation<ClubRoster> GetRosterAsync();
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubUserPresenceRecord> > GetClubUserPresenceRecordsAsync();
+        Windows.Foundation.IAsyncAction RenameClubAsync(String newName);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > GetRolesAsync(String xuid);
+        [method_name("GetRoleRecordsAsync2")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRoleRecord> > GetRoleRecordsAsync();
+        [method_name("GetRoleRecordsAsync1")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRoleRecord> > GetRoleRecordsAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<ClubPresenceCounts> GetPresenceCountsAsync();
+        Windows.Foundation.IAsyncAction SetPresenceWithinClubAsync(ClubUserPresence presence);
+        [method_name("AddUserToClubAsync2")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > AddUserToClubAsync();
+        [method_name("AddUserToClubAsync1")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > AddUserToClubAsync(String xuid);
+        [method_name("RemoveUserFromClubAsync2")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > RemoveUserFromClubAsync();
+        [method_name("RemoveUserFromClubAsync1")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > RemoveUserFromClubAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > FollowClubAsync();
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > UnfollowClubAsync();
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > BanUserFromClubAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > UnbanUserFromClubAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > AddClubModeratorAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRole> > RemoveClubModeratorAsync(String xuid);
+    }
+
+    [interface_name("__IClubActionSettingPublicNonVirtuals", 6ECA8CC0-DC33-3349-95EA-737FAFC27ADA)]
+    runtimeclass ClubActionSetting
+    {
+        ClubRole RequiredRole { get; };
+        Windows.Foundation.Collections.IVectorView<ClubRole> AllowedValues { get; };
+        Boolean CanViewerChangeSetting { get; };
+        Boolean CanViewerAct { get; };
+    }
+
+    [interface_name("__IClubActionSettingsPublicNonVirtuals", 378800EF-598A-3D16-86AB-2503369A1655)]
+    runtimeclass ClubActionSettings
+    {
+        ClubActionSetting PostToFeed { get; };
+        ClubActionSetting ViewFeed { get; };
+        ClubActionSetting WriteInChat { get; };
+        ClubActionSetting ViewChat { get; };
+        ClubActionSetting SetChatTopic { get; };
+        ClubActionSetting JoinLookingForGame { get; };
+        ClubActionSetting CreateLookingForGame { get; };
+        ClubActionSetting ViewLookingForGame { get; };
+        ClubActionSetting InviteOrAcceptJoinRequests { get; };
+        ClubActionSetting KickOrBan { get; };
+        ClubActionSetting ViewRoster { get; };
+        ClubActionSetting UpdateProfile { get; };
+        ClubActionSetting DeleteProfile { get; };
+        ClubActionSetting ViewProfile { get; };
+    }
+
+    [interface_name("__IClubBooleanSettingPublicNonVirtuals", 731F040A-D7E1-34A1-B41F-5C77A1925341)]
+    runtimeclass ClubBooleanSetting
+    {
+        Boolean Value { get; };
+        Boolean CanViewerChangeSetting { get; };
+    }
+
+    [interface_name("__IClubPresenceCountsPublicNonVirtuals", D11CEF81-306F-3C92-BCA0-7FEF719D91DA)]
+    runtimeclass ClubPresenceCounts
+    {
+        UInt32 TotalCount { get; };
+        UInt32 HereNow { get; };
+        UInt32 HereToday { get; };
+        UInt32 InGameNow { get; };
+    }
+
+    [interface_name("__IClubProfilePublicNonVirtuals", 39A75E9F-7D2E-36EC-84A5-DB8D14E49FB3)]
+    runtimeclass ClubProfile
+    {
+        ClubStringSetting Name { get; };
+        ClubStringSetting Description { get; };
+        ClubBooleanSetting MatureContentEnabled { get; };
+        ClubBooleanSetting WatchClubTitlesOnly { get; };
+        ClubBooleanSetting IsSearchable { get; };
+        ClubBooleanSetting IsRecommendable { get; };
+        ClubBooleanSetting RequestToJoinEnabled { get; };
+        ClubBooleanSetting LeaveEnabled { get; };
+        ClubBooleanSetting TransferOwnershipEnabled { get; };
+        ClubStringSetting DisplayImageUrl { get; };
+        ClubStringSetting BackgroundImageUrl { get; };
+        ClubStringMultiSetting Tags { get; };
+        ClubStringSetting PreferredLocale { get; };
+        ClubStringMultiSetting AssociatedTitles { get; };
+        ClubStringSetting PrimaryColor { get; };
+        ClubStringSetting SecondayColor { get; };
+        ClubStringSetting TertiaryColor { get; };
+    }
+
+    [interface_name("__IClubRecommendationPublicNonVirtuals", 9B269AAE-E4CB-3956-9E7D-6FE7E9C950C3)]
+    runtimeclass ClubRecommendation
+    {
+        Club RecommendedClub { get; };
+        Windows.Foundation.Collections.IVectorView<String> Reasons { get; };
+    }
+
+    [interface_name("__IClubRoleRecordPublicNonVirtuals", 2BC260D8-0C2E-3A4A-B402-B898B0922D50)]
+    runtimeclass ClubRoleRecord
+    {
+        String Xuid { get; };
+        ClubRole Role { get; };
+        String ActorXuid { get; };
+        Windows.Foundation.DateTime CreatedDate { get; };
+    }
+
+    [interface_name("__IClubRosterPublicNonVirtuals", 37664663-3487-32DE-9E6D-96C70D85BDCA)]
+    runtimeclass ClubRoster
+    {
+        Windows.Foundation.Collections.IVectorView<ClubRoleRecord> Moderators { get; };
+        Windows.Foundation.Collections.IVectorView<ClubRoleRecord> RequestedToJoin { get; };
+        Windows.Foundation.Collections.IVectorView<ClubRoleRecord> Recommended { get; };
+        Windows.Foundation.Collections.IVectorView<ClubRoleRecord> Banned { get; };
+    }
+
+    [interface_name("__IClubSearchAutoCompletePublicNonVirtuals", D16F9653-CF60-3238-8C19-80EBDC0FF085)]
+    runtimeclass ClubSearchAutoComplete
+    {
+        String Id { get; };
+        String Name { get; };
+        String Description { get; };
+        String DisplayImageUrl { get; };
+        Double Score { get; };
+        String SuggestedQueryText { get; };
+        Windows.Foundation.Collections.IVectorView<String> Tags { get; };
+        Windows.Foundation.Collections.IVectorView<String> AssociatedTitles { get; };
+    }
+
+    [interface_name("__IClubSearchFacetResultPublicNonVirtuals", 5EC0011A-A9D6-3CC8-90B0-2A4DCF613994)]
+    runtimeclass ClubSearchFacetResult
+    {
+        String Value { get; };
+        UInt32 Count { get; };
+    }
+
+    [interface_name("__IClubsOwnedResultPublicNonVirtuals", 0175DE09-7A7A-31E1-92AE-9955DED4A006)]
+    runtimeclass ClubsOwnedResult
+    {
+        Windows.Foundation.Collections.IVectorView<String> ClubIds { get; };
+        UInt32 RemainingClubs { get; };
+    }
+
+    [interface_name("__IClubsSearchResultPublicNonVirtuals", FED28AF5-D3CD-34C8-9DBF-091E3136B01D)]
+    runtimeclass ClubsSearchResult
+    {
+        Windows.Foundation.Collections.IVectorView<Club> Clubs { get; };
+        Windows.Foundation.Collections.IMap<String, Windows.Foundation.Collections.IVectorView<ClubSearchFacetResult> > SearchFacetResults { get; };
+    }
+
+    [interface_name("__IClubsServicePublicNonVirtuals", 64E9FB60-A1D9-3324-88AB-CFEF6FAAC660)]
+    runtimeclass ClubsService
+    {
+        Windows.Foundation.IAsyncOperation<Club> GetClubAsync(String clubId);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Club> > GetClubsAsync(Windows.Foundation.Collections.IVectorView<String> clubIds);
+        Windows.Foundation.IAsyncOperation<ClubsOwnedResult> GetClubsOwnedAsync();
+        Windows.Foundation.IAsyncOperation<Club> CreateClubAsync(String name, ClubType type, String titleFamilyId);
+        Windows.Foundation.IAsyncAction DeleteClubAsync(String clubId);
+        [method_name("GetClubAssociationsAsync2")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Club> > GetClubAssociationsAsync();
+        [method_name("GetClubAssociationsAsync1")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Club> > GetClubAssociationsAsync(String xuid);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubRecommendation> > GetClubRecommendationsAsync();
+        Windows.Foundation.IAsyncOperation<ClubsSearchResult> SearchClubsAsync(String queryString, Windows.Foundation.Collections.IVectorView<String> titleIds, Windows.Foundation.Collections.IVectorView<String> tags);
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ClubSearchAutoComplete> > SuggestClubsAsync(String queryString, Windows.Foundation.Collections.IVectorView<String> titleIds, Windows.Foundation.Collections.IVectorView<String> tags);
+    }
+
+    [interface_name("__IClubStringMultiSettingPublicNonVirtuals", 7BA0E7EA-264A-3A17-A5B3-BC55EB54079C)]
+    runtimeclass ClubStringMultiSetting
+    {
+        Windows.Foundation.Collections.IVectorView<String> Values { get; };
+        Windows.Foundation.Collections.IVectorView<String> AllowedValues { get; };
+        Boolean CanViewerChangeSetting { get; };
+    }
+
+    [interface_name("__IClubStringSettingPublicNonVirtuals", 56DD2636-7E25-39A3-AF42-862ABAC7B407)]
+    runtimeclass ClubStringSetting
+    {
+        String Value { get; };
+        Windows.Foundation.Collections.IVectorView<String> AllowedValues { get; };
+        Boolean CanViewerChangeSetting { get; };
+    }
+
+    [interface_name("__IClubUserPresenceRecordPublicNonVirtuals", A30E1C5D-EBB3-3232-90AC-9527DA967139)]
+    runtimeclass ClubUserPresenceRecord
+    {
+        String Xuid { get; };
+        Windows.Foundation.DateTime LastSeen { get; };
+        ClubUserPresence LastSeenState { get; };
+    }
+}

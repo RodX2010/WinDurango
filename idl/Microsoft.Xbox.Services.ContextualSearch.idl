@@ -1,0 +1,170 @@
+namespace Microsoft.Xbox.Services.ContextualSearch
+{
+    enum ContextualSearchFilterOperator
+    {
+        Equal,
+        NotEqual,
+        GreaterThan,
+        GreaterThanOrEqual,
+        LessThan,
+        LessThanOrEqual,
+    };
+
+    enum ContextualSearchGameClipThumbnailType
+    {
+        None,
+        SmallThumbnail,
+        LargeThumbnail,
+    };
+
+    enum ContextualSearchGameClipType
+    {
+        None,
+        DeveloperInitiated,
+        Achievement,
+        UserGenerated,
+    };
+
+    enum ContextualSearchGameClipUriType
+    {
+        None,
+        Original,
+        Download,
+        SmoothStreaming,
+        HttpLiveStreaming,
+    };
+
+    enum ContextualSearchStatDisplayType
+    {
+        Unknown,
+        UndefinedRange,
+        DefinedRange,
+        Set,
+    };
+
+    enum ContextualSearchStatVisibility
+    {
+        Unknown,
+        PublicVisibility,
+        PrivateVisibility,
+    };
+
+    [interface_name("__IContextualSearchBroadcastPublicNonVirtuals", 7A5CD441-8D2A-3A44-A08F-F443F757CBC4)]
+    runtimeclass ContextualSearchBroadcast
+    {
+        String XboxUserId { get; };
+        String Provider { get; };
+        String BroadcasterIdFromProvider { get; };
+        UInt64 Viewers { get; };
+        Windows.Foundation.DateTime StartedDate { get; };
+        Windows.Foundation.Collections.IMap<String, String> CurrentStats { get; };
+    }
+
+    [interface_name("__IContextualSearchConfiguredStatPublicNonVirtuals", F46C4EE0-F970-3AAA-86B7-54C114410726)]
+    runtimeclass ContextualSearchConfiguredStat
+    {
+        String Name { get; };
+        String DataType { get; };
+        ContextualSearchStatVisibility Visibility { get; };
+        String DisplayName { get; };
+        Boolean CanBeFiltered { get; };
+        Boolean CanBeSorted { get; };
+        ContextualSearchStatVisibility DisplayType { get; };
+        Windows.Foundation.Collections.IMap<String, String> ValueToDisplayName { get; };
+        UInt64 RangeMin { get; };
+        UInt64 RangeMax { get; };
+    }
+
+    [interface_name("__IContextualSearchGameClipPublicNonVirtuals", C615F72A-E034-3CFE-9525-208AA0B12D7C)]
+    runtimeclass ContextualSearchGameClip
+    {
+        String ClipName { get; };
+        UInt64 DurationInSeconds { get; };
+        String GameClipId { get; };
+        String GameClipLocale { get; };
+        Windows.Foundation.Collections.IVectorView<ContextualSearchGameClipUriInfo> GameClipUris { get; };
+        Windows.Foundation.Collections.IVectorView<ContextualSearchGameClipThumbnail> Thumbnails { get; };
+        ContextualSearchGameClipType GameClipType { get; };
+        UInt64 Views { get; };
+        String XboxUserId { get; };
+        Windows.Foundation.Collections.IVectorView<ContextualSearchGameClipStat> Stats { get; };
+    }
+
+    [interface_name("__IContextualSearchGameClipsResultPublicNonVirtuals", 6D5DC521-FF7B-3F99-A8D1-E3A034103270)]
+    runtimeclass ContextualSearchGameClipsResult
+    {
+        Windows.Foundation.IAsyncOperation<ContextualSearchGameClipsResult> GetNextAsync(UInt32 maxItems);
+        Windows.Foundation.Collections.IVectorView<ContextualSearchGameClip> Items { get; };
+    }
+
+    [interface_name("__IContextualSearchGameClipStatPublicNonVirtuals", 6C459652-6255-31A6-A09E-3D76EC893E9F)]
+    runtimeclass ContextualSearchGameClipStat
+    {
+        String Name { get; };
+        String Value { get; };
+        String MinValue { get; };
+        String MaxValue { get; };
+        String DeltaValue { get; };
+    }
+
+    [interface_name("__IContextualSearchGameClipThumbnailPublicNonVirtuals", 5967E0AB-A34E-3D0E-88BD-2119EBEB2420)]
+    runtimeclass ContextualSearchGameClipThumbnail
+    {
+        Windows.Foundation.Uri Url { get; };
+        UInt64 FileSize { get; };
+        ContextualSearchGameClipThumbnailType ThumbnailType { get; };
+    }
+
+    [interface_name("__IContextualSearchGameClipUriInfoPublicNonVirtuals", B5026641-7F95-3663-BBC7-E5986BD120C3)]
+    runtimeclass ContextualSearchGameClipUriInfo
+    {
+        Windows.Foundation.Uri Url { get; };
+        UInt64 FileSize { get; };
+        ContextualSearchGameClipUriType UriType { get; };
+        Windows.Foundation.DateTime Expiration { get; };
+    }
+
+    [interface_name("__IClubUserPresenceRecordPublicNonVirtuals", 5403F955-3CED-30D5-A8C1-D6598A78DFC1)]
+    runtimeclass ContextualSearchService
+    {
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContextualSearchConfiguredStat> > GetConfigurationAsync(UInt32 titleId);
+        [method_name("GetBroadcastsAsync3")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContextualSearchBroadcast> > GetBroadcastsAsync(UInt32 titleId);
+        [method_name("GetBroadcastsAsync2")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContextualSearchBroadcast> > GetBroadcastsAsync(
+            UInt32 titleId,
+            UInt32 skipItems,
+            UInt32 maxItems,
+            String orderByStatName,
+            Boolean orderAscending,
+            String searchQuery);
+        [method_name("GetBroadcastsAsync1")] 
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContextualSearchBroadcast> > GetBroadcastsAsync(
+            UInt32 titleId,
+            UInt32 skipItems,
+            UInt32 maxItems,
+            String orderByStatName,
+            Boolean orderAscending,
+            String filterStatName,
+            ContextualSearchFilterOperator filterOperator,
+            String filterStatValue);
+        [method_name("GetGameClipsAsync2")] 
+        Windows.Foundation.IAsyncOperation<ContextualSearchGameClipsResult> GetGameClipsAsync(
+            UInt32 titleId,
+            UInt32 skipItems,
+            UInt32 maxItems,
+            String orderByStatName,
+            Boolean orderAscending,
+            String filterStatName,
+            ContextualSearchFilterOperator filterOperator,
+            String filterStatValue);
+        [method_name("GetGameClipsAsync1")] 
+        Windows.Foundation.IAsyncOperation<ContextualSearchGameClipsResult> GetGameClipsAsync(
+            UInt32 titleId,
+            UInt32 skipItems,
+            UInt32 maxItems,
+            String orderByStatName,
+            Boolean orderAscending,
+            String searchQuery);
+    }
+}

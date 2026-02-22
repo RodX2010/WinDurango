@@ -1,0 +1,101 @@
+import "Microsoft.Xbox.Services.Social.idl";
+
+namespace Microsoft.Xbox.Services
+{
+    enum HttpCallResponseBodyType
+    {
+        StringBody,
+        VectorBody,
+        JsonBody,
+    };
+
+    enum HttpRequestMessageType
+    {
+        EmptyMessage,
+        StringMessage,
+        VectorMessage,
+    };
+
+    enum XboxLiveContextRecommendedSetting
+    {
+        ThisCodeNeedsToBeChangedToFollowBestPractices,
+    };
+
+    enum XboxLiveContextThrottleSetting
+    {
+        ThisCodeNeedsToBeChangedToAvoidThrottling,
+    };
+
+    enum XboxServicesDiagnosticsTraceLevel
+    {
+        Off,
+        Error,
+        Warning,
+        Info,
+        Verbose,
+    };
+
+    [interface_name("__IHttpCallRequestMessagePublicNonVirtuals", D9506F36-6FCB-35F4-B951-92B73A623D84)]
+    runtimeclass HttpCallRequestMessage
+    {
+        String RequestMessageString { get; };
+        UInt8[] RequestMessageVector { get; };
+        HttpRequestMessageType GetHttpRequestMessageType { get; };
+    }
+
+    [interface_name("__IServiceCallLoggingConfigPublicNonVirtuals", F8B65EC9-741A-3BB0-AF5C-89B8081CA332)]
+    [static_name("__IServiceCallLoggingConfigStatics", 168B533E-6CB5-37D7-8BCF-B02413328659)]
+    runtimeclass ServiceCallLoggingConfig
+    {
+        static ServiceCallLoggingConfig SingletonInstance { get; };
+        void Enable();
+        void Disable();
+        void RegisterForProtocolActivation();
+    }
+
+    [interface_name("__IXboxLiveAppConfigurationPublicNonVirtuals", 9DA6DA6B-5300-338D-A6FE-31C5BA618D60)]
+    [static_name("__IXboxLiveAppConfigurationStatics", E5F9A7ED-BDB0-3542-9293-75E287466226)]
+    runtimeclass XboxLiveAppConfiguration
+    {
+        static XboxLiveAppConfiguration SingletonInstance { get; };
+        UInt32 TitleId { get; };
+        String ServiceConfigurationId { get; };
+        String Environment { get; };
+        String Sandbox { get; };
+    }
+
+    [interface_name("__IXboxLiveContextFactory", BEDC781E-A29E-3333-9D97-7AF19812192D)]
+    runtimeclass XboxLiveContextFactory
+    {
+        [method_name("CreateInstance1")]
+        XboxLiveContext CreateInstance(XboxLiveUser user);
+    }
+
+    [interface_name("__IXboxLiveContextPublicNonVirtuals", 66233131-AA4B-3ECD-B48B-89FBB49F9B75)]
+    runtimeclass XboxLiveContext
+    {
+        XboxLiveUser User { get; };
+        Microsoft.Xbox.Services.Social.ProfileService ProfileService { get; };
+        Microsoft.Xbox.Services.Social.SocialService SocialService { get; };
+        Microsoft.Xbox.Services.Social.ReputationService ReputationService { get; };
+        Microsoft.Xbox.Services.Achievements.AchievementService AchievementService { get; };
+        Microsoft.Xbox.Services.Leaderboard.LeaderboardService LeaderboardService { get; };
+        UserStatisticsService UserStatisticsService { get; };
+        MatchmakingService MatchmakingService { get; };
+        MultiplayerService MultiplayerService { get; };
+        TournamentService TournamentService { get; };
+        RealTimeActivityService RealTimeActivityService { get; };
+        PresenceService PresenceService { get; };
+        GameServerPlatformService GameServerPlatformService { get; };
+        TitleStorageService TitleStorageService { get; };
+        PrivacyService PrivacyService { get; };
+        StringService StringService { get; };
+        ContextualSearchService ContextualSearchService { get; };
+        ClubsService ClubsService { get; };
+        EventsService EventsService { get; };
+        XboxLiveContextSettings Settings { get; };
+        XboxLiveAppConfiguration AppConfig { get; };
+    }
+
+    // TODO: __IXboxLiveContextSettingsProtectedNonVirtuals
+}
