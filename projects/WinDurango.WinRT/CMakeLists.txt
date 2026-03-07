@@ -33,7 +33,7 @@ endforeach()
 execute_process(
     COMMAND cppwinrt
         -prefix
-        -pch .
+        -pch ${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h
         -input "${CMAKE_BINARY_DIR}\\WinMetadata"
         -reference sdk
         -component "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files\\sources"

@@ -7,6 +7,8 @@
 #include <string>
 #include <windows.applicationmodel.core.h>
 #include <windows.h>
+#include <winstring.h>
+#include <wrl/wrappers/corewrappers.h>
 #include <winrt/Windows.ApplicationModel.h>
 #include <winrt/windows.storage.provider.h>
 #include <wrl/client.h>
@@ -14,6 +16,9 @@
 #include "CurrentApp.h"
 #include "EraCoreWindow.h"
 #include "EraCoreApplication.h"
+
+using namespace Microsoft::WRL;
+using namespace Microsoft::WRL::Wrappers;
 
 typedef int32_t (__stdcall *GetActivationFactory_t)(HSTRING classId, IActivationFactory** factory);
 
@@ -41,6 +46,8 @@ inline bool IsClassName(HSTRING classId, const char *classIdName)
 }
 
 HRESULT(WINAPI *TrueActivateInstance)(IActivationFactory *thisptr, IInspectable **instance) = nullptr;
+
+typedef HRESULT(WINAPI *PFNROGETACTIVATIONFACTORY)(HSTRING, REFIID, void **); // TODO: Put somewhere
 
 #define IsXboxCallee() IsXboxAddress(_ReturnAddress())
 
