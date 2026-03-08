@@ -200,7 +200,7 @@ HRESULT DXGIFactory2<ABI>::CreateSwapChainForCoreWindow(xbox::IGraphicsUnknown<A
         return hr;
     }
 
-    auto Window = reinterpret_cast<CoreWindowEra*>(pWindow)->m_realWindow;
+    ICoreWindow* Window = reinterpret_cast<CoreWindowEra*>(pWindow)->m_realWindow;
     ICoreWindowInterop *interop;
     Window->QueryInterface(IID_PPV_ARGS(&interop));
     HWND hwnd;
@@ -209,14 +209,14 @@ HRESULT DXGIFactory2<ABI>::CreateSwapChainForCoreWindow(xbox::IGraphicsUnknown<A
     IDXGISwapChain1 *SwapChain{};
     hr = m_pFunction->CreateSwapChainForHwnd(dev, hwnd, &pDesc2, NULL, NULL, &SwapChain);
 
-    auto* realDevice = static_cast<D3D11DeviceX<ABI>*>(pDevice);
+    //TODO: Fix ImGui for HWND Swap Chains?
+    /*auto *realDevice = static_cast<D3D11DeviceX<ABI> *>(pDevice);
     gfx::ID3D11DeviceContext<ABI>* ctx = nullptr;
     realDevice->GetImmediateContext(&ctx);
-
     ID3D11DeviceContext* dxCtx = nullptr;
     hr = ctx->QueryInterface(__uuidof(ID3D11DeviceContext), reinterpret_cast<void**>(&dxCtx));
     ctx->Release();
-    p_wd->gui.Initialize(realDevice->m_pFunction, dxCtx, SwapChain);
+    p_wd->gui.Initialize(realDevice->m_pFunction, dxCtx, SwapChain);*/
 
     if (SwapChain)
     {

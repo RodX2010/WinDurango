@@ -73,7 +73,7 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::GetDevice(REFIID riid, void **
 //
 template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval, uint32_t Flags)
 {
-    p_wd->gui.Render();
+    //p_wd->gui.Render();
     return m_pFunction->Present(SyncInterval, Flags);
 }
 

@@ -216,19 +216,11 @@ static void WdRoInitializeLibraries()
 static void WdRoInitializeClasses()
 {
     DetourTransactionBegin();
-
+    DetourUpdateThread(GetCurrentThread());
     if (ComPtr<IActivationFactory> factory;
         SUCCEEDED(WdRoGetActivationFactoryCore(HStringReference{L"Windows.ApplicationModel.Store.CurrentApp"}.Get(), IID_PPV_ARGS(&factory))))
     {
         DetourAttach(reinterpret_cast<PVOID *>(&TrueActivateInstance), reinterpret_cast<PVOID>(EraAppActivateInstance));
-    }
-
-    if (ComPtr<ICoreWindowStatic> coreWindowStatic;
-        SUCCEEDED(RoGetActivationFactory(HStringReference{RuntimeClass_Windows_UI_Core_CoreWindow}.Get(), IID_PPV_ARGS(&coreWindowStatic))))
-    {
-        *reinterpret_cast<void **>(&TrueGetForCurrentThread) =
-        (*reinterpret_cast<void ***>(coreWindowStatic.Get()))[6];
-        DetourAttach(reinterpret_cast<PVOID *>(&TrueGetForCurrentThread), reinterpret_cast<PVOID>(EraGetForCurrentThread));
     }
 
     DetourTransactionCommit();
@@ -296,6 +288,16 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
         {
             DebugBreak();
             return hr;
+        }
+
+        if (!TrueGetForCurrentThread)
+        {
+            *reinterpret_cast<void **>(&TrueGetForCurrentThread) = (*reinterpret_cast<void ***>(coreWindowStatic.Get()))[6];
+
+            DetourTransactionBegin();
+            DetourUpdateThread(GetCurrentThread());
+            DetourAttach(reinterpret_cast<PVOID*>(&TrueGetForCurrentThread), EraGetForCurrentThread);
+            DetourTransactionCommit();
         }
 
         return coreWindowStatic.CopyTo(iid, factory);

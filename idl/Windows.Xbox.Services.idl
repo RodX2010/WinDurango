@@ -1,8 +1,6 @@
-//All GUIDs came from "EmbeddedXvd/Windows/System32/config/SOFTWARE" and "appmodel.dll".
 namespace Windows.Xbox.Services
 {
-	[interface_name("IXboxLiveConfiguration", fdeeeb27-66b0-465b-9dfb-99c62a62f7bc)]
-    [static_name("IXboxLiveConfigurationStatics", af86e2e0-b12d-4c6a-9c5a-d7aa65101e90)]
+    	[static_name("IXboxLiveConfigurationStatics", 00193376-6a84-4c67-84a5-3b8a8aaea712)]
 	runtimeclass XboxLiveConfiguration
 	{
 		static String TitleId { get; };

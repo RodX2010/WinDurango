@@ -200,10 +200,6 @@ HRESULT CoreWindowEra::QueryInterface(const IID &riid, void **ppvObject)
         AddRef();
         return S_OK;
     }
-    else if (riid == __uuidof(ICoreWindowInterop))
-    {
-        return m_realWindow->QueryInterface(riid, ppvObject);
-    }
 
     char iidstr[sizeof("{AAAAAAAA-BBBB-CCCC-DDEE-FFGGHHIIJJKK}")];
     OLECHAR iidwstr[sizeof(iidstr)];
