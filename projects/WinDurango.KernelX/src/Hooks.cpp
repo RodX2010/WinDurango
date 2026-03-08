@@ -201,6 +201,8 @@ static void WdRoInitializeLibraries()
             if (auto pfn = GetProcAddress(dll, "DllGetActivationFactory"); pfn != nullptr)
             {
                 g_RoEntryPoints.push_back(reinterpret_cast<PFNGETACTIVATIONFACTORY>(pfn));
+
+                XWinePatchImport(dll, GetRuntimeModule(), "?GetActivationFactoryByPCWSTR@@YAJPEAXAEAVGuid@Platform@@PEAPEAX@Z", GetActivationFactoryRedirect);
             }
         }
     }
@@ -209,6 +211,8 @@ static void WdRoInitializeLibraries()
         if (auto pfn = GetProcAddress(dll, "GetActivationFactory"); pfn != nullptr)
         {
             g_RoEntryPoints.push_back(reinterpret_cast<PFNGETACTIVATIONFACTORY>(pfn));
+
+            XWinePatchImport(dll, GetRuntimeModule(), "?GetActivationFactoryByPCWSTR@@YAJPEAXAEAVGuid@Platform@@PEAPEAX@Z", GetActivationFactoryRedirect);
         }
     }
 }
@@ -306,12 +310,25 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
     for (auto pfn : g_RoEntryPoints)
     {
         ComPtr<IActivationFactory> temp;
+        if (wcscmp(rawString, L"Microsoft.Xbox.GameChat.ChatManager") == 0)
+        {
+            if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
+            {
+                HRESULT hr = temp.CopyTo(iid, factory);
+                return hr;
+            }
+        }
 
         if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
         {
             temp.CopyTo(iid, factory);
             return S_OK;
         }
+    }
+
+    if (wcscmp(rawString, L"Windows.Xbox.Chat.ChatSession") == 0)
+    {
+        DebugBreak();
     }
 
     return g_RoGetActivationFactory(activatableClassId, iid, factory);
