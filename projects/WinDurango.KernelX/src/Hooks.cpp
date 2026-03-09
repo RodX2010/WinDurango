@@ -326,11 +326,6 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
         }
     }
 
-    if (wcscmp(rawString, L"Windows.Xbox.Chat.ChatSession") == 0)
-    {
-        DebugBreak();
-    }
-
     return g_RoGetActivationFactory(activatableClassId, iid, factory);
 }
 
