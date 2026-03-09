@@ -89,13 +89,13 @@ namespace Windows.Xbox.Chat
         High = 0x2,
     };
 
-    [uuid(22FFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [uuid(6980bb72-5fb2-4c6d-b75c-d0e37cdc47d4)]
     delegate HRESULT ChatParticipantTranscribedTextReadyHandler(ChatParticipant speaker, String message);
 
-    [uuid(11FFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [uuid(35788228-747a-4c38-a992-acf4ec12c302)]
     delegate HRESULT ChatSessionStateChangedHandler(ChatSession sender, ChatSessionStateChangeReason reason);
 
-    [interface_name("IChatChannel", EFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [interface_name("IChatChannel", fb458d63-37c1-4aaa-a146-ec2bc6e310ef)]
     runtimeclass ChatChannel
     {
         ChatChannel();
@@ -105,13 +105,13 @@ namespace Windows.Xbox.Chat
     runtimeclass ChatDecoder
     {
         ChatDecoder();
-        [interface_name("IChatDecoder", DFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatDecoder", 3165955b-adcf-4239-9e63-07b2e9533bfd)]
         {
             Format Format { get; };
             Windows.Storage.Streams.IBuffer Decode(Windows.Storage.Streams.IBuffer buffer);
         }
 
-        [interface_name("IChatDecoder2", CFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatDecoder2", 4d519838-b712-42b0-a3c5-5658954fa76a)]
         {
             Int32 IsDataInFlight { get; };
         }
@@ -120,22 +120,22 @@ namespace Windows.Xbox.Chat
     runtimeclass ChatEncoder
     {
         ChatEncoder();
-        [constructor_name("IChatEncoderFactory", BFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [constructor_name("IChatEncoderFactory", 28215da3-3b46-4f4c-beb9-6e5569af65a6)]
         {
             ChatEncoder(Format format, EncodingQuality quality);
         }
 
-        [interface_name("IChatEncoder", AFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatEncoder", ed67b7a3-3721-47ff-b506-7056a7966b09)]
         {
             Windows.Storage.Streams.IBuffer Encode(Windows.Storage.Streams.IBuffer buffer);
         }
 
-        [interface_name("IChatEncoder2", 0FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatEncoder2", 25ce9936-2db9-4ce5-be78-5ab4f25aba86)]
         {
             Int32 IsDataInFlight { get; };
         }
 
-        [interface_name("IChatEncoder3", 9FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatEncoder3", 0baf41f7-2cba-4d5a-8caf-c7bfa64a345e)]
         {
             void Encode(Windows.Storage.Streams.IBuffer buffer, ChatBufferSource source, out Windows.Storage.Streams.IBuffer encodedBuffer, out ChatBufferSource encodedSource);
         }
@@ -144,19 +144,19 @@ namespace Windows.Xbox.Chat
     runtimeclass ChatParticipant
     {
         ChatParticipant();
-        [constructor_name("IChatParticipantFactory", 8FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [constructor_name("IChatParticipantFactory", 176e29d1-fad2-4cf8-bdee-997ff11f0a00)]
         {
             ChatParticipant(Windows.Xbox.System.User user);
         }
 
-        [interface_name("IChatParticipant", 7FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatParticipant", 61c41b43-cbb3-4f33-ab96-d8b2dbdc49df)]
         {
             Windows.Xbox.System.User User { get; };
             ChatParticipantTypes ParticipantType { get; set; };
             Single Volume { get; set; };
         }
 
-        [interface_name("IChatParticipant2", 6FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatParticipant2", 256db5b7-Fbb8-4e2f-ac9a-55e5a259062b)]
         {
             void SynthesizeTextMessageAsAudioBuffers(String message, Windows.Media.SpeechSynthesis.VoiceInformation voice);
         }
@@ -165,20 +165,20 @@ namespace Windows.Xbox.Chat
     runtimeclass ChatSession
     {
         ChatSession();
-        [constructor_name("IChatSessionFactory", 5FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [constructor_name("IChatSessionFactory", 53cb6065-c211-4b21-a3ef-cd544d22aba1)]
         {
             ChatSession(Windows.Foundation.TimeSpan time, ChatFeatures enabledFeatures, ChatSession session);
             ChatSession(Windows.Foundation.TimeSpan time, UInt32 processorAffinity, ChatFeatures enabledFeatures, ChatSession session);
         }
 
-        [interface_name("IChatSession", 4FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatSession", 9af8480a-16a5-4905-ac0a-5514f3427893)]
         {
             Windows.Foundation.Collections.IVectorView<ChatChannel> Channels { get; };
             event ChatSessionStateChangedHandler StateChangedEvent;
             Windows.Foundation.IAsyncOperation<ChatSessionState> GetStateAsync();
         }
 
-        [interface_name("IChatSession2", 3FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        [interface_name("IChatSession2", 8840b65e-eb13-4629-8f63-2854624460ff)]
         {
             Int32 TranscriptionEnabled { get; set; };
             ChatEncoder CreateTranscribingEncoder(ChatParticipant participant, Format format, EncodingQuality quality);
@@ -188,7 +188,7 @@ namespace Windows.Xbox.Chat
         }
     }
 
-    [interface_name("IChatCaptureSource", 2FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [interface_name("IChatCaptureSource", 8c00bb0d-dc50-4512-b6b1-71bffec00333)]
     runtimeclass ChatCaptureSource
     {
         String Id { get; };
@@ -198,7 +198,7 @@ namespace Windows.Xbox.Chat
         ChatRestriction GetRelationship(String targetId);
     }
 
-    [interface_name("IChatRenderTarget", 1FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [interface_name("IChatRenderTarget", 04ccb8fb-36ad-43eb-9e92-79ee3e18fe5e)]
     runtimeclass ChatRenderTarget
     {
         String Id { get; };
@@ -209,14 +209,14 @@ namespace Windows.Xbox.Chat
         void SubmitMix();
     }
 
-    [interface_name("IChatSessionState", 20A2CD96-EC5B-5A14-8509-9AC6D1862F6A)]
+    [interface_name("IChatSessionState", 762671af-03d9-43a6-baac-7565b5da2a57)]
     runtimeclass ChatSessionState
     {
         Windows.Foundation.Collections.IVectorView<ChatCaptureSource> CaptureSources { get; };
         Windows.Foundation.Collections.IVectorView<ChatRenderTarget> RenderTargets { get; };
     }
 
-    [interface_name("IFormat", FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [interface_name("IFormat", 50eaaec7-2ad5-4302-b5db-a7f62380de3f)]
     runtimeclass Format
     {
         Format();
@@ -227,7 +227,7 @@ namespace Windows.Xbox.Chat
         Guid Subtype { get; set; };
     }
 
-    [interface_name("IChatUserCorrelation", BB8FFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    [interface_name("IChatUserCorrelation", 48e51c40-0eeb-426b-b44a-858cfd4c3e6c)]
     runtimeclass ChatUserCorrelation
     {
         ChatUserCorrelation();
