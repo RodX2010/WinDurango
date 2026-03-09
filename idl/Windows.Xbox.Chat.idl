@@ -1,0 +1,236 @@
+import "Windows.Xbox.System.idl";
+
+namespace Windows.Xbox.Chat
+{
+    enum CaptureBufferStatus 
+    {
+        Filled = 0x0,
+        Incomplete = 0x1,
+        NotTalking = 0x2,
+        NoDataAvailable = 0x3,
+        NoMicrophoneFocus = 0x4,
+        NoPrivileges = 0x5,
+    };
+
+    enum ChatBufferSource 
+    {
+        Microphone = 0x0,
+        SpeechSynthesizer = 0x1,
+    };
+
+    enum ChatErrorStatus 
+    {
+        PeriodTooSmall = -2004283647,
+        InvalidMixBufferSize = -2004283646,
+        TooManyMixBuffers = -2004283645,
+        UnknownRelationship = -2004283644,
+        InvalidDataFlow = -2004283642,
+        InvalidLocation = -2004283641,
+        MixingDuplicateSource = -2004283640,
+        OperationInProgress = -2004283639,
+        CodecFailed = -2004283638,
+        InvalidUser = -2004283637,
+        NoMicrophoneFocus = -2004283636,
+        DeviceNotActive = -2004283635,
+        RenderGraphError = -2004283634,
+    };
+
+    [flags]
+    enum ChatFeatures 
+    {
+        None = 0x0,
+        VoiceActivityDetector = 0x1,
+        UserCorrelation = 0x2,
+        AutomaticGainControl = 0x4,
+        Ducking = 0x8,
+        TitleEnforcedPrivilegeAndPrivacy = 0x10,
+        Default = 0x5,
+    };
+
+    [flags]
+    enum ChatParticipantTypes 
+    {
+        None = 0x0,
+        Listener = 0x1,
+        Talker = 0x2,
+        Bystander = 0x4,
+    };
+
+    [flags]
+    enum ChatRestriction 
+    {
+        None = 0x0,
+        CannotListen = 0x1,
+        CannotTalk = 0x2,
+        NotInSameChannel = 0x3,
+        Muted = 0x4,
+        NotAllowed = 0x5,
+        NotSignedIn = 0x6,
+        UnknownRelationship = 0x7,
+    };
+
+    enum ChatSessionStateChangeReason 
+    {
+        Other = 0x0,
+        UserAdded = 0x1,
+        UserRemoved = 0x2,
+        UserSignInCompleted = 0x3,
+        UserSignOutCompleted = 0x4,
+        UserAudioDeviceAdded = 0x5,
+        UserAudioDeviceRemoved = 0x6,
+        MicrophoneFocusGained = 0x7,
+        TranscriptionToggled = 0x8,
+    };
+
+    enum EncodingQuality 
+    {
+        Low = 0x0,
+        Normal = 0x1,
+        High = 0x2,
+    };
+
+    [uuid(22FFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    delegate HRESULT ChatParticipantTranscribedTextReadyHandler(ChatParticipant speaker, String message);
+
+    [uuid(11FFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    delegate HRESULT ChatSessionStateChangedHandler(ChatSession sender, ChatSessionStateChangeReason reason);
+
+    [interface_name("IChatChannel", EFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    runtimeclass ChatChannel
+    {
+        ChatChannel();
+        Windows.Foundation.Collections.IVectorView<ChatParticipant> Participants { get; };
+    }
+
+    runtimeclass ChatDecoder
+    {
+        ChatDecoder();
+        [interface_name("IChatDecoder", DFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Format Format { get; };
+            Windows.Storage.Streams.IBuffer Decode(Windows.Storage.Streams.IBuffer buffer);
+        }
+
+        [interface_name("IChatDecoder2", CFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Int32 IsDataInFlight { get; };
+        }
+    }
+
+    runtimeclass ChatEncoder
+    {
+        ChatEncoder();
+        [constructor_name("IChatEncoderFactory", BFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            ChatEncoder(Format format, EncodingQuality quality);
+        }
+
+        [interface_name("IChatEncoder", AFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Windows.Storage.Streams.IBuffer Encode(Windows.Storage.Streams.IBuffer buffer);
+        }
+
+        [interface_name("IChatEncoder2", 0FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Int32 IsDataInFlight { get; };
+        }
+
+        [interface_name("IChatEncoder3", 9FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            void Encode(Windows.Storage.Streams.IBuffer buffer, ChatBufferSource source, out Windows.Storage.Streams.IBuffer encodedBuffer, out ChatBufferSource encodedSource);
+        }
+    }
+
+    runtimeclass ChatParticipant
+    {
+        ChatParticipant();
+        [constructor_name("IChatParticipantFactory", 8FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            ChatParticipant(Windows.Xbox.System.User user);
+        }
+
+        [interface_name("IChatParticipant", 7FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Windows.Xbox.System.User User { get; };
+            ChatParticipantTypes ParticipantType { get; set; };
+            Single Volume { get; set; };
+        }
+
+        [interface_name("IChatParticipant2", 6FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            void SynthesizeTextMessageAsAudioBuffers(String message, Windows.Media.SpeechSynthesis.VoiceInformation voice);
+        }
+    }
+
+    runtimeclass ChatSession
+    {
+        ChatSession();
+        [constructor_name("IChatSessionFactory", 5FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            ChatSession(Windows.Foundation.TimeSpan time, ChatFeatures enabledFeatures, ChatSession session);
+            ChatSession(Windows.Foundation.TimeSpan time, UInt32 processorAffinity, ChatFeatures enabledFeatures, ChatSession session);
+        }
+
+        [interface_name("IChatSession", 4FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Windows.Foundation.Collections.IVectorView<ChatChannel> Channels { get; };
+            event ChatSessionStateChangedHandler StateChangedEvent;
+            Windows.Foundation.IAsyncOperation<ChatSessionState> GetStateAsync();
+        }
+
+        [interface_name("IChatSession2", 3FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+        {
+            Int32 TranscriptionEnabled { get; set; };
+            ChatEncoder CreateTranscribingEncoder(ChatParticipant participant, Format format, EncodingQuality quality);
+            event ChatParticipantTranscribedTextReadyHandler TranscribedTextReadyEvent;
+            ChatRestriction GetParticipantRelationship(ChatParticipant source, ChatParticipant target);
+            Windows.Xbox.System.AudioDeviceInfo GetDedicatedSynthesisDevice(ChatParticipant participant);
+        }
+    }
+
+    [interface_name("IChatCaptureSource", 2FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    runtimeclass ChatCaptureSource
+    {
+        String Id { get; };
+        Format Format { get; };
+        void GetNextBuffer(out Windows.Storage.Streams.IBuffer buffer, out CaptureBufferStatus status);
+        void GetNextBufferWithCorrelationInfo(out Windows.Storage.Streams.IBuffer buffer, out Windows.Foundation.Collections.IVectorView<ChatUserCorrelation> info, out CaptureBufferStatus status);
+        ChatRestriction GetRelationship(String targetId);
+    }
+
+    [interface_name("IChatRenderTarget", 1FFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    runtimeclass ChatRenderTarget
+    {
+        String Id { get; };
+        ChatRestriction GetRelationship(String source);
+        void BeginMix();
+        ChatRestriction AddMixBuffer(String source, Format format, Windows.Storage.Streams.IBuffer buffer);
+        void ResetMix();
+        void SubmitMix();
+    }
+
+    [interface_name("IChatSessionState", 20A2CD96-EC5B-5A14-8509-9AC6D1862F6A)]
+    runtimeclass ChatSessionState
+    {
+        Windows.Foundation.Collections.IVectorView<ChatCaptureSource> CaptureSources { get; };
+        Windows.Foundation.Collections.IVectorView<ChatRenderTarget> RenderTargets { get; };
+    }
+
+    [interface_name("IFormat", FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    runtimeclass Format
+    {
+        Format();
+        UInt32 BitsPerSample { get; set; };
+        UInt32 Bitrate { get; };
+        UInt32 ChannelCount { get; set; };
+        UInt32 SampleRate { get; set; };
+        Guid Subtype { get; set; };
+    }
+
+    [interface_name("IChatUserCorrelation", BB8FFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF)]
+    runtimeclass ChatUserCorrelation
+    {
+        ChatUserCorrelation();
+        Windows.Xbox.System.User User { get; };
+    }
+}

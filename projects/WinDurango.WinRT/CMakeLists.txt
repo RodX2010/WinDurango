@@ -33,7 +33,7 @@ endforeach()
 execute_process(
     COMMAND cppwinrt
         -prefix
-        -pch ${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h
+        -pch .
         -input "${CMAKE_BINARY_DIR}\\WinMetadata"
         -reference sdk
         -component "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files\\sources"
@@ -88,6 +88,13 @@ set(FILES
     "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAddress.cpp"
     "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAssociation.cpp"
     "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAssociationTemplate.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatChannel.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatDecoder.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatEncoder.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatParticipant.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatSession.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatUserCorrelation.cpp"
+    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.Format.cpp"
     "src/WinDurangoWinRT.cpp"
 )
 
@@ -113,6 +120,7 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Storage"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Services"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Networking"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Chat"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )
