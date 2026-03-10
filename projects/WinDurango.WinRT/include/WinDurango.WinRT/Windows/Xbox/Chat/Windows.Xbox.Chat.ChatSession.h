@@ -3,6 +3,7 @@
 #include "Windows.Xbox.Chat.ChatRenderTarget.g.h"
 #include "Windows.Xbox.Chat.ChatSessionState.g.h"
 #include "Windows.Xbox.Chat.ChatSession.g.h"
+#include <winrt/Windows.Foundation.h>
 
 namespace winrt::Windows::Xbox::Chat::implementation
 {
@@ -55,8 +56,8 @@ namespace winrt::Windows::Xbox::Chat::implementation
         winrt::Windows::Xbox::Chat::ChatRestriction GetParticipantRelationship(winrt::Windows::Xbox::Chat::ChatParticipant const& source, winrt::Windows::Xbox::Chat::ChatParticipant const& target);
         winrt::Windows::Xbox::System::AudioDeviceInfo GetDedicatedSynthesisDevice(winrt::Windows::Xbox::Chat::ChatParticipant const& participant);
     private:
-        winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Chat::ChatSessionStateChangedHandler>> e_StateChangedEvent;
-        winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Chat::ChatParticipantTranscribedTextReadyHandler>> e_TranscribedTextReadyEvent;
+        winrt::event<winrt::Windows::Xbox::Chat::ChatSessionStateChangedHandler> e_StateChangedEvent;
+        winrt::event<winrt::Windows::Xbox::Chat::ChatParticipantTranscribedTextReadyHandler> e_TranscribedTextReadyEvent;
         int32_t transcriptionEnabled;
     };
 }
