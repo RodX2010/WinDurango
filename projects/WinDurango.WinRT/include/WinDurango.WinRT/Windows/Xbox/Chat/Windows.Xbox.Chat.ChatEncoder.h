@@ -8,7 +8,7 @@ namespace winrt::Windows::Xbox::Chat::implementation
         ChatEncoder() = default;
 
         ChatEncoder(winrt::Windows::Xbox::Chat::Format const& format, winrt::Windows::Xbox::Chat::EncodingQuality const& quality);
-        winrt::Windows::Storage::Streams::IBuffer Encode(winrt::Windows::Storage::Streams::IBuffer const& buffer);
+        void Encode(winrt::Windows::Storage::Streams::IBuffer const& buffer, winrt::Windows::Storage::Streams::IBuffer& encodedBuffer);
         int32_t IsDataInFlight();
         void Encode(winrt::Windows::Storage::Streams::IBuffer const& buffer, winrt::Windows::Xbox::Chat::ChatBufferSource const& source, winrt::Windows::Storage::Streams::IBuffer& encodedBuffer, winrt::Windows::Xbox::Chat::ChatBufferSource& encodedSource);
     };

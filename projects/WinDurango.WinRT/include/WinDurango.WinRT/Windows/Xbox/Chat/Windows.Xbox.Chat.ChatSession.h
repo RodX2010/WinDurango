@@ -42,8 +42,8 @@ namespace winrt::Windows::Xbox::Chat::implementation
     {
         ChatSession() = default;
 
-        ChatSession(winrt::Windows::Foundation::TimeSpan const& time, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures, winrt::Windows::Xbox::Chat::ChatSession const& session);
-        ChatSession(winrt::Windows::Foundation::TimeSpan const& time, uint32_t processorAffinity, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures, winrt::Windows::Xbox::Chat::ChatSession const& session);
+        ChatSession(winrt::Windows::Foundation::TimeSpan const& time, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures);
+        ChatSession(winrt::Windows::Foundation::TimeSpan const& time, uint32_t processorAffinity, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures);
         winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Chat::ChatChannel> Channels();
         winrt::event_token StateChangedEvent(winrt::Windows::Xbox::Chat::ChatSessionStateChangedHandler const& handler);
         void StateChangedEvent(winrt::event_token const& token) noexcept;

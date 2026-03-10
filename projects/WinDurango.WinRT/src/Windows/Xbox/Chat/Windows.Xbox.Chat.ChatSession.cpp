@@ -68,12 +68,12 @@ namespace winrt::Windows::Xbox::Chat::implementation
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatSessionState", "Unimplemented: RenderTargets");
         throw hresult_not_implemented();
     }
-    ChatSession::ChatSession(winrt::Windows::Foundation::TimeSpan const& time, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures, winrt::Windows::Xbox::Chat::ChatSession const& session)
+    ChatSession::ChatSession(winrt::Windows::Foundation::TimeSpan const& time, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatSession", "Unimplemented: ChatSession(TimeSpan, ...)");
         throw hresult_not_implemented();
     }
-    ChatSession::ChatSession(winrt::Windows::Foundation::TimeSpan const& time, uint32_t processorAffinity, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures, winrt::Windows::Xbox::Chat::ChatSession const& session)
+    ChatSession::ChatSession(winrt::Windows::Foundation::TimeSpan const& time, uint32_t processorAffinity, winrt::Windows::Xbox::Chat::ChatFeatures const& enabledFeatures)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatSession", "Unimplemented: ChatSession(TimeSpan, uint32_t, ...)");
         throw hresult_not_implemented();

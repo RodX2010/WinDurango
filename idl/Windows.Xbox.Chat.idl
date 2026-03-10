@@ -108,7 +108,7 @@ namespace Windows.Xbox.Chat
         [interface_name("IChatDecoder", 3165955b-adcf-4239-9e63-07b2e9533bfd)]
         {
             Format Format { get; };
-            Windows.Storage.Streams.IBuffer Decode(Windows.Storage.Streams.IBuffer buffer);
+            void Decode(Windows.Storage.Streams.IBuffer buffer, out Windows.Storage.Streams.IBuffer decodedBuffer);
         }
 
         [interface_name("IChatDecoder2", 4d519838-b712-42b0-a3c5-5658954fa76a)]
@@ -127,7 +127,7 @@ namespace Windows.Xbox.Chat
 
         [interface_name("IChatEncoder", ed67b7a3-3721-47ff-b506-7056a7966b09)]
         {
-            Windows.Storage.Streams.IBuffer Encode(Windows.Storage.Streams.IBuffer buffer);
+            void Encode(Windows.Storage.Streams.IBuffer buffer, out Windows.Storage.Streams.IBuffer encodedBuffer);
         }
 
         [interface_name("IChatEncoder2", 25ce9936-2db9-4ce5-be78-5ab4f25aba86)]
@@ -167,8 +167,8 @@ namespace Windows.Xbox.Chat
         ChatSession();
         [constructor_name("IChatSessionFactory", 53cb6065-c211-4b21-a3ef-cd544d22aba1)]
         {
-            ChatSession(Windows.Foundation.TimeSpan time, ChatFeatures enabledFeatures, ChatSession session);
-            ChatSession(Windows.Foundation.TimeSpan time, UInt32 processorAffinity, ChatFeatures enabledFeatures, ChatSession session);
+            ChatSession(Windows.Foundation.TimeSpan time, ChatFeatures enabledFeatures);
+            ChatSession(Windows.Foundation.TimeSpan time, UInt32 processorAffinity, ChatFeatures enabledFeatures);
         }
 
         [interface_name("IChatSession", 9af8480a-16a5-4905-ac0a-5514f3427893)]
@@ -220,11 +220,11 @@ namespace Windows.Xbox.Chat
     runtimeclass Format
     {
         Format();
-        UInt32 BitsPerSample { get; set; };
+        UInt32 BitsPerSample { set; get; };
         UInt32 Bitrate { get; };
-        UInt32 ChannelCount { get; set; };
-        UInt32 SampleRate { get; set; };
-        Guid Subtype { get; set; };
+        UInt32 ChannelCount { set; get; };
+        UInt32 SampleRate { set; get; };
+        Guid Subtype { set; get; };
     }
 
     [interface_name("IChatUserCorrelation", 48e51c40-0eeb-426b-b44a-858cfd4c3e6c)]

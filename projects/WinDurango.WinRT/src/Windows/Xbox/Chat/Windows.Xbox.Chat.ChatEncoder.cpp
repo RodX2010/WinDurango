@@ -8,7 +8,7 @@ namespace winrt::Windows::Xbox::Chat::implementation
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatEncoder", "Unimplemented: ChatEncoder");
         throw hresult_not_implemented();
     }
-    winrt::Windows::Storage::Streams::IBuffer ChatEncoder::Encode(winrt::Windows::Storage::Streams::IBuffer const& buffer)
+    void ChatEncoder::Encode(winrt::Windows::Storage::Streams::IBuffer const& buffer, winrt::Windows::Storage::Streams::IBuffer& encodedBuffer)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatEncoder", "Unimplemented: Encode");
         throw hresult_not_implemented();

@@ -7,15 +7,15 @@ namespace winrt::Windows::Xbox::Chat::implementation
     {
         Format() = default;
 
-        uint32_t BitsPerSample();
         void BitsPerSample(uint32_t value);
+        uint32_t BitsPerSample();
         uint32_t Bitrate();
-        uint32_t ChannelCount();
         void ChannelCount(uint32_t value);
-        uint32_t SampleRate();
+        uint32_t ChannelCount();
         void SampleRate(uint32_t value);
-        winrt::guid Subtype();
+        uint32_t SampleRate();
         void Subtype(winrt::guid const& value);
+        winrt::guid Subtype();
     private:
         uint32_t bitsPerSample;
         uint32_t channelCount;
