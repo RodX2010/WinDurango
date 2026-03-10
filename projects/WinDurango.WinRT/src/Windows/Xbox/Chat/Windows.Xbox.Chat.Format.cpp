@@ -13,8 +13,7 @@ namespace winrt::Windows::Xbox::Chat::implementation
     }
     uint32_t Format::Bitrate()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::Format", "Unimplemented: Bitrate");
-        throw hresult_not_implemented();
+        return 320;
     }
     uint32_t Format::ChannelCount()
     {

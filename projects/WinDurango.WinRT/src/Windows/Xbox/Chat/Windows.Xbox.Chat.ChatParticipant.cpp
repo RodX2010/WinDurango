@@ -5,8 +5,7 @@ namespace winrt::Windows::Xbox::Chat::implementation
 {
     ChatParticipant::ChatParticipant(winrt::Windows::Xbox::System::User const& user)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatParticipant", "Unimplemented: ChatParticipant");
-        throw hresult_not_implemented();
+
     }
     winrt::Windows::Xbox::System::User ChatParticipant::User()
     {
@@ -31,7 +30,6 @@ namespace winrt::Windows::Xbox::Chat::implementation
     }
     void ChatParticipant::SynthesizeTextMessageAsAudioBuffers(hstring const& message, winrt::Windows::Media::SpeechSynthesis::VoiceInformation const& voice)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Chat::ChatParticipant", "Unimplemented: SynthesizeTextMessageAsAudioBuffers");
-        throw hresult_not_implemented();
+
     }
 }
