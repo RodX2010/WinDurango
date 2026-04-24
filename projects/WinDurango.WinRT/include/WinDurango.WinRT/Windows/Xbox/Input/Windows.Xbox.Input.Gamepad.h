@@ -32,8 +32,8 @@ namespace winrt::Windows::Xbox::Input::implementation
     struct GamepadReading : GamepadReadingT<GamepadReading>
     {
         GamepadReading() = default;
-        GamepadReading(winrt::Windows::Foundation::DateTime time, winrt::Windows::Xbox::Input::RawGamepadReading reading)
-            : time(time), reading(reading) {}
+        GamepadReading(winrt::Windows::Xbox::Input::RawGamepadReading reading)
+            : reading(reading) {}
 
         winrt::Windows::Foundation::DateTime Timestamp();
         winrt::Windows::Xbox::Input::GamepadButtons Buttons();

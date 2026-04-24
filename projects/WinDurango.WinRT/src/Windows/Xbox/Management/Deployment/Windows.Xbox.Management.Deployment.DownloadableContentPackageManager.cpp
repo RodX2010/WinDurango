@@ -160,8 +160,7 @@ namespace winrt::Windows::Xbox::Management::Deployment::implementation
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage> DownloadableContentPackageManager::FindPackages(winrt::Windows::Xbox::Management::Deployment::InstalledPackagesFilter const& unk)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Management::Deployment", "Unimplemented: FindPackages");
-        throw hresult_not_implemented();
+        return winrt::single_threaded_vector<winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackage>().GetView();
     }
     winrt::event_token DownloadableContentPackageManager::DownloadableContentPackageInstallCompleted(winrt::Windows::Xbox::Management::Deployment::DownloadableContentPackageInstallCompletedEventHandler const& handler)
     {

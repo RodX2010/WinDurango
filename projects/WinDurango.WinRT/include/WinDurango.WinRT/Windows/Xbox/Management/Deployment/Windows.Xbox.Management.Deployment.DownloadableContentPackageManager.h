@@ -9,6 +9,7 @@
 #include "Windows.Xbox.Management.Deployment.DownloadableContentPackage.g.h"
 #include "Windows.Xbox.Management.Deployment.DownloadableContentPackageInstallCompletedEventArgs.g.h"
 #include "Windows.Xbox.Management.Deployment.DownloadableContentPackageManager.g.h"
+#include <winrt/Windows.Foundation.Collections.h>
 
 namespace winrt::Windows::Xbox::Management::Deployment::implementation
 {

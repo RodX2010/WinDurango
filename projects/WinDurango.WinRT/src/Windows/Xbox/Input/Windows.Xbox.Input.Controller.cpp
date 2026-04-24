@@ -101,7 +101,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     uint64_t Controller::Id()
     {
-        return id;
+        return 1;
     }
 
     hstring Controller::Type()

@@ -9,8 +9,10 @@ namespace winrt::Windows::Xbox::Storage::implementation
     struct ConnectedStorageSpace : ConnectedStorageSpaceT<ConnectedStorageSpace>
     {
         ConnectedStorageSpace() = default;
-        ConnectedStorageSpace(wd::WinRT::ConnectedStorage storage) : storage(storage) {}
-        ConnectedStorageSpace(wd::WinRT::ConnectedStorage storage, uint32_t id) : storage(storage), id(id) {}
+        ConnectedStorageSpace(wd::WinRT::ConnectedStorage *connectedStorage)
+        {
+            m_connectedStorage = connectedStorage;
+        }
 
         static winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::Storage::ConnectedStorageSpace> GetForUserAsync(winrt::Windows::Xbox::System::User unk);
         static winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::Storage::ConnectedStorageSpace> GetForUserAsync(winrt::Windows::Xbox::System::User unk, hstring unka);
@@ -26,9 +28,11 @@ namespace winrt::Windows::Xbox::Storage::implementation
         winrt::Windows::Xbox::Storage::ContainerInfoQueryResult CreateContainerInfoQuery(hstring const& unk);
         winrt::Windows::Foundation::IAsyncOperation<int32_t> GetRemainingBytesInQuotaAsync();
         winrt::Windows::Foundation::IAsyncOperation<int64_t> GetRemainingBytesInQuota64Async();
+        inline static winrt::Windows::Xbox::Storage::ConnectedStorageSpace userStorageSpace = {nullptr};
+        inline static winrt::Windows::Xbox::Storage::ConnectedStorageSpace machineStorageSpace = {nullptr};
+        inline static winrt::Windows::Xbox::Storage::ConnectedStorageContainer staticContainer = {nullptr};
     private:
-        wd::WinRT::ConnectedStorage storage;
-        uint32_t id = 0;
+        wd::WinRT::ConnectedStorage * m_connectedStorage;
         inline static winrt::Windows::Foundation::Collections::IMap<hstring, winrt::Windows::Xbox::Storage::ConnectedStorageContainer> containers{};
     };
 }

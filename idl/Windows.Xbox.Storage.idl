@@ -37,13 +37,12 @@ namespace Windows.Xbox.Storage
         Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo> > GetContainerInfoAsync(UInt32 unk, UInt32 unka);
         Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo> > GetContainerInfoAsync();
         Windows.Foundation.IAsyncOperation<UInt32> GetItemCountAsync();
-    }
 
-    [interface_name("IContainerInfo2QueryResult", f8a8cdfe-1d10-42a5-b01e-41718e183ca9)]
-    runtimeclass ContainerInfo2QueryResult
-    {
-        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async(UInt32 unk, UInt32 unka);
-        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async();
+	[interface_name("IContainerInfo2QueryResult", f8a8cdfe-1d10-42a5-b01e-41718e183ca9)]
+    	{
+        	Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async(UInt32 unk, UInt32 unka);
+        	Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async();
+    	}
     }
 
     runtimeclass ConnectedStorageContainer
