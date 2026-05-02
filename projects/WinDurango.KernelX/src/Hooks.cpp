@@ -197,7 +197,8 @@ static void WdRoInitializeLibraries()
 
     for (auto name : s_RoLibraryNames)
     {
-        if (auto dll = LoadLibraryW(name.c_str()); dll != nullptr)
+        HMODULE dll = LoadLibraryW(name.c_str());
+        if (dll != nullptr)
         {
             if (auto pfn = GetProcAddress(dll, "DllGetActivationFactory"); pfn != nullptr)
             {

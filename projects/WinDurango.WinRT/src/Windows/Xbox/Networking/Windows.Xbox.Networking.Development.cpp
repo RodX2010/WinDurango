@@ -5,8 +5,7 @@ namespace winrt::Windows::Xbox::Networking::implementation
 {
     hstring SecureDeviceSocketDescription::Name()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: Name");
-        throw hresult_not_implemented();
+        return L"Name";
     }
     winrt::Windows::Xbox::Networking::SecureIpProtocol SecureDeviceSocketDescription::IpProtocol()
     {
@@ -15,13 +14,11 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     uint16_t SecureDeviceSocketDescription::BoundPortRangeLower()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: BoundPortRangeLower");
-        throw hresult_not_implemented();
+        return 0;
     }
     uint16_t SecureDeviceSocketDescription::BoundPortRangeUpper()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: BoundPortRangeUpper");
-        throw hresult_not_implemented();
+        return 0;
     }
     winrt::Windows::Xbox::Networking::SecureDeviceSocketUsage SecureDeviceSocketDescription::AllowedUsages()
     {

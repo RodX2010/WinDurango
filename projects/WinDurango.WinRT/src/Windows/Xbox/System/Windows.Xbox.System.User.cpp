@@ -15,7 +15,6 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Xbox::System::UserOnlineState User::OnlineState()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: OnlineState");
         return winrt::Windows::Xbox::System::UserOnlineState::Offline;
     }
 
@@ -31,12 +30,9 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::System::User> User::Users()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: Users");
         if (a_users == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::System::User>(nullptr) || a_users.Size() == 0)
         {
             a_users = winrt::single_threaded_vector<winrt::Windows::Xbox::System::User>();
-
-            p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::System", "Creating static a_users");
 
             for (size_t i = 0; i < 4; i++)
             {
@@ -71,26 +67,22 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Xbox::System::User User::GetUserById(uint32_t Id)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: Users");
-        throw hresult_not_implemented();
+        return Users().GetAt(Id);
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureForAllUsersAsync(hstring method, hstring url, hstring headers)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync(hstring, hstring, hstring)");
-        throw hresult_not_implemented();
+        co_return winrt::make<winrt::Windows::Xbox::System::implementation::GetTokenAndSignatureResult>();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureForAllUsersAsync(hstring method, hstring url, hstring headers, winrt::Windows::Foundation::Collections::IVector<uint8_t> body)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync(hstring, hstring, hstring, array<uint8_t>");
-        throw hresult_not_implemented();
+        co_return winrt::make<winrt::Windows::Xbox::System::implementation::GetTokenAndSignatureResult>();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureForAllUsersAsync(hstring method, hstring url, hstring headers, hstring body)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: GetTokenAndSignatureForAllUsersAsync(hstring, hstring, hstring, hstring)");
-        throw hresult_not_implemented();
+        co_return winrt::make<winrt::Windows::Xbox::System::implementation::GetTokenAndSignatureResult>();
     }
 
     winrt::event_token User::AudioDeviceAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::AudioDeviceAddedEventArgs> const& handler)
@@ -171,7 +163,7 @@ namespace winrt::Windows::Xbox::System::implementation
 
     uint32_t User::Id()
     {
-        return 1;
+        return id;
     }
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::System::AudioDeviceInfo> User::AudioDevices()
@@ -186,8 +178,8 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Xbox::System::UserDisplayInfo User::DisplayInfo()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: DisplayInfo");
-        return winrt::make<winrt::Windows::Xbox::System::implementation::UserDisplayInfo>();
+        hstring ID = to_hstring(id);
+        return winrt::make<winrt::Windows::Xbox::System::implementation::UserDisplayInfo>(ID);
     }
 
     bool User::IsGuest()
@@ -202,7 +194,6 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Xbox::System::UserLocation User::Location()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: Location");
         return winrt::Windows::Xbox::System::UserLocation::Local;
     }
 
@@ -214,14 +205,12 @@ namespace winrt::Windows::Xbox::System::implementation
 
     hstring User::XboxUserHash()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: XboxUserHash");
-        return winrt::to_hstring(1);
+        return winrt::to_hstring(id);
     }
 
     hstring User::XboxUserId()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::System", "Unimplemented: XboxUserId");
-        return winrt::to_hstring(1);
+        return winrt::to_hstring(id);
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetTokenAndSignatureResult> User::GetTokenAndSignatureAsync(hstring method, hstring url, hstring headers)

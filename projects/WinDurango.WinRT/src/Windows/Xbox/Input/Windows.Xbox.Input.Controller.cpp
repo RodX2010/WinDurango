@@ -29,13 +29,13 @@ namespace winrt::Windows::Xbox::Input::implementation
         return controller;
     }
 
-    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Controller> Controller::Controllers()
+    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IController> Controller::Controllers()
     {
-        auto vector = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::Controller>();
+        winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::IController> vector = winrt::single_threaded_vector<Input::IController>();
 
-        for (auto const &gamepad : Gamepad::Gamepads())
+        for (IGamepad gamepad : Gamepad::Gamepads())
         {
-            vector.Append(gamepad.as<winrt::Windows::Xbox::Input::Controller>());
+            vector.Append(static_cast<IController>(gamepad));
         }
 
         return vector.GetView();
@@ -93,7 +93,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         throw hresult_not_implemented();
     }
 
-    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Controller> Controller::GetControllersOrderedLeftToRight(winrt::Windows::Xbox::Input::ControllerOrderFilter const& filter)
+    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IController> Controller::GetControllersOrderedLeftToRight(winrt::Windows::Xbox::Input::ControllerOrderFilter const& filter)
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Input", "Unimplemented: GetControllersOrderedLeftToRight");
         throw hresult_not_implemented();
@@ -101,12 +101,12 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     uint64_t Controller::Id()
     {
-        return 1;
+        return id;
     }
 
     hstring Controller::Type()
     {
-        return L"";
+        return L"Xbox Wireless Controller";
     }
 
     winrt::Windows::Xbox::System::User Controller::User()

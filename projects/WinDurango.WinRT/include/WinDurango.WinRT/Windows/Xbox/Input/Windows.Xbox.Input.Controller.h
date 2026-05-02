@@ -52,7 +52,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         Controller() = default;
         Controller(uint64_t id) : id(id) {}
 
-        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Controller> Controllers();
+        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IController> Controllers();
         static winrt::event_token ControllerAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerAddedEventArgs> const& handler);
         static void ControllerAdded(winrt::event_token const& token) noexcept;
         static winrt::event_token ControllerRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerRemovedEventArgs> const& handler);
@@ -63,7 +63,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         static void ControllerOrderChanged(winrt::event_token const& token) noexcept;
         static winrt::Windows::Xbox::Input::Controller GetControllerById(uint64_t unk);
         static void GetControllerMetadata(uint64_t unk, winrt::Windows::Xbox::Input::MetadataVersion const& version, winrt::Windows::Foundation::Collections::IVector<uint8_t> const& unka);
-        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Controller> GetControllersOrderedLeftToRight(winrt::Windows::Xbox::Input::ControllerOrderFilter const& filter);
+        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IController> GetControllersOrderedLeftToRight(winrt::Windows::Xbox::Input::ControllerOrderFilter const& filter);
         uint64_t Id();
         hstring Type();
         winrt::Windows::Xbox::System::User User();

@@ -104,11 +104,11 @@ namespace winrt::Windows::Xbox::Input::implementation
         return reading.RightThumbstickY;
     }
 
-    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Gamepad> Gamepad::Gamepads()
+    winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IGamepad> Gamepad::Gamepads()
     {
-        if (a_gamepads == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::Gamepad>(nullptr) || a_gamepads.Size() == 0)
+        if (a_gamepads == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::IGamepad>(nullptr) || a_gamepads.Size() == 0)
         {
-            a_gamepads = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::Gamepad>();
+            a_gamepads = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::IGamepad>();
 
             p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating static a_gamepads");
 
@@ -116,17 +116,10 @@ namespace winrt::Windows::Xbox::Input::implementation
             {
                 XINPUT_CAPABILITIES capabilities{};
                 DWORD Result = XInputGetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities);
-                if (Result == ERROR_SUCCESS)
+                if (Result) //TODO: Fix XInput being a bitch and returning ERROR_DEVICE_NOT_CONNECTED when there is a connected device.
                 {
                     p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
-                    winrt::Windows::Xbox::Input::Gamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
-                    a_gamepads.Append(NewGamepad);
-                    continue;
-                }
-                else if (Result == ERROR_DEVICE_NOT_CONNECTED)
-                {
-                    p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
-                    winrt::Windows::Xbox::Input::Gamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
+                    winrt::Windows::Xbox::Input::IGamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
                     a_gamepads.Append(NewGamepad);
                     continue;
                 }
@@ -158,18 +151,18 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     uint64_t Gamepad::Id()
     {
-        return 1;
+        return id;
     }
 
     hstring Gamepad::Type()
     {
-        return L"";
+        return L"Xbox Wireless Controller";
     }
 
     winrt::Windows::Xbox::System::User Gamepad::User()
     {
         p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Getting User");
-        return winrt::Windows::Xbox::System::implementation::User::Users().GetAt(id);
+        return winrt::Windows::Xbox::System::implementation::User::Users().GetAt(Id());
     }
 
     winrt::Windows::Xbox::Input::INavigationReading Gamepad::GetNavigationReading()
@@ -186,14 +179,12 @@ namespace winrt::Windows::Xbox::Input::implementation
         return dummyNavigationReading;
     }
 
-    winrt::Windows::Xbox::Input::GamepadVibration Gamepad::SetVibration()
+    void Gamepad::SetVibration(winrt::Windows::Xbox::Input::GamepadVibration const& value)
     {
-        GamepadVibration Vibration = {};
-        Vibration.LeftMotorLevel = 0.0f;
-        Vibration.RightMotorLevel = 0.0f;
-        Vibration.LeftTriggerLevel = 0.0f;
-        Vibration.RightTriggerLevel = 0.0f;
-        return Vibration;
+        XINPUT_VIBRATION Vibration{};
+        Vibration.wLeftMotorSpeed = value.LeftMotorLevel * 65535;
+        Vibration.wRightMotorSpeed = value.RightMotorLevel * 65535;
+        XInputSetState(id, &Vibration);
     }
 
     winrt::Windows::Xbox::Input::GamepadReading Gamepad::GetCurrentReading()
@@ -276,5 +267,5 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs>> Gamepad::e_GamepadAdded{};
     winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadRemovedEventArgs>> Gamepad::e_GamepadRemoved{};
-    winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::Gamepad> Gamepad::a_gamepads;
+    winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::IGamepad> Gamepad::a_gamepads;
 }

@@ -67,7 +67,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         Gamepad() = default;
         Gamepad(uint64_t id, bool gamepad) : id(id) {}
 
-        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::Gamepad> Gamepads();
+        static winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IGamepad> Gamepads();
         static winrt::event_token GamepadAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs> const& handler);
         static void GamepadAdded(winrt::event_token const& token) noexcept;
         static winrt::event_token GamepadRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadRemovedEventArgs> const& handler);
@@ -77,7 +77,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         winrt::Windows::Xbox::System::User User();
         winrt::Windows::Xbox::Input::INavigationReading GetNavigationReading();
         winrt::Windows::Xbox::Input::RawNavigationReading GetRawNavigationReading();
-        winrt::Windows::Xbox::Input::GamepadVibration SetVibration();
+        void SetVibration(winrt::Windows::Xbox::Input::GamepadVibration const& value);
         winrt::Windows::Xbox::Input::GamepadReading GetCurrentReading();
         winrt::Windows::Xbox::Input::RawGamepadReading GetRawCurrentReading();
     private:
@@ -85,7 +85,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         bool gamepad = false;
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs>> e_GamepadAdded;
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadRemovedEventArgs>> e_GamepadRemoved;
-        static winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::Gamepad> a_gamepads;
+        static winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::IGamepad> a_gamepads;
     };
 }
 namespace winrt::Windows::Xbox::Input::factory_implementation

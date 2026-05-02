@@ -1,4 +1,5 @@
 #include "Windows.Xbox.Networking.SecureDeviceAssociationTemplate.h"
+#include "Windows.Xbox.Networking.Development.h"
 #include "WinDurangoWinRT.h"
 
 namespace winrt::Windows::Xbox::Networking::implementation
@@ -20,7 +21,6 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAssociationTemplate SecureDeviceAssociationTemplate::GetTemplateByName(hstring const& name)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: GetTemplateByName");
         return winrt::make<SecureDeviceAssociationTemplate>();
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Networking::SecureDeviceAssociationTemplate> SecureDeviceAssociationTemplate::Templates()
@@ -63,13 +63,11 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     winrt::Windows::Xbox::Networking::SecureDeviceSocketDescription SecureDeviceAssociationTemplate::InitiatorSocketDescription()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: InitiatorSocketDescription");
-        throw hresult_not_implemented();
+        return winrt::make<winrt::Windows::Xbox::Networking::implementation::SecureDeviceSocketDescription>();
     }
     winrt::Windows::Xbox::Networking::SecureDeviceSocketDescription SecureDeviceAssociationTemplate::AcceptorSocketDescription()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: AcceptorSocketDescription");
-        throw hresult_not_implemented();
+        return winrt::make<winrt::Windows::Xbox::Networking::implementation::SecureDeviceSocketDescription>();
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAssociationUsage SecureDeviceAssociationTemplate::AllowedUsages()
     {

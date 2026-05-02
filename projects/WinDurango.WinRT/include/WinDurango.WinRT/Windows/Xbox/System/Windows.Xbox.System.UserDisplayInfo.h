@@ -17,6 +17,7 @@ namespace winrt::Windows::Xbox::System::implementation
     struct UserDisplayInfo : UserDisplayInfoT<UserDisplayInfo>
     {
         UserDisplayInfo() = default;
+        UserDisplayInfo(hstring id) : m_id(id) {}
         UserDisplayInfo(hstring gamertag, uint32_t gamerscore, hstring appDisplayName, hstring gameDisplayName, uint32_t reputation, 
             winrt::Windows::Xbox::System::UserAgeGroup ageGroup, winrt::Windows::Foundation::Collections::IVectorView<uint32_t> privileges) 
             : gamertag(gamertag), gamerscore(gamerscore), appDisplayName(appDisplayName), gameDisplayName(gameDisplayName), reputation(reputation),
@@ -36,6 +37,7 @@ namespace winrt::Windows::Xbox::System::implementation
         uint32_t gamerscore = 0;
         hstring appDisplayName = L"Durangler";
         hstring gameDisplayName = L"Durangler";
+        hstring m_id;
         uint32_t reputation = 0;
         winrt::Windows::Xbox::System::UserAgeGroup ageGroup = winrt::Windows::Xbox::System::UserAgeGroup::Adult;
         winrt::Windows::Foundation::Collections::IVectorView<uint32_t> privileges = {0};

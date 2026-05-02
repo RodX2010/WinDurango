@@ -20,7 +20,7 @@ add_library(WinDurango.KernelX SHARED ${FILES} "include/WinDurango.KernelX/EraCo
 target_link_libraries(WinDurango.KernelX PRIVATE 
     WinDurango.Common 
     WinDurango.Implementation.WinRT 
-    "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/lib/detours.lib"
+    "${CMAKE_SOURCE_DIR}/vcpkg_installed/vcpkg/pkgs/detours_x64-windows/lib/detours.lib"
 )
 
 target_link_options(WinDurango.KernelX
@@ -32,7 +32,7 @@ target_include_directories(WinDurango.KernelX PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.KernelX/
     ${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include
     ${CMAKE_SOURCE_DIR}/projects/WinDurango.Implementation.WinRT/include
-    ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include/detours
+    ${CMAKE_SOURCE_DIR}/vcpkg_installed/vcpkg/pkgs/detours_x64-windows/include/detours
 )
 
 set_target_properties(WinDurango.KernelX PROPERTIES

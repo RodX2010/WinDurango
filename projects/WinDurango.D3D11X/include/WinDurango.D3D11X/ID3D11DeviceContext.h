@@ -7,9 +7,9 @@
 ID3D11DeviceContext2 *g_Context = nullptr;
 
 static std::map<UINT64, int> D3D11X_HARDWARE_TO_TOPOLOGY_MAP = {
-    {0x000001ffc0009e00, 0},  {0x000003ffc0009e00, 1},  {0x000005ffc0009e00, 2},  {0x000007ffc0009e00, 3},
-    {0x000009ffc0009e00, 4},  {0x00000dffc0009e00, 5},  {0x00000bffc0009e00, 6},  {0x000001ffc0009e00, 7},
-    {0x000001ffc0009e00, 8},  {0x000001ffc0009e00, 9},  {0x0000157fc0009e00, 10}, {0x0000177fc0009e00, 11},
+    {0x000001ffc0009e00, 0}, {0x000003ffc0009e00, 1}, {0x000005ffc0009e00, 2}, {0x000007ffc0009e00, 3},
+    {0x000009ffc0009e00, 4}, {0x00000dffc0009e00, 5}, {0x00000bffc0009e00, 6}, {0x000001ffc0009e00, 7},
+    {0x000001ffc0009e00, 8}, {0x000001ffc0009e00, 9}, {0x0000157fc0009e00, 10}, {0x0000177fc0009e00, 11},
     {0x0000197fc0009e00, 12}, {0x00001b7fc0009e00, 13}, {0x00001dffc0009e00, 14}, {0x00001fffc0009e00, 15},
     {0x000021ffc0009e00, 16}, {0x000023ffc0009e00, 17}, {0x000025ffc0009e00, 18}, {0x000027ffc0009e00, 19},
     {0x000029ffc0009e00, 20}, {0x00002bffc0009e00, 21}, {0x00002dffc0009e00, 22}, {0x00002fffc0009e00, 23},
@@ -23,7 +23,8 @@ static std::map<UINT64, int> D3D11X_HARDWARE_TO_TOPOLOGY_MAP = {
     {0x0140130bc0009e00, 52}, {0x0150130bc0009e00, 53}, {0x0160130ac0009e00, 54}, {0x0170130ac0009e00, 55},
     {0x01801309c0009e00, 56}, {0x01901309c0009e00, 57}, {0x01a01308c0009e00, 58}, {0x01b01308c0009e00, 59},
     {0x01c01308c0009e00, 60}, {0x01d01307c0009e00, 61}, {0x01e01307c0009e00, 62}, {0x01f01307c0009e00, 63},
-    {0x02001307c0009e00, 64}};
+    {0x02001307c0009e00, 64}
+};
 
 struct ID3D11BackgroundContext : IUnknown
 {
@@ -40,13 +41,13 @@ public:
     {
         m_pFunction = pContext;
         g_Context = m_pFunction;
-        InterlockedIncrement(&this->m_RefCount);
+        AddRef();
         memcpy(&this->m_Function, *(void ***)this, sizeof(this->m_Function));
     }
     D3D11DeviceContextX()
     {
         m_pFunction = g_Context;
-        InterlockedIncrement(&this->m_RefCount);
+        AddRef();
         memcpy(&this->m_Function, *(void ***)this, sizeof(this->m_Function));
     }
 

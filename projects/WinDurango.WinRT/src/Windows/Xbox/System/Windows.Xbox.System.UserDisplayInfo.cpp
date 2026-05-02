@@ -10,7 +10,7 @@ namespace winrt::Windows::Xbox::System::implementation
 
     hstring UserDisplayInfo::Gamertag()
     {
-        return gamertag;
+        return gamertag + m_id;
     }
 
     uint32_t UserDisplayInfo::GamerScore()
@@ -20,12 +20,12 @@ namespace winrt::Windows::Xbox::System::implementation
 
     hstring UserDisplayInfo::ApplicationDisplayName()
     {
-        return appDisplayName;
+        return appDisplayName + m_id;
     }
 
     hstring UserDisplayInfo::GameDisplayName()
     {
-        return gameDisplayName;
+        return gameDisplayName + m_id;
     }
 
     uint32_t UserDisplayInfo::Reputation()

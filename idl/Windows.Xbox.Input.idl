@@ -217,14 +217,14 @@ namespace Windows.Xbox.Input
     [static_name("IControllerStatics", 7400624f-144b-47fc-9f3b-1dcafb482873)]
     runtimeclass Controller : [default] IController
     {
-        static Windows.Foundation.Collections.IVectorView<Controller> Controllers { get; };
+        static Windows.Foundation.Collections.IVectorView<IController> Controllers { get; };
         static event Windows.Foundation.EventHandler<ControllerAddedEventArgs> ControllerAdded;
         static event Windows.Foundation.EventHandler<ControllerRemovedEventArgs> ControllerRemoved;
         static event Windows.Foundation.EventHandler<ControllerPairingChangedEventArgs> ControllerPairingChanged;
         static event Windows.Foundation.EventHandler<ControllerOrderChangedEventArgs> ControllerOrderChanged;
         static Controller GetControllerById(UInt64 unk);
         static void GetControllerMetadata(UInt64 unk, MetadataVersion version, Windows.Foundation.Collections.IVector<UInt8> unka);
-        static Windows.Foundation.Collections.IVectorView<Controller> GetControllersOrderedLeftToRight(ControllerOrderFilter filter);
+        static Windows.Foundation.Collections.IVectorView<IController> GetControllersOrderedLeftToRight(ControllerOrderFilter filter);
     }
 
     [uuid(AACAAAAB-ADAA-AAAA-AAAA-AAAAAAAACAAA)]
@@ -261,15 +261,15 @@ namespace Windows.Xbox.Input
     [uuid(082e402c-07df-45e1-a5ab-a3127af197b5)]
     interface IGamepad requires INavigationController
     {
-        GamepadVibration SetVibration();
+        void SetVibration(GamepadVibration value);
         GamepadReading GetCurrentReading();
         RawGamepadReading GetRawCurrentReading();
     }
 
     [static_name("IGamepadStatics", 8c4c1bcd-fdab-4bf8-bde9-abb2b1d6fdd3)]
-    runtimeclass Gamepad : [default] IGamepad
+    runtimeclass Gamepad : [default] IGamepad, INavigationController, IController
     {
-        static Windows.Foundation.Collections.IVectorView<Gamepad> Gamepads { get; };
+        static Windows.Foundation.Collections.IVectorView<IGamepad> Gamepads { get; };
         static event Windows.Foundation.EventHandler<GamepadAddedEventArgs> GamepadAdded;
         static event Windows.Foundation.EventHandler<GamepadRemovedEventArgs> GamepadRemoved;
     }

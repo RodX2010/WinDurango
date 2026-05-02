@@ -17,8 +17,8 @@ namespace winrt::Windows::Xbox::System::implementation
         hstring Signature();
         hstring Token();
     private:
-        hstring signature = L"";
-        hstring token = L"";
+        hstring signature = L"0";
+        hstring token = L"0";
     };
 
     struct OnlineStateChangedEventArgs : OnlineStateChangedEventArgsT<OnlineStateChangedEventArgs>

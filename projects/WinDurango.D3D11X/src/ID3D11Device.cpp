@@ -553,10 +553,15 @@ HRESULT D3D11DeviceX<ABI>::CreateCounter(D3D11_COUNTER_DESC const *pDesc, ID3D11
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDeferredContext(uint32_t Flags, gfx::ID3D11DeviceContext<ABI> **ppDeferredContext)
 {
-    ID3D11DeviceContext2 *pContext = nullptr;
-    HRESULT hr = m_pFunction->CreateDeferredContext2(0, &pContext);
-    *ppDeferredContext = new D3D11DeviceContextX<ABI>(pContext);
-    return hr;
+    ID3D11DeviceContext* pContext{};
+    ID3D11DeviceContext2* pContext2{};
+    m_pFunction->CreateDeferredContext(0, &pContext);
+
+    pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->Release();
+
+    *ppDeferredContext = new D3D11DeviceContextX<ABI>(pContext2);
+    return S_OK;
 }
 
 template <abi_t ABI>
@@ -647,11 +652,12 @@ template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::GetDeviceRemovedReason()
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::GetImmediateContext(gfx::ID3D11DeviceContext<ABI> **ppImmediateContext)
 {
-    ID3D11DeviceContext *pContext = nullptr;
-    ID3D11DeviceContext2 *pContext2 = nullptr;
+    ID3D11DeviceContext* pContext{};
+    ID3D11DeviceContext2* pContext2{};
     m_pFunction->GetImmediateContext(&pContext);
 
-    if (pContext) pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->Release();
 
     *ppImmediateContext = new D3D11DeviceContextX<ABI>(pContext2);
 }
@@ -679,8 +685,15 @@ template <abi_t ABI> void D3D11DeviceX<ABI>::GetImmediateContext1(gfx::ID3D11Dev
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDeferredContext1(uint32_t Flags, gfx::ID3D11DeviceContext1<ABI> **ppDeferredContext1)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11DeviceContext* pContext{};
+    ID3D11DeviceContext2* pContext2{};
+    m_pFunction->CreateDeferredContext(0, &pContext);
+
+    pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->Release();
+
+    *ppDeferredContext1 = new D3D11DeviceContextX<ABI>(pContext2);
+    return S_OK;
 }
 
 template <abi_t ABI>
@@ -735,8 +748,15 @@ template <abi_t ABI> void D3D11DeviceX<ABI>::GetImmediateContext2(gfx::ID3D11Dev
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDeferredContext2(uint32_t Flags, gfx::ID3D11DeviceContext2<ABI> **ppDeferredContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11DeviceContext* pContext{};
+    ID3D11DeviceContext2* pContext2{};
+    m_pFunction->CreateDeferredContext(0, &pContext);
+
+    pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->Release();
+
+    *ppDeferredContext = new D3D11DeviceContextX<ABI>(pContext2);
+    return S_OK;
 }
 
 template <abi_t ABI>
@@ -983,8 +1003,15 @@ HRESULT D3D11DeviceX<ABI>::CreateSamplerStateX(gfx::D3D11X_SAMPLER_DESC const *p
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDeferredContextX(UINT Flags, gfx::ID3D11DeviceContextX<ABI> **ppDeferredContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11DeviceContext* pContext{};
+    ID3D11DeviceContext2* pContext2{};
+    m_pFunction->CreateDeferredContext(0, &pContext);
+
+    pContext->QueryInterface(IID_PPV_ARGS(&pContext2));
+    pContext->Release();
+
+    *ppDeferredContext = new D3D11DeviceContextX<ABI>(pContext2);
+    return S_OK;
 }
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::GarbageCollect(UINT Flags)
