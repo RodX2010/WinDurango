@@ -70,6 +70,11 @@ public:
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        IMPLEMENT_STUB();
+        return E_NOTIMPL;
+    }
 
     //
     // ID3D11Resource
@@ -117,6 +122,11 @@ template <abi_t ABI> class D3D11Texture2D : public gfx::ID3D11Texture2D<ABI>
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        IMPLEMENT_STUB();
+        return E_NOTIMPL;
+    }
 
     //
     // ID3D11Resource
@@ -164,6 +174,11 @@ public:
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        IMPLEMENT_STUB();
+        return E_NOTIMPL;
+    }
 
     //
     // ID3D11Resource
@@ -211,6 +226,11 @@ public:
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        IMPLEMENT_STUB();
+        return E_NOTIMPL;
+    }
 
     //
     // ID3D11Resource

@@ -213,6 +213,23 @@ void D3D11DeviceContextX<ABI>::PSSetShaderResources(UINT StartSlot, UINT NumView
     m_pFunction->PSSetShaderResources(StartSlot, NumViews, SRVs);
 }
 
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::PSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->PSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::PSSetShader(gfx::ID3D11PixelShader<ABI> *pPixelShader)
 {
     ID3D11PixelShader *Shader{};
@@ -514,6 +531,23 @@ void D3D11DeviceContextX<ABI>::VSSetShaderResources(UINT StartSlot, UINT NumView
     m_pFunction->VSSetShaderResources(StartSlot, NumViews, SRVs);
 }
 
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::VSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->VSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
 template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::VSSetSamplers(UINT StartSlot, UINT NumSamplers,
                                              gfx::ID3D11SamplerState<ABI> *const *ppSamplers)
@@ -570,6 +604,23 @@ void D3D11DeviceContextX<ABI>::GSSetShaderResources(UINT StartSlot, UINT NumView
         else
         {
             SRVs[i] = static_cast<D3D11ShaderResourceView<ABI> *>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->GSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::GSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
         }
     }
     m_pFunction->GSSetShaderResources(StartSlot, NumViews, SRVs);
@@ -1133,7 +1184,10 @@ template <abi_t ABI>
 void D3D11DeviceContextX<ABI>::CopyStructureCount(gfx::ID3D11Buffer<ABI> *pDstBuffer, UINT DstAlignedByteOffset,
                                                   gfx::ID3D11UnorderedAccessView<ABI> *pSrcView)
 {
-    IMPLEMENT_STUB();
+    if (pDstBuffer && pSrcView)
+    {
+        m_pFunction->CopyStructureCount(static_cast<D3D11Buffer<ABI>*>(pDstBuffer)->m_pFunction, DstAlignedByteOffset, static_cast<D3D11UnorderedAccessView<ABI>*>(pSrcView)->m_pFunction);
+    }
 }
 
 template <abi_t ABI>
@@ -1404,6 +1458,23 @@ void D3D11DeviceContextX<ABI>::HSSetShaderResources(UINT StartSlot, UINT NumView
     m_pFunction->HSSetShaderResources(StartSlot, NumViews, SRVs);
 }
 
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::HSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->HSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::HSSetShader(gfx::ID3D11HullShader<ABI> *pHullShader)
 {
     ID3D11HullShader *Shader{};
@@ -1470,6 +1541,23 @@ void D3D11DeviceContextX<ABI>::DSSetShaderResources(UINT StartSlot, UINT NumView
     m_pFunction->DSSetShaderResources(StartSlot, NumViews, SRVs);
 }
 
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::DSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->DSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
 template <abi_t ABI> void D3D11DeviceContextX<ABI>::DSSetShader(gfx::ID3D11DomainShader<ABI> *pDomainShader)
 {
     ID3D11DomainShader *Shader{};
@@ -1531,6 +1619,23 @@ void D3D11DeviceContextX<ABI>::CSSetShaderResources(UINT StartSlot, UINT NumView
         else
         {
             SRVs[i] = static_cast<D3D11ShaderResourceView<ABI> *>(ppShaderResourceViews[i])->m_pFunction;
+        }
+    }
+    m_pFunction->CSSetShaderResources(StartSlot, NumViews, SRVs);
+}
+
+template<abi_t ABI>
+void D3D11DeviceContextX<ABI>::CSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader)
+{
+    UINT NumViews = (PacketHeader >> 19) + 1;
+    ID3D11ShaderResourceView* SRVs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
+    for (UINT i = 0; i < NumViews; i++)
+    {
+        if (!ppShaderResourceViews[i])
+            SRVs[i] = 0;
+        else
+        {
+            SRVs[i] = static_cast<D3D11ShaderResourceView<ABI>*>(ppShaderResourceViews[i])->m_pFunction;
         }
     }
     m_pFunction->CSSetShaderResources(StartSlot, NumViews, SRVs);
@@ -2095,7 +2200,8 @@ void D3D11DeviceContextX<ABI>::VSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    VSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2103,7 +2209,8 @@ void D3D11DeviceContextX<ABI>::HSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    HSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2111,7 +2218,8 @@ void D3D11DeviceContextX<ABI>::DSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    DSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2119,7 +2227,8 @@ void D3D11DeviceContextX<ABI>::GSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    GSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2127,7 +2236,8 @@ void D3D11DeviceContextX<ABI>::PSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    PSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2135,7 +2245,8 @@ void D3D11DeviceContextX<ABI>::CSSetConstantBuffers1(UINT StartSlot, UINT NumBuf
                                                      gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers,
                                                      UINT const *pFirstConstant, UINT const *pNumConstants)
 {
-    IMPLEMENT_STUB();
+    //TODO: align offsets if needed
+    CSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 template <abi_t ABI>
@@ -2371,7 +2482,52 @@ void D3D11DeviceContextX<ABI>::RemapConstantBufferInheritance(gfx::D3D11_STAGE S
                                                               gfx::D3D11_STAGE InheritStage,
                                                               UINT InheritSlot)
 {
-    IMPLEMENT_STUB();
+    gfx::ID3D11Buffer<ABI>* Buffer{};
+    switch (InheritStage)
+    {
+    case gfx::D3D11_STAGE_VS:
+        VSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_PS:
+        PSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_GS:
+        GSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_HS:
+        HSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_CS:
+        CSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_DS:
+        DSGetConstantBuffers(InheritSlot, 1, &Buffer);
+        break;
+    }
+
+    UINT NumBuffers = Buffer != nullptr ? 1 : 0;
+
+    switch (Stage)
+    {
+    case gfx::D3D11_STAGE_VS:
+        VSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_PS:
+        PSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_GS:
+        GSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_HS:
+        HSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_CS:
+        CSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    case gfx::D3D11_STAGE_DS:
+        DSSetConstantBuffers(Slot, NumBuffers, &Buffer);
+        break;
+    }
 }
 
 template <abi_t ABI>
@@ -2379,7 +2535,52 @@ void D3D11DeviceContextX<ABI>::RemapShaderResourceInheritance(gfx::D3D11_STAGE S
                                                               gfx::D3D11_STAGE InheritStage,
                                                               UINT InheritSlot)
 {
-    IMPLEMENT_STUB();
+    gfx::ID3D11ShaderResourceView<ABI>* SRV{};
+    switch (InheritStage)
+    {
+    case gfx::D3D11_STAGE_VS:
+        VSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    case gfx::D3D11_STAGE_PS:
+        PSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    case gfx::D3D11_STAGE_GS:
+        GSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    case gfx::D3D11_STAGE_HS:
+        HSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    case gfx::D3D11_STAGE_CS:
+        CSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    case gfx::D3D11_STAGE_DS:
+        DSGetShaderResources(InheritSlot, 1, &SRV);
+        break;
+    }
+
+    UINT NumSRVs = SRV != nullptr ? 1 : 0;
+
+    switch (Stage)
+    {
+    case gfx::D3D11_STAGE_VS:
+        VSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    case gfx::D3D11_STAGE_PS:
+        PSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    case gfx::D3D11_STAGE_GS:
+        GSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    case gfx::D3D11_STAGE_HS:
+        HSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    case gfx::D3D11_STAGE_CS:
+        CSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    case gfx::D3D11_STAGE_DS:
+        DSSetShaderResources(Slot, NumSRVs, &SRV);
+        break;
+    }
 }
 
 template <abi_t ABI>

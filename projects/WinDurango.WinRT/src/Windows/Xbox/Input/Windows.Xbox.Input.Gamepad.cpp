@@ -1,6 +1,27 @@
 #include "Windows.Xbox.Input.Gamepad.h"
 #include "WinDurangoWinRT.h"
 
+HMODULE XInput = nullptr;
+typedef DWORD (WINAPI* PFN_XInputGetState)(
+    DWORD dwUserIndex,
+    XINPUT_STATE* pState
+);
+
+typedef DWORD (WINAPI* PFN_XInputGetCapabilities)(
+    DWORD dwUserIndex,
+    DWORD dwFlags,
+    XINPUT_CAPABILITIES* pCapabilities
+);
+
+typedef DWORD (WINAPI* PFN_XInputSetState)(
+    DWORD dwUserIndex,
+    XINPUT_VIBRATION* pVibration
+);
+
+PFN_XInputGetState XInput1_3GetState;
+PFN_XInputGetCapabilities XInput1_3GetCapabilities;
+PFN_XInputSetState XInput1_3SetState;
+
 namespace winrt::Windows::Xbox::Input::implementation
 {
     winrt::Windows::Xbox::Input::Gamepad GamepadAddedEventArgs::Gamepad()
@@ -106,6 +127,17 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Input::IGamepad> Gamepad::Gamepads()
     {
+        if (!XInput || !XInput1_3GetState || !XInput1_3GetCapabilities || !XInput1_3SetState)
+        {
+            XInput = LoadLibraryW(L"xinput1_3.dll");
+            if (XInput)
+            {
+                XInput1_3GetState = (PFN_XInputGetState)GetProcAddress(XInput, "XInputGetState");
+                XInput1_3GetCapabilities = (PFN_XInputGetCapabilities)GetProcAddress(XInput, "XInputGetCapabilities");
+                XInput1_3SetState = (PFN_XInputSetState)GetProcAddress(XInput, "XInputSetState");
+            }
+        }
+
         if (a_gamepads == winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Xbox::Input::IGamepad>(nullptr) || a_gamepads.Size() == 0)
         {
             a_gamepads = winrt::single_threaded_vector<winrt::Windows::Xbox::Input::IGamepad>();
@@ -115,8 +147,8 @@ namespace winrt::Windows::Xbox::Input::implementation
             for (DWORD gamepad = 0; gamepad < XUSER_MAX_COUNT; gamepad++)
             {
                 XINPUT_CAPABILITIES capabilities{};
-                DWORD Result = XInputGetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities);
-                if (Result) //TODO: Fix XInput being a bitch and returning ERROR_DEVICE_NOT_CONNECTED when there is a connected device.
+                DWORD Result = XInput1_3GetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities);
+                if (Result == ERROR_SUCCESS) //TODO: Fix XInput being a bitch and returning ERROR_DEVICE_NOT_CONNECTED when there is a connected device.
                 {
                     p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
                     winrt::Windows::Xbox::Input::IGamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
@@ -131,32 +163,32 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::event_token Gamepad::GamepadAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs> const& handler)
     {
-        return e_GamepadAdded.add(handler);
+        return {};
     }
 
     void Gamepad::GamepadAdded(winrt::event_token const& token) noexcept
     {
-        e_GamepadAdded.remove(token);
+        throw hresult_not_implemented();
     }
 
     winrt::event_token Gamepad::GamepadRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadRemovedEventArgs> const& handler)
     {
-        return e_GamepadRemoved.add(handler);
+        return {};
     }
 
     void Gamepad::GamepadRemoved(winrt::event_token const& token) noexcept
     {
-        e_GamepadRemoved.remove(token);
+        throw hresult_not_implemented();
     }
 
     uint64_t Gamepad::Id()
     {
-        return id;
+        return 1;
     }
 
     hstring Gamepad::Type()
     {
-        return L"Xbox Wireless Controller";
+        return L"Windows.Xbox.Input.Gamepad";
     }
 
     winrt::Windows::Xbox::System::User Gamepad::User()
@@ -184,7 +216,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         XINPUT_VIBRATION Vibration{};
         Vibration.wLeftMotorSpeed = value.LeftMotorLevel * 65535;
         Vibration.wRightMotorSpeed = value.RightMotorLevel * 65535;
-        XInputSetState(id, &Vibration);
+        XInput1_3SetState(id, &Vibration);
     }
 
     winrt::Windows::Xbox::Input::GamepadReading Gamepad::GetCurrentReading()
@@ -215,7 +247,7 @@ namespace winrt::Windows::Xbox::Input::implementation
             {XINPUT_GAMEPAD_Y, GamepadButtons::Y},
         };
 
-        if (XInputGetState(id, &xiState) == ERROR_SUCCESS)
+        if (XInput1_3GetState(id, &xiState) == ERROR_SUCCESS)
         {
             for (int i = 0; i < ARRAYSIZE(buttons); i++)
             {

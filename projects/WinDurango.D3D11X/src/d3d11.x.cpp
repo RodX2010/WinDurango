@@ -54,8 +54,14 @@ EXTERN_C HRESULT __stdcall D3D11XCreateDeviceXAndSwapChain1(const D3D11X_CREATE_
                                                             void **ppSwapChain, void **ppDevice,
                                                             void **ppImmediateContext)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11Runtime *pRuntime;
+    d3d11CreateInstance<D3D11Runtime>(g_ABI, (void **)&pRuntime);
+    auto hr = pRuntime->CreateDevice((void **)ppDevice, (void **)ppImmediateContext);
+    if (FAILED(hr))
+        return hr;
+
+    hr = pRuntime->CreateSwapChain(ppSwapChain, (*ppDevice), pSwapChainDesc);
+    return hr;
 }
 
 EXTERN_C HRESULT __stdcall D3DAllocateGraphicsMemory(SIZE_T dwSize, UINT64 a2, void *a3, int a4, void **a5)

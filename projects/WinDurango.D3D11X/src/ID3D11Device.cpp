@@ -815,8 +815,7 @@ HRESULT D3D11DeviceX<ABI>::CreateDmaEngineContext(gfx::D3D11_DMA_ENGINE_CONTEXT_
 
 template <abi_t ABI> BOOL D3D11DeviceX<ABI>::IsFencePending(UINT64 Fence)
 {
-    IMPLEMENT_STUB();
-    return {};
+    return Fence > 0xFFFF && !*(BOOL*)Fence;
 }
 
 template <abi_t ABI> BOOL D3D11DeviceX<ABI>::IsResourcePending(gfx::ID3D11Resource<ABI> *pResource)
@@ -996,8 +995,30 @@ template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateSamplerStateX(gfx::D3D11X_SAMPLER_DESC const *pSamplerDesc,
                                                gfx::ID3D11SamplerState<ABI> **ppSamplerState)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    D3D11_SAMPLER_DESC SamplerDesc{};
+    SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    SamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+    SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    SamplerDesc.MaxAnisotropy = 1;
+    SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    SamplerDesc.MinLOD = 0;
+    SamplerDesc.MipLODBias = 0.0f;
+    SamplerDesc.BorderColor[0] = 0.0f;
+    SamplerDesc.BorderColor[1] = 0.0f;
+    SamplerDesc.BorderColor[2] = 0.0f;
+    SamplerDesc.BorderColor[3] = 0.0f;
+
+    ID3D11SamplerState *SamplerState;
+    HRESULT hr = m_pFunction->CreateSamplerState(&SamplerDesc, &SamplerState);
+
+    if (SamplerState)
+    {
+        *ppSamplerState = new D3D11SamplerState<ABI>(SamplerState);
+    }
+
+    return hr;
 }
 
 template <abi_t ABI>
@@ -1023,8 +1044,13 @@ template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CreateDepthStencilStateX(D3D11_DEPTH_STENCIL_DESC const *pDepthStencilStateDesc,
                                                     gfx::ID3D11DepthStencilState<ABI> **ppDepthStencilState)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    ID3D11DepthStencilState *State{};
+    HRESULT hr = m_pFunction->CreateDepthStencilState(pDepthStencilStateDesc, &State);
+    if (State)
+    {
+        *ppDepthStencilState = new D3D11DepthStencilState<ABI>(State);
+    }
+    return hr;
 }
 
 template <abi_t ABI>

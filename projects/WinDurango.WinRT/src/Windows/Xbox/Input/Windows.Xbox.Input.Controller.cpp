@@ -43,42 +43,42 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     winrt::event_token Controller::ControllerAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerAddedEventArgs> const& handler)
     {
-        return e_ControllerAdded.add(handler);
+        return {};
     }
 
     void Controller::ControllerAdded(winrt::event_token const& token) noexcept
     {
-        e_ControllerAdded.remove(token);
+        throw hresult_not_implemented();
     }
 
     winrt::event_token Controller::ControllerRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerRemovedEventArgs> const& handler)
     {
-        return e_ControllerRemoved.add(handler);
+        return {};
     }
 
     void Controller::ControllerRemoved(winrt::event_token const& token) noexcept
     {
-        e_ControllerRemoved.remove(token);
+        throw hresult_not_implemented();
     }
 
     winrt::event_token Controller::ControllerPairingChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerPairingChangedEventArgs> const& handler)
     {
-        return e_ControllerPairingChanged.add(handler);
+        return {};
     }
 
     void Controller::ControllerPairingChanged(winrt::event_token const& token) noexcept
     {
-        e_ControllerPairingChanged.remove(token);
+        throw hresult_not_implemented();
     }
 
     winrt::event_token Controller::ControllerOrderChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::ControllerOrderChangedEventArgs> const& handler)
     {
-        return e_ControllerOrderChanged.add(handler);
+        return {};
     }
 
     void Controller::ControllerOrderChanged(winrt::event_token const& token) noexcept
     {
-        e_ControllerOrderChanged.remove(token);
+        throw hresult_not_implemented();
     }
 
     winrt::Windows::Xbox::Input::Controller Controller::GetControllerById(uint64_t unk)
@@ -101,12 +101,12 @@ namespace winrt::Windows::Xbox::Input::implementation
 
     uint64_t Controller::Id()
     {
-        return id;
+        return 1;
     }
 
     hstring Controller::Type()
     {
-        return L"Xbox Wireless Controller";
+        return L"Windows.Xbox.Input.Controller";
     }
 
     winrt::Windows::Xbox::System::User Controller::User()

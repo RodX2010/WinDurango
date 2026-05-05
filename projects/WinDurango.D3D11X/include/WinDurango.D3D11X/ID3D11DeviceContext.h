@@ -66,6 +66,11 @@ public:
     HRESULT SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData);
     HRESULT SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData);
     HRESULT SetPrivateDataInterfaceGraphics(_GUID const &guid, xbox::IGraphicsUnknown<ABI> const *pData);
+    HRESULT SetName(LPCWSTR pName)
+    {
+        IMPLEMENT_STUB();
+        return E_NOTIMPL;
+    }
 
     std::vector<ID3D11BackgroundContext*> m_BkgContexts;
     std::mutex m_BkgCtxLock;
@@ -80,6 +85,7 @@ public:
     void VSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
     void PSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void PSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void PSSetShader(gfx::ID3D11PixelShader<ABI> *pPixelShader);
     void PSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
     void VSSetShader(gfx::ID3D11VertexShader<ABI> *pVertexShader);
@@ -108,6 +114,7 @@ public:
     void IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY PrimitiveTopology);
     void VSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void VSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void VSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
     void Begin(ID3D11Asynchronous *pAsync);
     void End(ID3D11Asynchronous *pAsync);
@@ -115,6 +122,7 @@ public:
     void SetPredication(ID3D11Predicate *pPredicate, BOOL PredicateValue);
     void GSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void GSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void GSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
     void OMSetRenderTargets(UINT NumViews, gfx::ID3D11RenderTargetView<ABI> *const *,
                             gfx::ID3D11DepthStencilView<ABI> *pDepthStencilView);
@@ -157,16 +165,19 @@ public:
     void ExecuteCommandList(ID3D11CommandList *pCommandList, BOOL RestoreContextState);
     void HSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void HSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void HSSetShader(gfx::ID3D11HullShader<ABI> *pHullShader);
     void HSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
     void HSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
     void DSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void DSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void DSSetShader(gfx::ID3D11DomainShader<ABI> *pDomainShader);
     void DSSetSamplers(UINT StartSlot, UINT NumSamplers, gfx::ID3D11SamplerState<ABI> *const *ppSamplers);
     void DSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, gfx::ID3D11Buffer<ABI> *const *ppConstantBuffers);
     void CSSetShaderResources(UINT StartSlot, UINT NumViews,
                               gfx::ID3D11ShaderResourceView<ABI> *const *ppShaderResourceViews);
+    void CSSetShaderResources(gfx::ID3D11ShaderResourceView<ABI>* const* ppShaderResourceViews, UINT StartSlot, UINT PacketHeader);
     void CSSetUnorderedAccessViews(UINT StartSlot, UINT NumUAVs,
                                    gfx::ID3D11UnorderedAccessView<ABI> *const *ppUnorderedAccessViews,
                                    UINT const *pUAVInitialCounts);

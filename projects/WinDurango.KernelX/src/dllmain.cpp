@@ -1,8 +1,10 @@
 #include "Hooks.h"
 #include "kernelx.h"
 #include "Logan.h"
+#include "ForzaThreadHook.h"
 
 static DWORD ReasonForCall = 0;
+#define RETURN_IF_FAILED(hr) if (FAILED(hr)) return hr
 
 void KernelxInitialize(HINSTANCE hinstDLL)
 {
@@ -33,6 +35,27 @@ void KernelxInitialize(HINSTANCE hinstDLL)
             FARPROC CreateWindowInBandEx = GetProcAddress(User32, "CreateWindowInBandEx");
             TrueCreateWindowInBandEx = reinterpret_cast<PCreateWindowInBandEx>(CreateWindowInBandEx);
             DetourAttach(&reinterpret_cast<PVOID &>(TrueCreateWindowInBandEx), EraCreateWindowInBandEx);
+        }
+
+        //Forza Horizon 2 Demo
+        if (winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName() == L"265E1020-Anthem_8wekyb3d8bbwe")
+        {
+            *(void**)&P_StartForzaThread = (char*)GetModuleHandleW(nullptr) + 0xFE6920;
+            DetourAttach((void**)&P_StartForzaThread, &D_StartForzaThread);
+        }
+        //Forza Horizon 2
+        if (winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName() == L"Anthem_8wekyb3d8bbwe")
+        {
+            *(void**)&P_StartForzaThread = (char*)GetModuleHandleW(nullptr) + 0x1081A90;
+            DetourAttach((void**)&P_StartForzaThread, &D_StartForzaThread);
+            *(void**)&P_FmodThreadProc = (char*)GetModuleHandleW(nullptr) + 0x19D3F80;
+            DetourAttach((void**)&P_FmodThreadProc, &D_FmodThreadProc);
+        }
+         //Forza Horizon 2 Presents Fast & Furious
+        if (winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName() == L"Spire_8wekyb3d8bbwe")
+        {
+            *(void**)&P_StartForzaThread = (char*)GetModuleHandleW(nullptr) + 0x10A7C00;
+            DetourAttach((void**)&P_StartForzaThread, &D_StartForzaThread);
         }
 
         DetourAttach(&reinterpret_cast<PVOID &>(TrueCoCreateInstance), EraCoCreateInstance);

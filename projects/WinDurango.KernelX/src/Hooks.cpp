@@ -192,7 +192,8 @@ static void WdRoInitializeLibraries()
     static std::vector<std::wstring> s_RoLibraryNames = {
         L"Microsoft.Xbox.GameChat.dll",
         L"Microsoft.Xbox.Services.dll",
-        L"windows.kinect.dll"
+        L"windows.kinect.dll",
+        L"windows.media.devices.dll"
     };
 
     for (auto name : s_RoLibraryNames)
@@ -322,6 +323,15 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
         }
 
         if (wcscmp(rawString, L"Windows.Kinect.KinectSensor") == 0)
+        {
+            if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
+            {
+                HRESULT hr = temp.CopyTo(iid, factory);
+                return hr;
+            }
+        }
+
+        if (wcscmp(rawString, L"Windows.Media.Devices.MediaDevice") == 0)
         {
             if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
             {

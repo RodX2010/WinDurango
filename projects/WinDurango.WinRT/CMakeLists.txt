@@ -39,63 +39,8 @@ execute_process(
         -component "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files\\sources"
         -out "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files")
 
-set(FILES
-    "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControls.cpp"
-    "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControlsButtonPressedEventArgs.cpp"
-    "src/Windows/Xbox/Media/Windows.Xbox.Media.GameTransportControlsPropertyChangedEventArgs.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.BiometricUser.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.BodyController.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.BodyHandPair.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.Controller.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.Gamepad.cpp"
-    "src/Windows/Xbox/Input/Windows.Xbox.Input.NavigationController.cpp"
-    "src/Windows/Xbox/System/Windows.Xbox.System.AudioDeviceInfo.cpp"
-    "src/Windows/Xbox/System/Windows.Xbox.System.cpp"
-    "src/Windows/Xbox/System/Windows.Xbox.System.User.cpp"
-    "src/Windows/Xbox/System/Windows.Xbox.System.UserDisplayInfo.cpp"
-    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.DownloadableContentPackageManager.cpp"
-    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferManager.cpp"
-    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcher.cpp"
-    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcherForContentPackages.cpp"
-    "src/Windows/Xbox/Management/Deployment/Windows.Xbox.Management.Deployment.PackageTransferWatcherStaticsForChunkSpecifiers.cpp"
-    "src/Windows/Xbox/ApplicationModel/Core/Windows.Xbox.ApplicationModel.Core.CoreApplicationContext.cpp"
-    "src/Windows/Xbox/ApplicationModel/Core/Windows.Xbox.ApplicationModel.Core.UserContextLookup.cpp"
-    "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.Configuration.cpp"
-    "src/Windows/Xbox/ApplicationModel/Store/Windows.Xbox.ApplicationModel.Store.Product.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.AppInfo.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.AumidQuery.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.ContentCompatibility.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.ContentEnhancements.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.PackageFullNameQuery.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.PackageInfo.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.PackageInfoEvents.cpp"
-    "src/Windows/Xbox/ApplicationModel/State/Windows.Xbox.ApplicationModel.State.Internal.ProtocolQuery.cpp"
-    "src/Windows/Xbox/ApplicationModel/Windows.Xbox.ApplicationModel.Help.cpp"
-    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.MultiplayerSessionReference.cpp"
-    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.Party.cpp"
-    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.PartyChat.cpp"
-    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.PartyConfig.cpp"
-    "src/Windows/Xbox/Multiplayer/Windows.Xbox.Multiplayer.PartyView.cpp"
-    "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ConnectedStorage.cpp"
-    "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ConnectedStorageContainer.cpp"
-    "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ConnectedStorageSpace.cpp"
-    "src/Windows/Xbox/Storage/Windows.Xbox.Storage.ContainerInfoQueryResult.cpp"
-    "src/Windows/Xbox/Services/Windows.Xbox.Services.XboxLiveConfiguration.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.Development.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.ErrorMessages.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.NetworkCache.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.QualityOfService.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAddress.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAssociation.cpp"
-    "src/Windows/Xbox/Networking/Windows.Xbox.Networking.SecureDeviceAssociationTemplate.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatChannel.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatDecoder.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatEncoder.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatParticipant.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatSession.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.ChatUserCorrelation.cpp"
-    "src/Windows/Xbox/Chat/Windows.Xbox.Chat.Format.cpp"
-    "src/WinDurangoWinRT.cpp"
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
 file(GLOB WINRT_FILES
@@ -104,7 +49,7 @@ file(GLOB WINRT_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files/winrt/impl/*.cpp" 
 )
 
-add_library(WinDurango.WinRT SHARED ${FILES} ${WINRT_FILES} WinDurango.WinRT.def)
+add_library(WinDurango.WinRT SHARED ${SOURCES} ${WINRT_FILES} WinDurango.WinRT.def)
 target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT"
@@ -121,6 +66,7 @@ target_include_directories(WinDurango.WinRT PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Services"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Networking"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Chat"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.WinRT/Windows/Xbox/Speech/Recognition"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
 )
