@@ -1,17 +1,17 @@
 #include "Windows.Xbox.Multiplayer.PartyView.h"
+#include "Windows.Xbox.Multiplayer.MultiplayerSessionReference.h"
+#include <winrt/Windows.Foundation.Collections.h>
 #include "WinDurangoWinRT.h"
 
 namespace winrt::Windows::Xbox::Multiplayer::implementation
 {
     hstring PartyMember::XboxUserId()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: XboxUserId");
-        throw hresult_not_implemented();
+        return L"1";
     }
     bool PartyMember::IsLocal()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: IsLocal");
-        throw hresult_not_implemented();
+        return true;
     }
     winrt::Windows::Foundation::DateTime PartyMember::JoinTime()
     {
@@ -20,8 +20,7 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Multiplayer::PartyMember> PartyMemberDeviceGroup::Members()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: Members");
-        throw hresult_not_implemented();
+        return winrt::single_threaded_vector<winrt::Windows::Xbox::Multiplayer::PartyMember>().GetView();
     }
     winrt::Windows::Xbox::Multiplayer::SuppressGameSessionReadyToastMode PartyView::SuppressGameSessionReadyToastMode()
     {
@@ -38,8 +37,7 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Multiplayer::PartyMember> PartyView::Members()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: Members");
-        throw hresult_not_implemented();
+        return winrt::single_threaded_vector<winrt::Windows::Xbox::Multiplayer::PartyMember>().GetView();
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Multiplayer::PartyMemberDeviceGroup> PartyView::MembersGroupedByDevice()
     {
@@ -48,18 +46,15 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
     }
     winrt::Windows::Xbox::Multiplayer::MultiplayerSessionReference PartyView::MatchSession()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: MatchSession");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::MultiplayerSessionReference>();
     }
     winrt::Windows::Xbox::Multiplayer::MultiplayerSessionReference PartyView::GameSession()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: GameSession");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::MultiplayerSessionReference>();
     }
     bool PartyView::IsPartyInAnotherTitle()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: IsPartyInAnotherTitle");
-        throw hresult_not_implemented();
+        return false;
     }
     winrt::Windows::Xbox::Multiplayer::SuppressGameSessionReadyToastMode PartyView::suppressGameSessionReadyToast{};
 }

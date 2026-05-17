@@ -5,22 +5,18 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
 {
     winrt::Windows::Xbox::Multiplayer::MultiplayerSessionReference MultiplayerSessionReferenceFactory::CreateMultiplayerSessionReference(hstring const& unk, hstring const& unka, hstring const& unkb)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: CreateMultiplayerSessionReference");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::MultiplayerSessionReference>();
     }
     hstring MultiplayerSessionReference::SessionName()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: SessionName");
-        throw hresult_not_implemented();
+        return L"Session";
     }
     hstring MultiplayerSessionReference::ServiceConfigurationId()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: ServiceConfigurationId");
-        throw hresult_not_implemented();
+        return L"1";
     }
     hstring MultiplayerSessionReference::SessionTemplateName()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: SessionTemplateName");
-        throw hresult_not_implemented();
+        return L"SessionTemplateName";
     }
 }

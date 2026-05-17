@@ -1,5 +1,6 @@
 #include "Windows.Xbox.System.UserDisplayInfo.h"
 #include "WinDurangoWinRT.h"
+#include <winrt/windows.foundation.collections.h>
 
 namespace winrt::Windows::Xbox::System::implementation
 {
@@ -35,12 +36,14 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::Windows::Xbox::System::UserAgeGroup UserDisplayInfo::AgeGroup()
     {
-        return ageGroup;
+        return UserAgeGroup::Adult;
     }
 
     winrt::Windows::Foundation::Collections::IVectorView<uint32_t> UserDisplayInfo::Privileges()
     {
-        return privileges;
+        auto vector = winrt::single_threaded_vector<uint32_t>();
+        vector.Append(1);
+        return vector.GetView();
     }
 
     winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Xbox::System::GetPictureResult> UserDisplayInfo::GetApplicationPictureAsync(winrt::Windows::Xbox::System::UserPictureSize unk, winrt::Windows::Storage::Streams::IBuffer unka)

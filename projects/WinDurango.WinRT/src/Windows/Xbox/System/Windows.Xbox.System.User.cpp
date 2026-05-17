@@ -20,12 +20,12 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::event_token User::OnlineStateChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::OnlineStateChangedEventArgs> const& handler)
     {
-        return m_OnlineStateChanged.add(handler);
+        return {};
     }
 
     void User::OnlineStateChanged(winrt::event_token const& token) noexcept
     {
-        m_OnlineStateChanged.remove(token);
+
     }
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::System::User> User::Users()
@@ -47,22 +47,22 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::event_token User::UserAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserAddedEventArgs> const& handler)
     {
-        return m_UserAdded.add(handler);
+        return {};
     }
 
     void User::UserAdded(winrt::event_token const& token) noexcept
     {
-        m_UserAdded.remove(token);
+
     }
 
     winrt::event_token User::UserRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserRemovedEventArgs> const& handler)
     {
-        return m_UserRemoved.add(handler);
+        return {};
     }
 
     void User::UserRemoved(winrt::event_token const& token) noexcept
     {
-        m_UserRemoved.remove(token);
+
     }
 
     winrt::Windows::Xbox::System::User User::GetUserById(uint32_t Id)
@@ -87,72 +87,72 @@ namespace winrt::Windows::Xbox::System::implementation
 
     winrt::event_token User::AudioDeviceAdded(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::AudioDeviceAddedEventArgs> const& handler)
     {
-        return m_AudioDeviceAdded.add(handler);
+        return {};
     }
 
     void User::AudioDeviceAdded(winrt::event_token const& token) noexcept
     {
-        m_AudioDeviceAdded.remove(token);
+
     }
 
     winrt::event_token User::AudioDeviceRemoved(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::AudioDeviceRemovedEventArgs> const& handler)
     {
-        return m_AudioDeviceRemoved.add(handler);
+        return {};
     }
 
     void User::AudioDeviceRemoved(winrt::event_token const& token) noexcept
     {
-        m_AudioDeviceRemoved.remove(token);
+
     }
 
     winrt::event_token User::AudioDeviceChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::AudioDeviceChangedEventArgs> const& handler)
     {
-        return m_AudioDeviceChanged.add(handler);
+        return {};
     }
 
     void User::AudioDeviceChanged(winrt::event_token const& token) noexcept
     {
-        m_AudioDeviceChanged.remove(token);
+
     }
 
     winrt::event_token User::SignInCompleted(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignInCompletedEventArgs> const& handler)
     {
-        return m_SignInCompleted.add(handler);
+        return {};
     }
 
     void User::SignInCompleted(winrt::event_token const& token) noexcept
     {
-        m_SignInCompleted.remove(token);
+        
     }
 
     winrt::event_token User::SignOutStarted(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutStartedEventArgs> const& handler)
     {
-        return m_SignOutStarted.add(handler);
+        return {};
     }
 
     void User::SignOutStarted(winrt::event_token const& token) noexcept
     {
-        m_SignOutStarted.remove(token);
+
     }
 
     winrt::event_token User::SignOutCompleted(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::SignOutCompletedEventArgs> const& handler)
     {
-        return m_SignOutCompleted.add(handler);
+        return {};
     }
 
     void User::SignOutCompleted(winrt::event_token const& token) noexcept
     {
-        m_SignOutCompleted.remove(token);
+
     }
 
     winrt::event_token User::UserDisplayInfoChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::System::UserDisplayInfoChangedEventArgs> const& handler)
     {
-        return m_UserDisplayInfoChanged.add(handler);
+        return {};
     }
 
     void User::UserDisplayInfoChanged(winrt::event_token const& token) noexcept
     {
-        m_UserDisplayInfoChanged.remove(token);
+
     }
 
     winrt::guid User::GetNetworkCacheIdForUsers(winrt::Windows::Foundation::Collections::IVectorView<uint32_t> const& unk)
