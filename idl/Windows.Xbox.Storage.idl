@@ -38,7 +38,7 @@ namespace Windows.Xbox.Storage
         Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo> > GetContainerInfoAsync();
         Windows.Foundation.IAsyncOperation<UInt32> GetItemCountAsync();
 
-	[interface_name("IContainerInfo2QueryResult", f8a8cdfe-1d10-42a5-b01e-41718e183ca9)]
+	    [interface_name("IContainerInfo2QueryResult", f8a8cdfe-1d10-42a5-b01e-41718e183ca9)]
     	{
         	Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async(UInt32 unk, UInt32 unka);
         	Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<ContainerInfo2> > GetContainerInfo2Async();
@@ -64,10 +64,9 @@ namespace Windows.Xbox.Storage
             BlobInfoQueryResult CreateBlobInfoQuery(String unk);
         }
     }
-
+    
     runtimeclass ConnectedStorageSpace
     {
-        ConnectedStorageSpace();
         [static_name("IConnectedStorageSpaceStatics", 07020414-b3e9-47c8-a36f-f24e2dc65573)]
         {
             static Windows.Foundation.IAsyncOperation<ConnectedStorageSpace> GetForUserAsync(Windows.Xbox.System.User unk);
@@ -81,7 +80,8 @@ namespace Windows.Xbox.Storage
             static Windows.Foundation.IAsyncOperation<ConnectedStorageSpace> GetSyncOnDemandForUserAsync(Windows.Xbox.System.User unk);
             [default_overload] static Windows.Foundation.IAsyncOperation<ConnectedStorageSpace> GetSyncOnDemandForUserAsync(Windows.Xbox.System.User unk, String unka);
         }
-
+        
+        [default]
         [interface_name("IConnectedStorageSpace", b48eea29-8323-41bc-bbad-2c26e27bda22)]
         {
             Windows.Xbox.System.User User { get; };

@@ -61,7 +61,7 @@ namespace winrt::Windows::Xbox::Storage::implementation
     }
     winrt::Windows::Xbox::System::User ConnectedStorageSpace::User()
     {
-        return winrt::Windows::Xbox::System::User::Users().GetAt(1); //Fun Fact: Forza has a seizure if you pass 0 as the id :)
+        return winrt::Windows::Xbox::System::implementation::User::Users().GetAt(1); //Fun Fact: Forza has a seizure if you pass 0 as the id :)
     }
     hstring ConnectedStorageSpace::ServiceConfigurationId()
     {
@@ -103,10 +103,10 @@ namespace winrt::Windows::Xbox::Storage::implementation
     }
     winrt::Windows::Foundation::IAsyncOperation<int32_t> ConnectedStorageSpace::GetRemainingBytesInQuotaAsync()
     {
-        co_return 0xFFFFFFFFFFFFFFFF; // Infinite storage remaining :)
+        co_return INT_MAX; // Infinite storage remaining :)
     }
     winrt::Windows::Foundation::IAsyncOperation<int64_t> ConnectedStorageSpace::GetRemainingBytesInQuota64Async()
     {
-        co_return 0xFFFFFFFFFFFFFFFF; // Infinite storage remaining :)
+        co_return INT64_MAX; // Infinite storage remaining :)
     }
 }

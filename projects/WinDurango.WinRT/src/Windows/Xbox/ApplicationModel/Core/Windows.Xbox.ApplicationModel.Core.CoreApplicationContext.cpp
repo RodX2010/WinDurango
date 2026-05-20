@@ -15,11 +15,11 @@ namespace winrt::Windows::Xbox::ApplicationModel::Core::implementation
     }
     winrt::event_token CoreApplicationContext::CurrentUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler)
     {
-        return e_CurrentUserChanged.add(handler);
+        return {};
     }
     void CoreApplicationContext::CurrentUserChanged(winrt::event_token const& token) noexcept
     {
-        e_CurrentUserChanged.remove(token);
+
     }
     void CoreApplicationContext::SetCurrentUser(winrt::Windows::Xbox::System::User const& value)
     {
