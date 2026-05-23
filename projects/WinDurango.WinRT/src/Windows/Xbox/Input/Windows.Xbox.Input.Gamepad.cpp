@@ -144,17 +144,29 @@ namespace winrt::Windows::Xbox::Input::implementation
 
             p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating static a_gamepads");
 
+            bool controllerFound = false;
+
             for (DWORD gamepad = 0; gamepad < XUSER_MAX_COUNT; gamepad++)
             {
                 XINPUT_CAPABILITIES capabilities{};
-                DWORD Result = XInput1_3GetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities);
-                if (Result == ERROR_SUCCESS) //TODO: Fix XInput being a bitch and returning ERROR_DEVICE_NOT_CONNECTED when there is a connected device.
+                XINPUT_STATE state{};
+                
+                bool Result = XInput1_3GetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities) == ERROR_SUCCESS
+                             || XInput1_3GetState(gamepad, &state) == ERROR_SUCCESS;
+                if (Result) // should work now btw
                 {
                     p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
                     winrt::Windows::Xbox::Input::IGamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
                     a_gamepads.Append(NewGamepad);
                     continue;
                 }
+            }
+
+            if (!controllerFound) 
+            {
+                p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "No XInput Controller found");
+                winrt::Windows::Xbox::Input::IGamepad NewGamepad = winrt::make<Gamepad>(XUSER_MAX_COUNT, false);
+                a_gamepads.Append(NewGamepad);
             }
         }
 
@@ -265,34 +277,75 @@ namespace winrt::Windows::Xbox::Input::implementation
             reading.RightThumbstickY = xiState.Gamepad.sThumbRY / 32768.f;
         }
 
-        if (GetAsyncKeyState('A'))
+        float lx = 0.0f;
+        float ly = 0.0f;
+
+        if (GetAsyncKeyState('W') & 0x8000) {
+            ly = 1.0f;
+        }
+
+        if (GetAsyncKeyState('A') & 0x8000) {
+            lx = -1.0f;
+        }
+
+        if (GetAsyncKeyState('S') & 0x8000) {
+            ly = -1.0;
+        }
+
+        if (GetAsyncKeyState('D') & 0x8000) {
+            lx = 1.0f;
+        }
+
+        lx = std::clamp(lx, -1.0f, 1.0f);
+        ly = std::clamp(ly, -1.0f, 1.0f);
+
+        if (lx != 0.0f || ly != 0.0f) {
+            reading.LeftThumbstickX = lx;
+            reading.LeftThumbstickY = ly;
+        }
+
+        if (GetAsyncKeyState('Z') & 0x8000) {
             reading.Buttons |= GamepadButtons::A;
-        if (GetAsyncKeyState('B'))
+        }
+        if (GetAsyncKeyState('X') & 0x8000) {
             reading.Buttons |= GamepadButtons::B;
-        if (GetAsyncKeyState('X'))
+        }
+        if (GetAsyncKeyState('C') & 0x8000) {
             reading.Buttons |= GamepadButtons::X;
-        if (GetAsyncKeyState('Y'))
+        }
+        if (GetAsyncKeyState('V') & 0x8000) {
             reading.Buttons |= GamepadButtons::Y;
-        if (GetAsyncKeyState(VK_UP))
+        }
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadUp;
-        if (GetAsyncKeyState(VK_DOWN))
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadDown;
-        if (GetAsyncKeyState(VK_LEFT))
+        }
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadLeft;
-        if (GetAsyncKeyState(VK_RIGHT))
+        }
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadRight;
-        if (GetAsyncKeyState(VK_RETURN))
+        }
+        if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
             reading.Buttons |= GamepadButtons::Menu;
-        if (GetAsyncKeyState(VK_ESCAPE))
+        }
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
             reading.Buttons |= GamepadButtons::View;
-        if (GetAsyncKeyState(VK_LSHIFT))
+        }
+        if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
             reading.Buttons |= GamepadButtons::LeftThumbstick;
-        if (GetAsyncKeyState(VK_RSHIFT))
+        }
+        if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) {
             reading.Buttons |= GamepadButtons::RightThumbstick;
-        if (GetAsyncKeyState(VK_LCONTROL))
+        }
+        if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
             reading.Buttons |= GamepadButtons::LeftShoulder;
-        if (GetAsyncKeyState(VK_RCONTROL))
+        }
+        if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) {
             reading.Buttons |= GamepadButtons::RightShoulder;
+        }
 
         return reading;
     }
