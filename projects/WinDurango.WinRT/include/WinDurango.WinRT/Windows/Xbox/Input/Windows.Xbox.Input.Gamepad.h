@@ -81,6 +81,11 @@ namespace winrt::Windows::Xbox::Input::implementation
         winrt::Windows::Xbox::Input::GamepadReading GetCurrentReading();
         winrt::Windows::Xbox::Input::RawGamepadReading GetRawCurrentReading();
     private:
+        POINT prev{ 0, 0 };
+        float deltaSumX = 0.0f;
+        float deltaSumY = 0.0f;
+        bool firstFrame = true;
+        
         uint64_t id = 0;
         bool gamepad = false;
         static winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Xbox::Input::GamepadAddedEventArgs>> e_GamepadAdded;

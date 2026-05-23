@@ -27,28 +27,3 @@ add_custom_target(WinDurango ALL DEPENDS
     WinDurango.D3D11X
     WinDurango.MMDevAPI
 )
-
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin/AppX/")
-add_custom_command(
-    TARGET WinDurango POST_BUILD 
-    COMMAND copy /Y "*.dll" "AppX"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Debug/"
-)
-
-add_custom_command(
-    TARGET WinDurango POST_BUILD
-    COMMAND copy /Y "*.pdb" "AppX"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Debug/"
-)
-
-add_custom_command(
-    TARGET WinDurango POST_BUILD
-    COMMAND copy /Y "*.lib" "AppX"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Debug/"
-)
-
-add_custom_command(
-    TARGET WinDurango POST_BUILD
-    COMMAND copy /Y "*.exp" "AppX"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Debug/"
-)
