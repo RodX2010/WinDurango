@@ -489,50 +489,14 @@ typedef union AcpInternalCommandQueueEntry
 { 
     uint32_t state;
     AcpCommand command;
-    uint8_t padToAcpCacheLineSize[120];
+    uint8_t padToAcpCacheLineSize[256];
 };
 
 BOOL(WINAPI *TrueDeviceIoControl)(HANDLE hDevice, DWORD dwIoControlCode, LPVOID lpInBuffer, DWORD nInBufferSize,
                                   LPVOID lpOutBuffer, DWORD nOutBufferSize, LPDWORD lpBytesReturned,
                                   LPOVERLAPPED lpOverlapped) = DeviceIoControl;
-
 HANDLE hLoganMap{};
 DWORD m_pBumpAllocStart = 0x10000;
-LOGAN_PHYSICAL_MEMORY _driverMemory[3];
-
-class LoganHeap
-{
-  public:
-    PVOID _declspec(dllexport) GetVirtualAddress(_In_ APU_ADDRESS ApuAddress, _In_ SIZE_T SizeInBytes) const;
-
-    template <typename T> T *GetVirtualAddress(_In_ APU_ADDRESS ApuAddress, _In_ SIZE_T Count = 1) const;
-
-    HRESULT _declspec(dllexport) GetDriverMemory(UINT32 index, LOGAN_PHYSICAL_MEMORY *memory) const;
-
-    PVOID _view;
-};
-
-template <typename T> void _declspec(dllexport) DispatchLoganCommand(LOGAN_COMMAND_TYPE cmdType, T cmd);
-
-PVOID LoganHeap::GetVirtualAddress(APU_ADDRESS ApuAddress, SIZE_T SizeInBytes) const
-{
-    if (!ApuAddress)
-        return nullptr;
-    return (PVOID)((ULONG_PTR)_view + ApuAddress);
-}
-
-HRESULT LoganHeap::GetDriverMemory(UINT32 index, LOGAN_PHYSICAL_MEMORY *memory) const
-{
-    *memory = _driverMemory[index];
-    return S_OK;
-}
-
-template <typename T> T *LoganHeap::GetVirtualAddress(APU_ADDRESS ApuAddress, SIZE_T Count) const
-{
-    return (T *)GetVirtualAddress(ApuAddress, sizeof(T) * Count);
-}
-
-LoganHeap g_LoganHeap;
 
 DWORD BumpAlloc(_In_ SIZE_T size)
 {
@@ -547,16 +511,112 @@ LPVOID Map(_In_ UINT NumPages, _In_ LPVOID Address, _In_ DWORD ApuAddress, _In_ 
     {
         LPVOID pageAddress = (LPVOID)((ULONG_PTR)Address + PageSize * i);
         UnmapViewOfFileEx(pageAddress, MEM_PRESERVE_PLACEHOLDER);
-        DWORD lastError = GetLastError();
-        void *Map = MapViewOfFile3(hLoganMap, nullptr, pageAddress, ApuAddress + PageSize * i, PageSize,
-                                     MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, nullptr, 0);
-        lastError = GetLastError();
-        void *Memory = VirtualAlloc2(nullptr, pageAddress, PageSize, MEM_COMMIT, PAGE_READWRITE, nullptr, 0);
-        lastError = GetLastError();
+        MapViewOfFile3(hLoganMap, nullptr, pageAddress, ApuAddress + PageSize * i, PageSize, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, nullptr, 0);
+        VirtualAlloc2(nullptr, pageAddress, PageSize, MEM_COMMIT, PAGE_READWRITE, nullptr, 0);
     }
 
     return Address;
 }
+
+class LoganHeap
+{
+  public:
+    PVOID _declspec(dllexport) GetVirtualAddress(_In_ APU_ADDRESS ApuAddress, _In_ SIZE_T SizeInBytes);
+
+    template <typename T> 
+    T *GetVirtualAddress(_In_ APU_ADDRESS ApuAddress, _In_ SIZE_T Count = 1);
+
+    HRESULT _declspec(dllexport) GetDriverMemory(UINT32 index, LOGAN_PHYSICAL_MEMORY *memory);
+
+    void _declspec(dllexport) AllocateDriverMemory();
+
+    HRESULT _declspec(dllexport) Map(PVOID cpuAddress, APU_ADDRESS apuAddress, UINT32 sizeInBytes);
+
+    PVOID _view;
+    SIZE_T _sizeInBytes;
+    LOGAN_PHYSICAL_MEMORY _driverMemory[3];
+    static ULONGLONG constexpr c_XMemAttributes = 0xEC810000; 
+};
+
+template <typename T> void _declspec(dllexport) DispatchLoganCommand(LOGAN_COMMAND_TYPE cmdType, T cmd);
+
+PVOID LoganHeap::GetVirtualAddress(APU_ADDRESS ApuAddress, SIZE_T SizeInBytes)
+{
+    if (!ApuAddress)
+        return nullptr;
+    return (PVOID)((ULONG_PTR)_view + ApuAddress);
+}
+
+HRESULT LoganHeap::GetDriverMemory(UINT32 index, LOGAN_PHYSICAL_MEMORY *memory)
+{
+    *memory = _driverMemory[index];
+    return S_OK;
+}
+
+template <typename T> T *LoganHeap::GetVirtualAddress(APU_ADDRESS ApuAddress, SIZE_T Count)
+{
+    if (Count != 1)
+        Count = 1;
+    return (T *)GetVirtualAddress(ApuAddress, sizeof(T) * Count);
+}
+
+_Use_decl_annotations_
+HRESULT LoganHeap::Map(PVOID cpuAddress, APU_ADDRESS apuAddress,UINT32 sizeInBytes)
+{
+    if (!cpuAddress)
+        return E_INVALIDARG;
+    if (apuAddress == 0)
+        return E_INVALIDARG;
+    if (sizeInBytes == 0)
+        return E_INVALIDARG;
+    if (!!(sizeInBytes & (PAGE_SIZE_4KB - 1)))
+        return E_INVALIDARG;
+
+    sizeInBytes = (sizeInBytes + (PAGE_SIZE_64K - 1)) & ~(PAGE_SIZE_64K - 1);
+
+    // It is assumed that the virtual address is the start of a range of 64K placeholders.
+    for (UINT32 i = 0; i < sizeInBytes / PAGE_SIZE_64K; i++)
+    {
+        LPVOID pageAddress = (LPVOID)((ULONG_PTR)cpuAddress + PAGE_SIZE_64K * i);
+
+        // If the page is already mapped, we need to unmap it first.
+        UnmapViewOfFileEx(pageAddress, MEM_PRESERVE_PLACEHOLDER);
+
+        // Any failures here are treated as fatal errors, we expect these to succeed.
+        PVOID Mapped = MapViewOfFile3(hLoganMap, nullptr, pageAddress, apuAddress + PAGE_SIZE_64K * i, PAGE_SIZE_64K, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, nullptr, 0);
+        if (!Mapped)
+        {
+            printf("LoganHeap::Map: MapViewOfFile3 failed!\n");
+        }
+
+        PVOID Allocated = VirtualAlloc2(nullptr, pageAddress, PAGE_SIZE_64K, MEM_COMMIT, PAGE_READWRITE, nullptr, 0);
+        if (!Allocated)
+        {
+            printf("LoganHeap::Map: VirtualAlloc2 failed!\n");
+        }
+    }
+
+    return S_OK;
+}
+
+void LoganHeap::AllocateDriverMemory()
+{
+    for (SIZE_T i = 0; i < ARRAYSIZE(_driverMemory); i++)
+    {
+        _driverMemory[i].sizeInBytes = 0x100000;
+        UINT Size = (_driverMemory[i].sizeInBytes + ((1ULL << 16) - 1)) & ~((1ULL << 16) - 1);
+        UINT NumPages = Size / (1ULL << 16);
+        _driverMemory[i].address = XMemAlloc(_driverMemory[i].sizeInBytes, c_XMemAttributes);
+        if (_driverMemory[i].address == 0)
+        {
+            throw GetLastError();
+        }
+        _driverMemory[i].apuAddress = BumpAlloc(_driverMemory[i].sizeInBytes);
+        Map(_driverMemory[i].address, _driverMemory[i].apuAddress, _driverMemory[i].sizeInBytes);
+    }
+}
+
+LoganHeap g_LoganHeap;
 
 _Use_decl_annotations_ DWORD DispatchGetDriverMemory(DWORD IoControlCode, PVOID InBuffer, DWORD InBufferSize,
                                                      PVOID OutBuffer, DWORD OutBufferSize, PDWORD BytesReturned,
@@ -611,7 +671,38 @@ LOGAN_COMMAND_ACP_INIT *InitialCommand;
 template <typename T> 
 inline void DispatchACPCommand(ACP_COMMAND_TYPE_INTERNAL cmdType, AcpState *acpState, T Cmd)
 {
-    printf("Received Internal ACP command of type 0x%x\n", cmdType);
+    if (cmdType == INTERNAL_ACP_COMMAND_TYPE_CONNECT)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_CONNECT)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_DISCONNECT)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_DISCONNECT)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_REGISTER_CONTEXT_ARRAYS)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_REGISTER_CONTEXT_ARRAYS)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_INIT)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_INIT)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_ENABLE)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_ENABLE)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_DISABLE)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_DISABLE)\n");
+    }
+    else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_TERMINATE)
+    {
+        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_TERMINATE)\n");
+    }
+    else
+    {
+        printf("Received unknown Internal ACP command of type 0x%x\n", cmdType);
+    }
 }
 
 template <typename T> 
@@ -647,10 +738,13 @@ static DWORD WINAPI LoganChannelProc(LPVOID lpThreadParameter)
             AcpInternalCommandQueueEntry *AcpInternalCommandQueue = g_LoganHeap.GetVirtualAddress<AcpInternalCommandQueueEntry>(InitialCommand->acpCommandQueue);
             AcpState *pAcpState = g_LoganHeap.GetVirtualAddress<AcpState>(InitialCommand->acpState);
 
-            AcpCommand Command{};
-            while (ReadFromInternalACPRingBuffer(&Command, &AcpInternalCommandQueue->command, pAcpState))
+            if (pAcpState != nullptr && AcpInternalCommandQueue->command.commandType != 0)
             {
-                DispatchACPCommand((ACP_COMMAND_TYPE_INTERNAL)Command.commandType, pAcpState, Command);
+                AcpCommand Command{};
+                while (ReadFromInternalACPRingBuffer(&Command, &AcpInternalCommandQueue->command, pAcpState))
+                {
+                    DispatchACPCommand((ACP_COMMAND_TYPE_INTERNAL)Command.commandType, pAcpState, Command);
+                }
             }
         }
 
@@ -659,7 +753,6 @@ static DWORD WINAPI LoganChannelProc(LPVOID lpThreadParameter)
     return 0;
 }
 
-static ULONGLONG constexpr c_XMemAttributes = 0xEC81000;
 HANDLE LoganHandle = nullptr;
 
 EXTERN_C BOOL __stdcall EraDeviceIoControl(HANDLE hDevice, DWORD dwIoControlCode, LPVOID lpInBuffer,
@@ -677,15 +770,15 @@ EXTERN_C BOOL __stdcall EraDeviceIoControl(HANDLE hDevice, DWORD dwIoControlCode
         {
             LOGAN_IOCTL_IN_ALLOC_MAP *InMap = reinterpret_cast<LOGAN_IOCTL_IN_ALLOC_MAP *>(lpInBuffer);
 
-            UINT Size = (InMap->sizeInBytes + (0x10000 - 1)) & ~(0x10000 - 1);
-            UINT NumPages = Size / 0x10000;
-            DWORD Allocated = BumpAlloc(Size);
-            LPVOID Mapped = Map(NumPages, InMap->address, Allocated, 0x10000);
+            UINT Size = (InMap->sizeInBytes + ((1ULL << 16) - 1)) & ~((1ULL << 16) - 1);
+            UINT NumPages = Size / (1ULL << 16);
+            DWORD ApuAddress = BumpAlloc(Size);
+            g_LoganHeap.Map(InMap->address, ApuAddress, (1ULL << 16));
 
             LOGAN_IOCTL_OUT_ALLOC_MAP outMap{};
             outMap.allocated = InMap->sizeInBytes;
-            outMap.address = Mapped;
-            outMap.apuAddress = Allocated;
+            outMap.address = InMap->address;
+            outMap.apuAddress = ApuAddress;
             outMap.reserved0 = 0;
 
             *reinterpret_cast<LOGAN_IOCTL_OUT_ALLOC_MAP *>(lpOutBuffer) = outMap;
@@ -736,46 +829,11 @@ EXTERN_C BOOL __stdcall EraDeviceIoControl(HANDLE hDevice, DWORD dwIoControlCode
     }
 }
 
-PVOID MemAlloc(_In_ SIZE_T dwSize, _In_ ULONGLONG dwAttributes)
-{
-    auto attr = XALLOC_ATTRIBUTES{dwAttributes};
-
-    if (attr.s.dwMemoryType != XALLOC_MEMTYPE_HEAP)
-    {
-        DWORD flAllocationType = MEM_COMMIT | MEM_RESERVE;
-
-        if (attr.s.dwPageSize == XALLOC_PAGESIZE_4MB)
-            flAllocationType |= MEM_4MB_PAGES;
-        else
-            flAllocationType |= MEM_LARGE_PAGES;
-
-        return EraVirtualAlloc(nullptr, dwSize, flAllocationType, PAGE_READWRITE);
-    }
-
-    void *ptr = _aligned_malloc(dwSize, 1ULL << max(4, attr.s.dwAlignment));
-
-    if (ptr)
-        memset(ptr, 0, dwSize);
-
-    return ptr;
-}
-
 void LoganInit()
 {
-    hLoganMap = CreateFileMapping2(INVALID_HANDLE_VALUE, nullptr, FILE_MAP_READ | FILE_MAP_WRITE, PAGE_READWRITE,
-                                   SEC_RESERVE, 0x20000000, nullptr, nullptr, 0);
-
+    hLoganMap = CreateFileMapping2(INVALID_HANDLE_VALUE, nullptr, FILE_MAP_READ | FILE_MAP_WRITE, PAGE_READWRITE, SEC_RESERVE, 0x20000000, nullptr, nullptr, 0);
+    g_LoganHeap.AllocateDriverMemory();
     g_LoganHeap._view = MapViewOfFile(hLoganMap, FILE_MAP_WRITE, 0, 0, 0);
-    DWORD lastError = GetLastError();
-    for (SIZE_T i = 0; i < 3; i++)
-    {
-        _driverMemory[i].sizeInBytes = 0x100000;
-        _driverMemory[i].address = MemAlloc(_driverMemory[i].sizeInBytes, c_XMemAttributes);
-        _driverMemory[i].apuAddress = BumpAlloc(_driverMemory[i].sizeInBytes);
-        UINT Size = (_driverMemory[i].sizeInBytes + ((1ULL << 16) - 1)) & ~((1ULL << 16) - 1);
-        UINT NumPages = Size / (1ULL << 16);
-        _driverMemory[i].address = Map(NumPages, _driverMemory[i].address, _driverMemory[i].apuAddress, Size);
-    }
-    lastError = GetLastError();
+
     printf("Logan was initialized.\n");
 }

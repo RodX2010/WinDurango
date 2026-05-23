@@ -597,12 +597,13 @@ EXTERN_C PVOID __stdcall XMemAllocDefault(SIZE_T dwSize, ULONGLONG dwAttributes)
     {
         DWORD flAllocationType = MEM_COMMIT | MEM_RESERVE;
 
-        if (attr.s.dwPageSize <= XALLOC_PAGESIZE_4KB || attr.s.dwPageSize >= XALLOC_PAGESIZE_4MB)
-        {
+        if (attr.s.dwPageSize == XALLOC_PAGESIZE_4MB)
+            flAllocationType |= MEM_4MB_PAGES;
+        else if (attr.s.dwPageSize == XALLOC_PAGESIZE_4KB)
             flAllocationType |= MEM_LARGE_PAGES;
-        }
 
-        if (attr.s.dwMemoryType >= XALLOC_MEMTYPE_GRAPHICS_1 && attr.s.dwMemoryType <= XALLOC_MEMTYPE_GRAPHICS_6)
+        if (attr.s.dwMemoryType >= XALLOC_MEMTYPE_GRAPHICS_1 &&
+            attr.s.dwMemoryType <= XALLOC_MEMTYPE_GRAPHICS_6)
         {
             flAllocationType |= MEM_GRAPHICS;
         }

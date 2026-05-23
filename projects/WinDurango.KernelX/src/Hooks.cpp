@@ -106,7 +106,7 @@ HRESULT PatchNeededImports(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _
 
 HMODULE GetRuntimeModule()
 {
-    std::array<const wchar_t *, 3> modules = {L"vccorlib140.dll", L"vccorlib110.dll", L"vccorlib120.dll"};
+    std::array<const wchar_t *, 3> modules = {L"vccorlib110.dll", L"vccorlib120.dll", L"vccorlib140.dll"};
     static HMODULE hModule = nullptr;
     if (hModule != nullptr)
     {
@@ -309,6 +309,21 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
         }
 
         return coreWindowStatic.CopyTo(iid, factory);
+    }
+
+    if (rss == std::string("Windows.ApplicationModel.Store.CurrentApp"))
+    {
+        HRESULT hr = g_RoGetActivationFactory(activatableClassId, iid, factory);
+
+		if (FAILED(hr))
+			return hr;
+
+		TrueActivateInstance = GetVTableMethod<decltype(TrueActivateInstance)>(*factory, 6);
+
+		DetourTransactionBegin();
+		DetourUpdateThread(GetCurrentThread());
+        DetourAttach(reinterpret_cast<PVOID*>(&TrueActivateInstance), EraAppActivateInstance);
+		DetourTransactionCommit();
     }
 
     for (auto pfn : g_RoEntryPoints)
