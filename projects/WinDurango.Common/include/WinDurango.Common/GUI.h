@@ -17,5 +17,7 @@ namespace wd::common
         ID3D11DeviceContext* m_pContext = nullptr;
         IDXGISwapChain1* m_pSwapchain = nullptr;
         ID3D11RenderTargetView* m_pRenderTargetView;
+        float xbnotif_timer = 5.0f;
+        bool xbnotif_show = true;
     };
 }

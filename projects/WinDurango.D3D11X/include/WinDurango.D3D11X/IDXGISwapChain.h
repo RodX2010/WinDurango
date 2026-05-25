@@ -62,6 +62,9 @@ public:
     HRESULT GetBackgroundColor(DXGI_RGBA *pColor);
     HRESULT SetRotation(DXGI_MODE_ROTATION Rotation);
     HRESULT GetRotation(DXGI_MODE_ROTATION *pRotation);
+
+private:
+    bool m_wasIMGUIinitialized = false;
 };
 
 #undef ABI_INTERFACE

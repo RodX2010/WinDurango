@@ -111,6 +111,12 @@ HRESULT D3D11DeviceX<ABI>::CreateTexture2D(D3D11_TEXTURE2D_DESC const *pDesc, D3
     pDesc2.MiscFlags = ConvertMiscFlags(pDesc->MiscFlags);
     pDesc2.SampleDesc.Quality = 0;
 
+    if (pDesc->Usage == D3D11_USAGE_DYNAMIC)
+    {
+        if (!pDesc->CPUAccessFlags)
+            pDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    }
+
     HRESULT hr = 0;
     ID3D11Texture2D *Tex = nullptr;
     hr = m_pFunction->CreateTexture2D(&pDesc2, pData, &Tex);
@@ -1146,8 +1152,7 @@ template <abi_t ABI> void D3D11DeviceX<ABI>::ReportGpuHang(UINT Flags)
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::SetGpuMemoryPriority(UINT Priority)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 template <abi_t ABI>
