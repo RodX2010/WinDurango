@@ -171,7 +171,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         }
 
         const HWND hwnd = GetFocus();
-
+/*
 		ShowCursor(FALSE);
 
 		RECT rc;
@@ -187,7 +187,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 		const RECT screenRect = { tl.x, tl.y, br.x, br.y };
 
 		ClipCursor(&screenRect);
-		ShowCursor(FALSE);
+		ShowCursor(FALSE);*/
 
         return a_gamepads.GetView();
     }
@@ -366,6 +366,13 @@ namespace winrt::Windows::Xbox::Input::implementation
             reading.Buttons |= GamepadButtons::RightShoulder;
         }
 
+        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+            reading.RightTrigger = 1.0f;
+        }
+        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+            reading.LeftTrigger = 1.0f;
+        }/*
+
         POINT pos;
         GetCursorPos(&pos);
 
@@ -388,7 +395,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
         prev.x = centerX;
         prev.y = centerY;
-        
+
         auto sign = [](float v) { return (v > 0) - (v < 0); };
         
         float x = -std::exp((-1.0f / 5.0f) * std::abs(deltaSumX)) + 1.0f;
@@ -398,12 +405,12 @@ namespace winrt::Windows::Xbox::Input::implementation
         y *= -sign(deltaSumY);
 
         if (x != 0 || y != 0) {
-        	reading.RightThumbstickX = std::clamp(x, -1.0f, 1.0f);
+            reading.RightThumbstickX = std::clamp(x, -1.0f, 1.0f);
             reading.RightThumbstickY = std::clamp(y, -1.0f, 1.0f);
         }
 
         deltaSumX = 0.0f;
-        deltaSumY = 0.0f;
+        deltaSumY = 0.0f;*/
 
         return reading;
     }

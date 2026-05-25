@@ -35,8 +35,6 @@ namespace wd::common
         io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segmdl2.ttf", 30.0f, &config, icon_ranges3);
         io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\holomdl2.ttf", 30.0f, &config, icon_ranges2);
 
-        io.Fonts->Build( );
-
         ImGui_ImplUwp_InitForCurrentView();
         ImGui_ImplDX11_Init(m_pDevice, m_pContext);
     }
@@ -45,9 +43,32 @@ namespace wd::common
     {
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplUwp_NewFrame();
+
+        ID3D11Texture2D* pBackBuffer = nullptr;
+        m_pSwapchain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+        if (pBackBuffer)
+        {
+            D3D11_TEXTURE2D_DESC desc;
+            pBackBuffer->GetDesc(&desc);
+            ImGui::GetIO().DisplaySize = ImVec2((float)desc.Width, (float)desc.Height);
+            pBackBuffer->Release();
+        }
+
         ImGui::NewFrame();
 
-        XBNotif();
+        if (xbnotif_show) {
+            xbnotif_timer -= ImGui::GetIO().DeltaTime;
+            if (xbnotif_timer <= 0.0f) 
+            {
+                xbnotif_timer = false;
+            } else /* IDK, but is this how the code should be structured?? */
+            {
+                float alpha = xbnotif_timer < 1.0f ? xbnotif_timer : 1.0f;
+                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+                XBNotif();
+                ImGui::PopStyleVar();
+            }
+        }
 
         ImGui::Render();
         m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, nullptr);
@@ -63,10 +84,10 @@ namespace wd::common
         ImGuiViewport* vp = ImGui::GetMainViewport();
 
         ImVec2 windowPos;
-        windowPos.x = vp->Pos.x + (vp->Size.x - 370) * 0.5f;
-        windowPos.y = vp->Pos.y + vp->Size.y - 60 - 60;
+        windowPos.x = ImGui::GetIO().DisplaySize.x * 0.5f;
+        windowPos.y = ImGui::GetIO().DisplaySize.y * 0.95f;
 
-        ImGui::SetNextWindowPos(windowPos);
+        ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, ImVec2(0.5f, 1.0f));
 
         ImGui::PushStyleColor(ImGuiCol_WindowBg, tipColor);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 3.0f);

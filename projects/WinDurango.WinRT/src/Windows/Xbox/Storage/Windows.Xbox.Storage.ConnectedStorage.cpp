@@ -137,7 +137,7 @@ winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Foundation::Collecti
         winrt::Windows::Foundation::DateTime date = folderProperties.DateModified();
 
         winrt::hstring displayName = {};
-        if (co_await DoesFileExist(folder, L"DisplayName.tx"))
+        if (co_await DoesFileExist(folder, L"DisplayName.txt"))
         {
             auto file = co_await folder.GetFileAsync(L"DisplayName.txt");
             displayName = co_await winrt::Windows::Storage::FileIO::ReadTextAsync(file);
@@ -167,7 +167,7 @@ winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Foundation::Collecti
         winrt::Windows::Foundation::DateTime date = folderProperties.DateModified();
 
         winrt::hstring displayName = {};
-        if (co_await DoesFileExist(folder, L"DisplayName.tx"))
+        if (co_await DoesFileExist(folder, L"DisplayName.txt"))
         {
             auto file = co_await folder.GetFileAsync(L"DisplayName.txt");
             displayName = co_await winrt::Windows::Storage::FileIO::ReadTextAsync(file);
