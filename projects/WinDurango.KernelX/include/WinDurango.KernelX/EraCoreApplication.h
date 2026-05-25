@@ -59,9 +59,16 @@ ICoreApplicationResourceAvailabilityEra : public IInspectable
     STDMETHOD(_abi_remove_ResourceAvailabilityChanged)(EventRegistrationToken) PURE;
 };
 
+MIDL_INTERFACE("1ADA0E3E-E4A2-4123-B451-DC96BF800419")
+ICoreImmersiveApplicationEra : public IInspectable
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE get_MainView(__RPC__deref_out_opt ABI::Windows::ApplicationModel::Core::ICoreApplicationView * *value) = 0;
+};
+
 // Main Wrapper
 class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicationResourceAvailabilityEra,
-                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra>
+                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra, ICoreImmersiveApplicationEra>
 {
   public:
     CoreApplicationEra(ComPtr<IActivationFactory> realFactory)
@@ -101,6 +108,9 @@ class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicat
     // ICoreApplicationGpuPolicy
     HRESULT get_DisableKinectGpuReservation(bool *) override;
     HRESULT set_DisableKinectGpuReservation(bool) override;
+
+    // ICoreImmersiveApplication   
+    HRESULT get_MainView(ABI::Windows::ApplicationModel::Core::ICoreApplicationView** value) override;
 
     // IActivationFactory (IInspectable + IUnknown)
     HRESULT QueryInterface(const IID &riid, void **ppvObject) override;

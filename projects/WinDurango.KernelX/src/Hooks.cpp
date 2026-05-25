@@ -106,18 +106,15 @@ HRESULT PatchNeededImports(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _
 
 HMODULE GetRuntimeModule()
 {
-    std::array<const wchar_t *, 3> modules = {L"vccorlib110.dll", L"vccorlib120.dll", L"vccorlib140.dll"};
-    static HMODULE hModule = nullptr;
-    if (hModule != nullptr)
-    {
-        return hModule;
-    }
+    std::array<const wchar_t *, 4> modules = {L"vccorlib110.dll", L"vccorlib110d.dll", L"vccorlib120.dll", L"vccorlib140.dll"};
+    HMODULE hModule = nullptr;
 
     for (auto &module : modules)
     {
-        hModule = GetModuleHandleW(module);
-        if (hModule != nullptr)
+        HMODULE Module = GetModuleHandleW(module);
+        if (Module != nullptr)
         {
+            hModule = Module;
             break;
         }
     }
@@ -132,8 +129,12 @@ template <typename T> inline T GetVTableMethod(void *table_base, std::uintptr_t 
 
 HRESULT __stdcall EraAppActivateInstance(IActivationFactory *thisptr, IInspectable **instance)
 {
-    *instance = reinterpret_cast<ILicenseInformation *>(
-        new EraLicenseInformationWrapper(reinterpret_cast<ILicenseInformation *>(*instance)));
+    IInspectable *pInstance = nullptr;
+    HRESULT hr = TrueActivateInstance(thisptr, &pInstance);
+    if (FAILED(hr))
+        return hr;
+
+    *instance = new EraLicenseInformationWrapper(reinterpret_cast<ILicenseInformation*>(pInstance));
     return S_OK;
 }
 
@@ -150,8 +151,8 @@ HRESULT __stdcall EraGetForCurrentThread(ICoreWindowStatic *pThis, CoreWindow **
         return hr;
     }
 
-    if (IsXboxCallee()) {
-        winDurango->log.Log("WinDurango::KernelX", "EraGetForCurrentThread: wrapping window {:p}", (void*)*ppWindow);
+    if (IsXboxCallee())
+    {
         *reinterpret_cast<ICoreWindowEra **>(ppWindow) = new CoreWindowEra(*ppWindow);
     }
 
@@ -223,15 +224,7 @@ static void WdRoInitializeLibraries()
 
 static void WdRoInitializeClasses()
 {
-    DetourTransactionBegin();
-    DetourUpdateThread(GetCurrentThread());
-    if (ComPtr<IActivationFactory> factory;
-        SUCCEEDED(WdRoGetActivationFactoryCore(HStringReference{L"Windows.ApplicationModel.Store.CurrentApp"}.Get(), IID_PPV_ARGS(&factory))))
-    {
-        DetourAttach(reinterpret_cast<PVOID *>(&TrueActivateInstance), reinterpret_cast<PVOID>(EraAppActivateInstance));
-    }
 
-    DetourTransactionCommit();
 }
 
 static BOOL WdRoInitialize(
@@ -261,8 +254,6 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
 
     std::wstring rsws(rawString);
     std::string rss(rsws.begin(), rsws.end());
-
-    winDurango->log.Log("WinDurango::KernelX", "EraRoGetActivationFactory: {}", rss);
 
     if (rss == std::string("Windows.ApplicationModel.Store.CurrentApp"))
     {
@@ -329,37 +320,10 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
     for (auto pfn : g_RoEntryPoints)
     {
         ComPtr<IActivationFactory> temp;
-        if (wcscmp(rawString, L"Microsoft.Xbox.GameChat.ChatManager") == 0)
-        {
-            if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
-            {
-                HRESULT hr = temp.CopyTo(iid, factory);
-                return hr;
-            }
-        }
-
-        if (wcscmp(rawString, L"Windows.Kinect.KinectSensor") == 0)
-        {
-            if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
-            {
-                HRESULT hr = temp.CopyTo(iid, factory);
-                return hr;
-            }
-        }
-
-        if (wcscmp(rawString, L"Windows.Media.Devices.MediaDevice") == 0)
-        {
-            if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
-            {
-                HRESULT hr = temp.CopyTo(iid, factory);
-                return hr;
-            }
-        }
-
         if (SUCCEEDED(pfn(activatableClassId, temp.GetAddressOf())))
         {
-            temp.CopyTo(iid, factory);
-            return S_OK;
+            HRESULT hr = temp.CopyTo(iid, factory);
+            return hr;
         }
     }
 
@@ -387,5 +351,15 @@ HRESULT WINAPI WdRoGetActivationFactory(
 
 HRESULT WINAPI GetActivationFactoryRedirect(PCWSTR str, REFIID riid, void **ppFactory)
 {
-    return WdRoGetActivationFactory(HStringReference{str}.Get(), riid, ppFactory);
+    HRESULT hr = WdRoGetActivationFactory(HStringReference{str}.Get(), riid, ppFactory);
+
+    if (FAILED(hr))
+    {
+        const wchar_t *rawString = WindowsGetStringRawBuffer(HStringReference{str}.Get(), nullptr);
+        std::wstring rsws(rawString);
+        std::string rss(rsws.begin(), rsws.end());
+        winDurango->log.Log("WinDurango::KernelX", "EraRoGetActivationFactory: {}", rss); 
+    }
+
+    return hr;
 }

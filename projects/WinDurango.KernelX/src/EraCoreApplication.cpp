@@ -77,6 +77,12 @@ HRESULT CoreApplicationEra::set_DisableKinectGpuReservation(bool Value)
     return S_OK;
 }
 
+HRESULT CoreApplicationEra::get_MainView(ABI::Windows::ApplicationModel::Core::ICoreApplicationView **value)
+{
+    *value = nullptr;
+    return S_OK;
+}
+
 HRESULT CoreApplicationEra::QueryInterface(const IID &riid, void **ppvObject)
 {
     if (riid == __uuidof(IActivationFactory) || riid == __uuidof(IUnknown))
@@ -103,6 +109,13 @@ HRESULT CoreApplicationEra::QueryInterface(const IID &riid, void **ppvObject)
     if (riid == __uuidof(ICoreApplicationGpuPolicyEra))
     {
         *ppvObject = static_cast<ICoreApplicationGpuPolicyEra *>(this);
+        AddRef();
+        return S_OK;
+    }
+
+    if (riid == __uuidof(ICoreImmersiveApplicationEra))
+    {
+        *ppvObject = static_cast<ICoreImmersiveApplicationEra *>(this);
         AddRef();
         return S_OK;
     }

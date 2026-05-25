@@ -3698,6 +3698,8 @@ inline HRESULT d3d11CreateInstance(abi_t ABI, void **ppvObject)
         *ppvObject = new T<abi_t{6,2,11274,0}>();
     else if (ABI >= abi_t{6,2,10698,0})
         *ppvObject = new T<abi_t{6,2,10698,0}>();
+    else if (ABI >= abi_t{6,2,11064,0})
+        *ppvObject = new T<abi_t{6,2,11274,0}>();
     else
         *ppvObject = new T<abi_t{}>();
     
@@ -3707,6 +3709,7 @@ inline HRESULT d3d11CreateInstance(abi_t ABI, void **ppvObject)
 #define D3D11_DECLARE_ABI_TEMPLATES(prefix) \
     prefix template class ABI_INTERFACE((abi_t{0,0,0,0})); \
     prefix template class ABI_INTERFACE((abi_t{6,2,10698,0})); \
+    prefix template class ABI_INTERFACE((abi_t{6,2,11064,0})); \
     prefix template class ABI_INTERFACE((abi_t{6,2,11274,0})); \
     prefix template class ABI_INTERFACE((abi_t{6,2,11294,0})); \
     prefix template class ABI_INTERFACE((abi_t{6,2,13004,0})); \
