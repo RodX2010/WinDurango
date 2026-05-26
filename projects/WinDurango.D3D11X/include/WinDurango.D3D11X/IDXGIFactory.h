@@ -8,6 +8,8 @@ public:
     DXGIFactory2(IDXGIFactory2 *pFactory)
     {
         m_pFunction = pFactory;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

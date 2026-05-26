@@ -73,7 +73,7 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::GetDevice(REFIID riid, void **
 //
 template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval, uint32_t Flags)
 {
-    if (!im_init)
+    if (!m_wasIMGUIinitialized)
     {
         ID3D11Device* pDevice = nullptr;
         ID3D11DeviceContext* pContext = nullptr;
@@ -81,10 +81,7 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval,
         pDevice->GetImmediateContext(&pContext);
 
         p_wd->gui.Initialize(pDevice, pContext, m_pFunction);
-
-        pDevice->Release();
-        pContext->Release();
-        im_init = true;
+        m_wasIMGUIinitialized = true;
     }
 
     p_wd->gui.Render();
@@ -197,6 +194,19 @@ template <abi_t ABI>
 HRESULT DXGISwapChain1<ABI>::Present1(uint32_t SyncInterval, uint32_t PresentFlags,
                                       DXGI_PRESENT_PARAMETERS const *pPresentParameters)
 {
+    if (!m_wasIMGUIinitialized)
+    {
+        ID3D11Device* pDevice = nullptr;
+        ID3D11DeviceContext* pContext = nullptr;
+        m_pFunction->GetDevice(IID_PPV_ARGS(&pDevice));
+        pDevice->GetImmediateContext(&pContext);
+
+        p_wd->gui.Initialize(pDevice, pContext, m_pFunction);
+        m_wasIMGUIinitialized = true;
+    }
+
+    p_wd->gui.Render();
+
     if (!pPresentParameters)
         return m_pFunction->Present(SyncInterval, PresentFlags);
     else

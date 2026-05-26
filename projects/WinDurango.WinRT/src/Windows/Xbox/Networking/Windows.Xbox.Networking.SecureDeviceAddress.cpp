@@ -20,23 +20,19 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAddress SecureDeviceAddress::FromBytes(array_view<uint8_t const> bytes)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: FromBytes");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::SecureDeviceAddress>();
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAddress SecureDeviceAddress::GetLocal()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: GetLocal");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::SecureDeviceAddress>();
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAddress SecureDeviceAddress::CreateDedicatedServerAddress(hstring const& hostnameOrAddress)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: CreateDedicatedServerAddress");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::SecureDeviceAddress>();
     }
     winrt::Windows::Xbox::Networking::SecureDeviceAddress SecureDeviceAddress::FromBase64String(hstring const& base64String)
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: FromBase64String");
-        throw hresult_not_implemented();
+        return winrt::make<implementation::SecureDeviceAddress>();
     }
     winrt::event_token SecureDeviceAddress::BufferChanged(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Xbox::Networking::SecureDeviceAddress, winrt::Windows::Foundation::IInspectable> const& handler)
     {
@@ -58,8 +54,7 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     hstring SecureDeviceAddress::GetBase64String()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: GetBase64String");
-        throw hresult_not_implemented();
+        return L"0";
     }
     bool SecureDeviceAddress::IsLocal()
     {
@@ -68,7 +63,6 @@ namespace winrt::Windows::Xbox::Networking::implementation
     }
     winrt::Windows::Xbox::Networking::NetworkAccessType SecureDeviceAddress::NetworkAccessType()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Networking", "Unimplemented: NetworkAccessType");
-        throw hresult_not_implemented();
+        return NetworkAccessType::Open;
     }
 }

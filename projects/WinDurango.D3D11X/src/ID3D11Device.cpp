@@ -111,22 +111,11 @@ HRESULT D3D11DeviceX<ABI>::CreateTexture2D(D3D11_TEXTURE2D_DESC const *pDesc, D3
     pDesc2.MiscFlags = ConvertMiscFlags(pDesc->MiscFlags);
     pDesc2.SampleDesc.Quality = 0;
 
-    if (pDesc2.Usage == D3D11_USAGE_DYNAMIC) 
+    if (pDesc->Usage == D3D11_USAGE_DYNAMIC)
     {
-        if (!(pDesc2.BindFlags & D3D11_BIND_DEPTH_STENCIL))
-        {
-            pDesc2.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
-        }
-
-        if (pDesc2.Format == DXGI_FORMAT_B5G6R5_UNORM || pDesc2.Format == DXGI_FORMAT_B5G5R5A1_UNORM || pDesc2.Format == DXGI_FORMAT_B4G4R4A4_UNORM)
-        {
-            pDesc2.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-        }
+        if (!pDesc->CPUAccessFlags)
+            pDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     }
-
-    /*
-    * TODO: I think I need to convert it from B5G6R5 to B8G8R8A8
-    */
 
     HRESULT hr = 0;
     ID3D11Texture2D *Tex = nullptr;
@@ -590,16 +579,14 @@ HRESULT D3D11DeviceX<ABI>::OpenSharedResource(void *pResource, _GUID const &retI
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::CheckFormatSupport(DXGI_FORMAT Format, uint32_t *pFormatSupport)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return m_pFunction->CheckFormatSupport(Format, pFormatSupport);
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CheckMultisampleQualityLevels(DXGI_FORMAT Format, uint32_t SampleCount,
                                                          uint32_t *pNumQualityLevels)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return m_pFunction->CheckMultisampleQualityLevels(Format, SampleCount, pNumQualityLevels);
 }
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::CheckCounterInfo(D3D11_COUNTER_INFO *pCounterInfo)
@@ -856,8 +843,14 @@ HRESULT D3D11DeviceX<ABI>::CreatePlacementBuffer(D3D11_BUFFER_DESC const *pDesc,
         pDesc2.Usage = D3D11_USAGE_DEFAULT;
     }
 
-    HRESULT hr = CreateBuffer(&pDesc2, &initialData, ppBuffer);
-    (*ppBuffer)->m_pAllocationStart = pVirtualAddress;
+    HRESULT hr = 0;
+    if (!pVirtualAddress)
+        hr = CreateBuffer(&pDesc2, nullptr, ppBuffer);
+    else
+        hr = CreateBuffer(&pDesc2, &initialData, ppBuffer);
+
+    if (pVirtualAddress)
+        (*ppBuffer)->m_pAllocationStart = pVirtualAddress;
 
     return hr;
 }

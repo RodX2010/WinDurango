@@ -9,6 +9,8 @@ template <abi_t ABI> class D3D11VertexShader : public gfx::ID3D11VertexShader<AB
     D3D11VertexShader(ID3D11VertexShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -45,6 +47,8 @@ template <abi_t ABI> class D3D11PixelShader : public gfx::ID3D11PixelShader<ABI>
     D3D11PixelShader(ID3D11PixelShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -81,6 +85,8 @@ template <abi_t ABI> class D3D11ComputeShader : public gfx::ID3D11ComputeShader<
     D3D11ComputeShader(ID3D11ComputeShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -117,6 +123,8 @@ template <abi_t ABI> class D3D11GeometryShader : public gfx::ID3D11GeometryShade
     D3D11GeometryShader(ID3D11GeometryShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -153,6 +161,8 @@ template <abi_t ABI> class D3D11HullShader : public gfx::ID3D11HullShader<ABI>
     D3D11HullShader(ID3D11HullShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -189,6 +199,8 @@ template <abi_t ABI> class D3D11DomainShader : public gfx::ID3D11DomainShader<AB
     D3D11DomainShader(ID3D11DomainShader *pShader)
     {
         m_pFunction = pShader;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

@@ -55,6 +55,8 @@ template <abi_t ABI> class D3D11DMAEngineContextX : public gfx::ID3D11DMAEngineC
 
     D3D11DMAEngineContextX()
     {
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         AddRef();
         m_pImmediateContext = new D3D11DeviceContextX<ABI>();
     }

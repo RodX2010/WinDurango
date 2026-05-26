@@ -53,7 +53,7 @@ template <abi_t ABI> HRESULT DXGIDevice2<ABI>::GetPrivateData(_GUID const &Name,
 
 template <abi_t ABI> HRESULT DXGIDevice2<ABI>::GetParent(_GUID const &riid, void **ppParent)
 {
-    if (riid == __uuidof(IDXGIAdapter))
+    if (riid == __uuidof(IDXGIAdapter) || riid == __uuidof(IDXGIAdapter1))
     {
         m_pFunction->GetParent(riid, ppParent);
         *ppParent = new DXGIAdapter1<ABI>(static_cast<IDXGIAdapter1*>(*ppParent));

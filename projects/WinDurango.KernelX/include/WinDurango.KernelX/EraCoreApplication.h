@@ -59,9 +59,25 @@ ICoreApplicationResourceAvailabilityEra : public IInspectable
     STDMETHOD(_abi_remove_ResourceAvailabilityChanged)(EventRegistrationToken) PURE;
 };
 
+MIDL_INTERFACE("1ADA0E3E-E4A2-4123-B451-DC96BF800419")
+ICoreImmersiveApplicationEra : public IInspectable
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE get_MainView(__RPC__deref_out_opt ABI::Windows::ApplicationModel::Core::ICoreApplicationView * *value) = 0;
+};
+
+MIDL_INTERFACE("CF86461D-261E-4B72-9ACD-44ED2ACE6A29")
+ICoreApplicationExitEra : public IInspectable
+{
+public:
+    virtual HRESULT STDMETHODCALLTYPE Exit(void) = 0;
+    virtual HRESULT STDMETHODCALLTYPE add_Exiting(__FIEventHandler_1_IInspectable* handler, EventRegistrationToken* token) = 0;
+    virtual HRESULT STDMETHODCALLTYPE remove_Exiting(EventRegistrationToken token) = 0;
+};
+
 // Main Wrapper
 class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicationResourceAvailabilityEra,
-                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra>
+                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra, ICoreImmersiveApplicationEra, ICoreApplicationExitEra>
 {
   public:
     CoreApplicationEra(ComPtr<IActivationFactory> realFactory)
@@ -101,6 +117,14 @@ class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicat
     // ICoreApplicationGpuPolicy
     HRESULT get_DisableKinectGpuReservation(bool *) override;
     HRESULT set_DisableKinectGpuReservation(bool) override;
+
+    // ICoreImmersiveApplication   
+    HRESULT get_MainView(ABI::Windows::ApplicationModel::Core::ICoreApplicationView** value) override;
+
+    // ICoreApplicationExit
+    HRESULT Exit() override;
+    HRESULT add_Exiting(__FIEventHandler_1_IInspectable *handler, EventRegistrationToken *token) override;
+    HRESULT remove_Exiting(EventRegistrationToken token) override;
 
     // IActivationFactory (IInspectable + IUnknown)
     HRESULT QueryInterface(const IID &riid, void **ppvObject) override;

@@ -32,8 +32,12 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
     }
     winrt::Windows::Foundation::Collections::IVectorView<hstring> PartyView::ReservedMembers()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: ReservedMembers");
-        throw hresult_not_implemented();
+        auto Members = winrt::single_threaded_vector<hstring>();
+        Members.Append(L"Durangler0");
+        Members.Append(L"Durangler1");
+        Members.Append(L"Durangler2");
+        Members.Append(L"Durangler3");
+        return Members.GetView();
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Multiplayer::PartyMember> PartyView::Members()
     {
@@ -41,8 +45,7 @@ namespace winrt::Windows::Xbox::Multiplayer::implementation
     }
     winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Xbox::Multiplayer::PartyMemberDeviceGroup> PartyView::MembersGroupedByDevice()
     {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::Multiplayer", "Unimplemented: MembersGroupedByDevice");
-        throw hresult_not_implemented();
+        return winrt::single_threaded_vector<winrt::Windows::Xbox::Multiplayer::PartyMemberDeviceGroup>().GetView();
     }
     winrt::Windows::Xbox::Multiplayer::MultiplayerSessionReference PartyView::MatchSession()
     {

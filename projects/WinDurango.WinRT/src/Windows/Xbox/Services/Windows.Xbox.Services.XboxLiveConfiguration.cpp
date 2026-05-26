@@ -52,8 +52,6 @@ namespace winrt::Windows::Xbox::Services::implementation
     }
     hstring XboxLiveConfiguration::SandboxId()
     {
-        auto xml = ReadFile(L"AppxManifest.xml");
-        auto sandboxId = ExtractAttribute(xml, L"SandboxId");
-        return sandboxId.c_str();
+        return L"RETAIL";
     }
 }

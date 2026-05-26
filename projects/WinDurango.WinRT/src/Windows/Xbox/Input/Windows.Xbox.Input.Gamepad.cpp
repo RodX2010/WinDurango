@@ -172,7 +172,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 
         const HWND hwnd = GetFocus();
 
-		ShowCursor(FALSE);
+        ShowCursor(FALSE);
 
 		RECT rc;
 

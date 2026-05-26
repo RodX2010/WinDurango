@@ -18,6 +18,6 @@ namespace wd::common
         IDXGISwapChain1* m_pSwapchain = nullptr;
         ID3D11RenderTargetView* m_pRenderTargetView;
         float xbnotif_timer = 5.0f;
-        bool xbnotif_show = true; /* TODO: TIDY */
+        bool xbnotif_show = true;
     };
 }

@@ -9,6 +9,8 @@ public:
     DXGISwapChain1(::IDXGISwapChain1 *pSwapChain)
     {
         m_pFunction = pSwapChain;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -62,8 +64,9 @@ public:
     HRESULT GetBackgroundColor(DXGI_RGBA *pColor);
     HRESULT SetRotation(DXGI_MODE_ROTATION Rotation);
     HRESULT GetRotation(DXGI_MODE_ROTATION *pRotation);
+
 private:
-    bool im_init = false;
+    bool m_wasIMGUIinitialized = false;
 };
 
 #undef ABI_INTERFACE
