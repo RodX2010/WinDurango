@@ -111,6 +111,23 @@ HRESULT D3D11DeviceX<ABI>::CreateTexture2D(D3D11_TEXTURE2D_DESC const *pDesc, D3
     pDesc2.MiscFlags = ConvertMiscFlags(pDesc->MiscFlags);
     pDesc2.SampleDesc.Quality = 0;
 
+    if (pDesc2.Usage == D3D11_USAGE_DYNAMIC) 
+    {
+        if (!(pDesc2.BindFlags & D3D11_BIND_DEPTH_STENCIL))
+        {
+            pDesc2.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+        }
+
+        if (pDesc2.Format == DXGI_FORMAT_B5G6R5_UNORM || pDesc2.Format == DXGI_FORMAT_B5G5R5A1_UNORM || pDesc2.Format == DXGI_FORMAT_B4G4R4A4_UNORM)
+        {
+            pDesc2.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        }
+    }
+
+    /*
+    * TODO: I think I need to convert it from B5G6R5 to B8G8R8A8
+    */
+
     HRESULT hr = 0;
     ID3D11Texture2D *Tex = nullptr;
     hr = m_pFunction->CreateTexture2D(&pDesc2, pData, &Tex);
@@ -1146,8 +1163,10 @@ template <abi_t ABI> void D3D11DeviceX<ABI>::ReportGpuHang(UINT Flags)
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::SetGpuMemoryPriority(UINT Priority)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    /*
+     * TODO: Impl
+    */
+    return S_OK;
 }
 
 template <abi_t ABI>

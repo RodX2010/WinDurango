@@ -171,7 +171,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         }
 
         const HWND hwnd = GetFocus();
-/*
+
 		ShowCursor(FALSE);
 
 		RECT rc;
@@ -187,7 +187,7 @@ namespace winrt::Windows::Xbox::Input::implementation
 		const RECT screenRect = { tl.x, tl.y, br.x, br.y };
 
 		ClipCursor(&screenRect);
-		ShowCursor(FALSE);*/
+		ShowCursor(FALSE);
 
         return a_gamepads.GetView();
     }
@@ -371,7 +371,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         }
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
             reading.LeftTrigger = 1.0f;
-        }/*
+        }
 
         POINT pos;
         GetCursorPos(&pos);
@@ -410,7 +410,7 @@ namespace winrt::Windows::Xbox::Input::implementation
         }
 
         deltaSumX = 0.0f;
-        deltaSumY = 0.0f;*/
+        deltaSumY = 0.0f;
 
         return reading;
     }
