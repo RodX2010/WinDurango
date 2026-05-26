@@ -8,6 +8,8 @@ public:
     DXGIAdapter1(IDXGIAdapter1 *pAdapter)
     {
         m_pFunction = pAdapter;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

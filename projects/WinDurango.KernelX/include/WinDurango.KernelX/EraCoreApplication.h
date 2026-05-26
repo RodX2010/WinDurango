@@ -66,9 +66,18 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE get_MainView(__RPC__deref_out_opt ABI::Windows::ApplicationModel::Core::ICoreApplicationView * *value) = 0;
 };
 
+MIDL_INTERFACE("CF86461D-261E-4B72-9ACD-44ED2ACE6A29")
+ICoreApplicationExitEra : public IInspectable
+{
+public:
+    virtual HRESULT STDMETHODCALLTYPE Exit(void) = 0;
+    virtual HRESULT STDMETHODCALLTYPE add_Exiting(__FIEventHandler_1_IInspectable* handler, EventRegistrationToken* token) = 0;
+    virtual HRESULT STDMETHODCALLTYPE remove_Exiting(EventRegistrationToken token) = 0;
+};
+
 // Main Wrapper
 class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicationResourceAvailabilityEra,
-                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra, ICoreImmersiveApplicationEra>
+                                               ICoreApplicationGpuPolicyEra, ICoreApplicationEra, ICoreImmersiveApplicationEra, ICoreApplicationExitEra>
 {
   public:
     CoreApplicationEra(ComPtr<IActivationFactory> realFactory)
@@ -111,6 +120,11 @@ class CoreApplicationEra : public RuntimeClass<IActivationFactory, ICoreApplicat
 
     // ICoreImmersiveApplication   
     HRESULT get_MainView(ABI::Windows::ApplicationModel::Core::ICoreApplicationView** value) override;
+
+    // ICoreApplicationExit
+    HRESULT Exit() override;
+    HRESULT add_Exiting(__FIEventHandler_1_IInspectable *handler, EventRegistrationToken *token) override;
+    HRESULT remove_Exiting(EventRegistrationToken token) override;
 
     // IActivationFactory (IInspectable + IUnknown)
     HRESULT QueryInterface(const IID &riid, void **ppvObject) override;

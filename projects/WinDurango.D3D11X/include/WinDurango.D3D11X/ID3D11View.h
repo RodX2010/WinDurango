@@ -10,6 +10,8 @@ template <abi_t ABI> class D3D11View : public gfx::ID3D11View<ABI>
     D3D11View(ID3D11View *pView)
     {
         m_pFunction = pView;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -55,6 +57,8 @@ template <abi_t ABI> class D3D11ShaderResourceView : public gfx::ID3D11ShaderRes
     D3D11ShaderResourceView(ID3D11ShaderResourceView *pView)
     {
         m_pFunction = pView;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -102,6 +106,8 @@ template <abi_t ABI> class D3D11RenderTargetView : public gfx::ID3D11RenderTarge
     D3D11RenderTargetView(ID3D11RenderTargetView *pView)
     {
         m_pFunction = pView;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -148,6 +154,8 @@ template <abi_t ABI> class D3D11DepthStencilView : public gfx::ID3D11DepthStenci
     D3D11DepthStencilView(ID3D11DepthStencilView *pView)
     {
         m_pFunction = pView;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -198,6 +206,8 @@ template <abi_t ABI> class D3D11UnorderedAccessView : public gfx::ID3D11Unordere
     D3D11UnorderedAccessView(ID3D11UnorderedAccessView *pView)
     {
         m_pFunction = pView;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

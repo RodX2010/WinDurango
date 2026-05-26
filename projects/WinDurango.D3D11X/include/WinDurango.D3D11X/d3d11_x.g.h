@@ -3690,6 +3690,8 @@ inline HRESULT d3d11CreateInstance(abi_t ABI, void **ppvObject)
         *ppvObject = new T<abi_t{10,0,19041,3453}>();
     else if (ABI >= abi_t{10,0,14393,2152})
         *ppvObject = new T<abi_t{10,0,14393,2152}>();
+    else if (ABI >= abi_t{10,0,10586,1225})
+        *ppvObject = new T<abi_t{10,0,14393,2152}>();
     else if (ABI >= abi_t{6,2,13004,0})
         *ppvObject = new T<abi_t{6,2,13004,0}>();
     else if (ABI >= abi_t{6,2,11294,0})

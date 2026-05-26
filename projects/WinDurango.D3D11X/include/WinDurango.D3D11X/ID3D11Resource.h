@@ -10,6 +10,8 @@ public:
     D3D11Resource(ID3D11Resource *pResource)
     {
         m_pFunction = pResource;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -52,6 +54,8 @@ public:
     D3D11Texture1D(ID3D11Texture1D *pResource)
     {
         m_pFunction = pResource;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -104,6 +108,8 @@ template <abi_t ABI> class D3D11Texture2D : public gfx::ID3D11Texture2D<ABI>
     D3D11Texture2D(ID3D11Texture2D *pResource)
     {
         m_pFunction = pResource;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -156,6 +162,8 @@ public:
     D3D11Texture3D(ID3D11Texture3D *pResource)
     {
         m_pFunction = pResource;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -208,6 +216,8 @@ public:
     D3D11Buffer(ID3D11Buffer *pResource)
     {
         m_pFunction = pResource;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

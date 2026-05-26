@@ -39,6 +39,8 @@ public:
 
     D3D11DeviceContextX(ID3D11DeviceContext2 *pContext)
     {
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         m_pFunction = pContext;
         g_Context = m_pFunction;
         AddRef();
@@ -46,6 +48,8 @@ public:
     }
     D3D11DeviceContextX()
     {
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         m_pFunction = g_Context;
         AddRef();
         memcpy(&this->m_Function, *(void ***)this, sizeof(this->m_Function));

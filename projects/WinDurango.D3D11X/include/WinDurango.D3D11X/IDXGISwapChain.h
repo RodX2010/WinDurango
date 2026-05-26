@@ -9,6 +9,8 @@ public:
     DXGISwapChain1(::IDXGISwapChain1 *pSwapChain)
     {
         m_pFunction = pSwapChain;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

@@ -15,6 +15,7 @@ add_subdirectory(projects/WinDurango.WinRT)
 add_subdirectory(projects/WinDurango.etwplus)
 add_subdirectory(projects/WinDurango.KernelX)
 add_subdirectory(projects/WinDurango.D3D11X)
+add_subdirectory(projects/WinDurango.D3D12X)
 add_subdirectory(projects/WinDurango.MMDevAPI)
 
 add_custom_target(WinDurango ALL DEPENDS
@@ -25,5 +26,6 @@ add_custom_target(WinDurango ALL DEPENDS
     WinDurango.etwplus
     WinDurango.KernelX
     WinDurango.D3D11X
+    WinDurango.D3D12X
     WinDurango.MMDevAPI
 )

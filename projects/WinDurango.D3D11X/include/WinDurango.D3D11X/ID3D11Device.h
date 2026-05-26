@@ -33,6 +33,8 @@ public:
     D3D11DeviceX(ID3D11Device2* pDevice)
     {
         m_pFunction = pDevice;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 

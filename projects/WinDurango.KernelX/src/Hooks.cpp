@@ -21,6 +21,7 @@ static std::vector<PFNGETACTIVATIONFACTORY> g_RoEntryPoints;
 HRESULT XWineGetImport(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _In_ LPCSTR Import,
                        _Out_ PIMAGE_THUNK_DATA *pThunk)
 {
+importProcedure:
     if (ImportModule == nullptr)
         return E_INVALIDARG;
 
@@ -71,6 +72,24 @@ HRESULT XWineGetImport(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _In_ 
         }
     }
 
+    //Rodrigo Todescatto: I did this masterpiece. It looks awful, yet works perfectly. Never mess with something if it works.
+    if (ImportModule == GetModuleHandleW(L"vccorlib110.dll"))
+    {
+        ImportModule = GetModuleHandleW(L"vccorlib120.dll");
+        if (ImportModule)
+        {
+            goto importProcedure;
+        }
+        else
+        {
+            ImportModule = GetModuleHandleW(L"vccorlib140.dll");
+            if (ImportModule)
+            {
+                goto importProcedure;
+            }
+        }
+    }
+
     *pThunk = nullptr;
     return E_FAIL;
 }
@@ -106,7 +125,7 @@ HRESULT PatchNeededImports(_In_opt_ HMODULE Module, _In_ HMODULE ImportModule, _
 
 HMODULE GetRuntimeModule()
 {
-    std::array<const wchar_t *, 4> modules = {L"vccorlib110.dll", L"vccorlib110d.dll", L"vccorlib120.dll", L"vccorlib140.dll"};
+    std::array<const wchar_t *, 3> modules = {L"vccorlib110.dll", L"vccorlib120.dll", L"vccorlib140.dll"};
     HMODULE hModule = nullptr;
 
     for (auto &module : modules)
@@ -193,6 +212,7 @@ static void WdRoInitializeLibraries()
     static std::vector<std::wstring> s_RoLibraryNames = {
         L"Microsoft.Xbox.GameChat.dll",
         L"Microsoft.Xbox.Services.dll",
+        L"Microsoft.XBox.Services.dll",
         L"windows.kinect.dll",
         L"windows.media.devices.dll",
         L"SystemUI.Api.dll"

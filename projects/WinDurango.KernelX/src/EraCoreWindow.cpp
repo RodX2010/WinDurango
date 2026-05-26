@@ -69,7 +69,8 @@ HRESULT CoreWindowEra::GetKeyState(ABI::Windows::System::VirtualKey virtualKey,
 HRESULT CoreWindowEra::_abi_add_Activated(ITypedEventHandler<CoreWindow *, WindowActivatedEventArgs *> *handler,
                                           EventRegistrationToken *token)
 {
-    return m_realWindow->add_Activated(handler, token);
+    *token = EventRegistrationToken();
+    return S_OK;
 }
 
 HRESULT CoreWindowEra::_abi_remove_Activated(EventRegistrationToken token)

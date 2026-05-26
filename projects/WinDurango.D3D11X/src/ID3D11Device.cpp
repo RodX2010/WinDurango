@@ -579,16 +579,14 @@ HRESULT D3D11DeviceX<ABI>::OpenSharedResource(void *pResource, _GUID const &retI
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::CheckFormatSupport(DXGI_FORMAT Format, uint32_t *pFormatSupport)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return m_pFunction->CheckFormatSupport(Format, pFormatSupport);
 }
 
 template <abi_t ABI>
 HRESULT D3D11DeviceX<ABI>::CheckMultisampleQualityLevels(DXGI_FORMAT Format, uint32_t SampleCount,
                                                          uint32_t *pNumQualityLevels)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    return m_pFunction->CheckMultisampleQualityLevels(Format, SampleCount, pNumQualityLevels);
 }
 
 template <abi_t ABI> void D3D11DeviceX<ABI>::CheckCounterInfo(D3D11_COUNTER_INFO *pCounterInfo)
@@ -845,8 +843,14 @@ HRESULT D3D11DeviceX<ABI>::CreatePlacementBuffer(D3D11_BUFFER_DESC const *pDesc,
         pDesc2.Usage = D3D11_USAGE_DEFAULT;
     }
 
-    HRESULT hr = CreateBuffer(&pDesc2, &initialData, ppBuffer);
-    (*ppBuffer)->m_pAllocationStart = pVirtualAddress;
+    HRESULT hr = 0;
+    if (!pVirtualAddress)
+        hr = CreateBuffer(&pDesc2, nullptr, ppBuffer);
+    else
+        hr = CreateBuffer(&pDesc2, &initialData, ppBuffer);
+
+    if (pVirtualAddress)
+        (*ppBuffer)->m_pAllocationStart = pVirtualAddress;
 
     return hr;
 }

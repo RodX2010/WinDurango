@@ -9,6 +9,8 @@ template <abi_t ABI> class D3D11SamplerState : public gfx::ID3D11SamplerState<AB
     D3D11SamplerState(ID3D11SamplerState *pState)
     {
         m_pFunction = pState;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -51,6 +53,8 @@ template <abi_t ABI> class D3D11RasterizerState : public gfx::ID3D11RasterizerSt
     D3D11RasterizerState(ID3D11RasterizerState *pState)
     {
         m_pFunction = pState;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -92,6 +96,8 @@ template <abi_t ABI> class D3D11BlendState : public gfx::ID3D11BlendState<ABI>
     D3D11BlendState(ID3D11BlendState *pState)
     {
         m_pFunction = pState;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
@@ -133,6 +139,8 @@ template <abi_t ABI> class D3D11DepthStencilState : public gfx::ID3D11DepthStenc
     D3D11DepthStencilState(ID3D11DepthStencilState *pState)
     {
         m_pFunction = pState;
+        if (this->m_RefCount != 0)
+            this->m_RefCount = 0;
         InterlockedIncrement(&this->m_RefCount);
     }
 
