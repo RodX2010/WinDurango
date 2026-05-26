@@ -163,10 +163,10 @@ class FrameworkViewEra : public IFrameworkView
         m_realView->SetWindow(window);
 
         //Resizes game window to 1280x720 so it's not a square by default.
-        /*
+        
         auto view = winrt::Windows::UI::ViewManagement::ApplicationView::GetForCurrentView();
         winrt::Windows::Foundation::Size desiredSize{1280.0f, 720.0f};
-        view.TryResizeView(desiredSize);*/
+        view.TryResizeView(desiredSize);
 
         return S_OK;
     }

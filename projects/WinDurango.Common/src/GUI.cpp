@@ -33,7 +33,7 @@ namespace wd::common
         static const ImWchar icon_ranges3[] = { 0xE2AF, 0xE2AF, 0 };
         io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segmdl2.ttf", 18.0f, &config, icon_ranges);
         io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segmdl2.ttf", 30.0f, &config, icon_ranges3);
-        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\holomdl2.ttf", 30.0f, &config, icon_ranges2);
+        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segmdl2.ttf", 30.0f, &config, icon_ranges2);
 
         ImGui_ImplUwp_InitForCurrentView();
         ImGui_ImplDX11_Init(m_pDevice, m_pContext);

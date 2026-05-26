@@ -216,8 +216,7 @@ static void WdRoInitializeLibraries()
         L"windows.kinect.dll",
         L"windows.media.devices.dll",
         L"SystemUI.Api.dll",
-        L"XboxUI.Api.dll",
-        L"Windows.Networking.Connectivity.dll"
+        L"XboxUI.Api.dll"
     };
 
     for (auto name : s_RoLibraryNames)
