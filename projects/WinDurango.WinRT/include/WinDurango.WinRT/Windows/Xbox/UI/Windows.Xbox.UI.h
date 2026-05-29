@@ -1,5 +1,4 @@
 #pragma once
-#include "Windows.Xbox.UI.AccountPickerInternalResult.g.h"
 #include "Windows.Xbox.UI.FirmwareUpdateResult.g.h"
 #include "Windows.Xbox.UI.NetworkTroubleshooterResult.g.h"
 #include "Windows.Xbox.UI.ShareContentResult.g.h"
@@ -7,17 +6,6 @@
 
 namespace winrt::Windows::Xbox::UI::implementation
 {
-    struct AccountPickerInternalResult : AccountPickerInternalResultT<AccountPickerInternalResult>
-    {
-        AccountPickerInternalResult() = default;
-
-        winrt::Windows::Xbox::UI::AccountPickerInternalResultAction Action();
-        winrt::Windows::Xbox::System::User User();
-        uint32_t ConsoleUserId();
-        hstring SelectedItem();
-        winrt::Windows::Xbox::System::User SystemUser();
-    };
-
     struct FirmwareUpdateResult : FirmwareUpdateResultT<FirmwareUpdateResult>
     {
         FirmwareUpdateResult() = default;

@@ -323,20 +323,9 @@ namespace Windows.Xbox.UI
         ErrorHttp,
     };
 
-    [interface_name("IAccountPickerInternalResult", D922371C-6C30-4832-8253-72421FF72A9C)]
-    runtimeclass AccountPickerInternalResult
-    {
-        AccountPickerInternalResultAction Action { get; };
-        Windows.Xbox.System.User User { get; };
-        UInt32 ConsoleUserId { get; };
-        String SelectedItem { get; };
-        Windows.Xbox.System.User SystemUser { get; };
-    }
-
     [interface_name("IAccountPickerResult", 84453B4A-51F3-4651-A517-53C73BB3E1F4)]
     runtimeclass AccountPickerResult
     {
-        AccountPickerResult();
         Windows.Xbox.System.User User { get; };
     }
 
@@ -505,9 +494,10 @@ namespace Windows.Xbox.UI
         static Windows.Foundation.IAsyncAction RemoteShowStateShareAsync(Windows.Xbox.System.User requestingUser, UInt32 xblTitleId, String linkToken);
     }
 
-    [static_name("ISystemUIStatics", 1A0DD80E-3F9D-4CFA-8E50-0E2EBD1AA72F)]
     runtimeclass SystemUI
     {
+        [static_name("ISystemUIStatics", 1A0DD80E-3F9D-4CFA-8E50-0E2EBD1AA72F)]
+        {
         static Windows.Foundation.IAsyncAction ShowEpgAsync(
             Windows.Xbox.System.User requestingUser,
             Windows.Foundation.Collections.IIterable<Windows.Foundation.Collections.IKeyValuePair<String, Object> > propertySet
@@ -527,6 +517,7 @@ namespace Windows.Xbox.UI
         );
         static Windows.Foundation.IAsyncAction LaunchPartyAsync(Windows.Xbox.System.User requestingUser);
         static Windows.Foundation.IAsyncAction LaunchAchievementsAsync(Windows.Xbox.System.User requestingUser, UInt32 titleId);
+        }
         [static_name("ISystemUIStatics2", FA2BDF0C-3698-4BF2-A101-276A5B390341)]
         {
             static Windows.Foundation.IAsyncAction LaunchKinectSetupAsync(Windows.Xbox.System.User requestingUser);

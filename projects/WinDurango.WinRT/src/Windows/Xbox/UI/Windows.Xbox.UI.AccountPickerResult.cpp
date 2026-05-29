@@ -5,6 +5,6 @@ namespace winrt::Windows::Xbox::UI::implementation
 {
     winrt::Windows::Xbox::System::User AccountPickerResult::User()
     {
-        return winrt::Windows::Xbox::System::User::Users().GetAt(0);
+        return winrt::Windows::Xbox::System::implementation::User::Users().GetAt(1);
     }
 }

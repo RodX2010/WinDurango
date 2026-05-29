@@ -3,31 +3,6 @@
 
 namespace winrt::Windows::Xbox::UI::implementation
 {
-    winrt::Windows::Xbox::UI::AccountPickerInternalResultAction AccountPickerInternalResult::Action()
-    {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: Action");
-        throw hresult_not_implemented();
-    }
-    winrt::Windows::Xbox::System::User AccountPickerInternalResult::User()
-    {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: User");
-        throw hresult_not_implemented();
-    }
-    uint32_t AccountPickerInternalResult::ConsoleUserId()
-    {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: ConsoleUserId");
-        throw hresult_not_implemented();
-    }
-    hstring AccountPickerInternalResult::SelectedItem()
-    {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: SelectedItem");
-        throw hresult_not_implemented();
-    }
-    winrt::Windows::Xbox::System::User AccountPickerInternalResult::SystemUser()
-    {
-        p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: SystemUser");
-        throw hresult_not_implemented();
-    }
     winrt::Windows::Xbox::UI::FirmwareUpdateStatus FirmwareUpdateResult::Status()
     {
         p_wd->log.Warn("WinDurango::WinRT::Windows::Xbox::UI", "Unimplemented: Status");
