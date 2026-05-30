@@ -151,13 +151,13 @@ namespace winrt::Windows::Xbox::Input::implementation
                 XINPUT_CAPABILITIES capabilities{};
                 XINPUT_STATE state{};
                 
-                bool Result = XInput1_3GetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities) == ERROR_SUCCESS
-                             || XInput1_3GetState(gamepad, &state) == ERROR_SUCCESS;
+                bool Result = XInput1_3GetCapabilities(gamepad, XINPUT_FLAG_GAMEPAD, &capabilities) == ERROR_SUCCESS || XInput1_3GetState(gamepad, &state) == ERROR_SUCCESS;
                 if (Result) // should work now btw
                 {
                     p_wd->log.Log("WinDurango::WinRT::Windows::Xbox::Input", "Creating gamepad");
                     winrt::Windows::Xbox::Input::IGamepad NewGamepad = winrt::make<Gamepad>(gamepad, true);
                     a_gamepads.Append(NewGamepad);
+                    controllerFound = true;
                     continue;
                 }
             }

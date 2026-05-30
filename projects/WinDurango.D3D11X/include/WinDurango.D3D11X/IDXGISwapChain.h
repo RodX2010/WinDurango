@@ -72,3 +72,58 @@ private:
 #undef ABI_INTERFACE
 #define ABI_INTERFACE(ABI) DXGISwapChain1<ABI>
 D3D11_DECLARE_ABI_TEMPLATES(extern);
+
+
+
+class FPSLimiter
+{
+public:
+    FPSLimiter(FLOAT fps)
+    {
+        ZeroMemory(&m_Frequency, sizeof(m_Frequency));
+        QueryPerformanceFrequency(&m_Frequency);
+
+        m_Target = 1.0 / fps;
+
+        QueryPerformanceCounter(&m_Last);
+        m_Accumulator = 0.0;
+    }
+
+    void BeginFrame()
+    {
+        LARGE_INTEGER now;
+        QueryPerformanceCounter(&now);
+
+        FLOAT delta = FLOAT(now.QuadPart - m_Last.QuadPart) / m_Frequency.QuadPart;
+
+        m_Last = now;
+        m_Accumulator += delta;
+
+        if (m_Accumulator > 0.25)
+            m_Accumulator = m_Target;
+    }
+
+    void Wait()
+    {
+        while (m_Accumulator < m_Target)
+        {
+            Sleep(0);
+
+            LARGE_INTEGER now;
+            QueryPerformanceCounter(&now);
+
+            FLOAT delta = FLOAT(now.QuadPart - m_Last.QuadPart) / m_Frequency.QuadPart;
+
+            m_Last = now;
+            m_Accumulator += delta;
+        }
+
+        m_Accumulator -= m_Target;
+    }
+
+private:
+    LARGE_INTEGER m_Frequency;
+    LARGE_INTEGER m_Last;
+    FLOAT m_Accumulator;
+    FLOAT m_Target;
+};

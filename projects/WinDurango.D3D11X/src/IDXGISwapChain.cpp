@@ -73,6 +73,9 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::GetDevice(REFIID riid, void **
 //
 template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval, uint32_t Flags)
 {
+    static FPSLimiter Limiter(60.0);
+    Limiter.BeginFrame();
+
     if (!m_wasIMGUIinitialized)
     {
         ID3D11Device* pDevice = nullptr;
@@ -85,6 +88,8 @@ template <abi_t ABI> HRESULT DXGISwapChain1<ABI>::Present(uint32_t SyncInterval,
     }
 
     p_wd->gui.Render();
+
+    Limiter.Wait();
     return m_pFunction->Present(SyncInterval, Flags);
 }
 
@@ -194,6 +199,9 @@ template <abi_t ABI>
 HRESULT DXGISwapChain1<ABI>::Present1(uint32_t SyncInterval, uint32_t PresentFlags,
                                       DXGI_PRESENT_PARAMETERS const *pPresentParameters)
 {
+    static FPSLimiter Limiter(60.0);
+    Limiter.BeginFrame();
+
     if (!m_wasIMGUIinitialized)
     {
         ID3D11Device* pDevice = nullptr;
@@ -206,6 +214,8 @@ HRESULT DXGISwapChain1<ABI>::Present1(uint32_t SyncInterval, uint32_t PresentFla
     }
 
     p_wd->gui.Render();
+
+    Limiter.Wait();
 
     if (!pPresentParameters)
         return m_pFunction->Present(SyncInterval, PresentFlags);
