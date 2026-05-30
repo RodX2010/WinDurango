@@ -4,3 +4,4 @@
 **/.vscode/*
 **/.vs/*
 **/vcpkg_installed/*
+**/WinMetadata/*

@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_definitions(_AMD64_)
 
-make_directory(${CMAKE_BINARY_DIR}/WinMetadata)
+make_directory(${CMAKE_CURRENT_SOURCE_DIR}/WinMetadata)
 file(GLOB IDL_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/idl/*.idl")
 cmake_path(CONVERT "${IDL_FILES}" TO_NATIVE_PATH_LIST IDL_FILES)
 
@@ -18,7 +18,7 @@ foreach(IDL_FILE ${IDL_FILES})
             /metadata_dir "$ENV{WindowsSdkDir}References\\$ENV{WindowsSdkVersion}Windows.Foundation.FoundationContract\\4.0.0.0"
             /reference "$ENV{WindowsSdkDir}References\\$ENV{WindowsSdkVersion}Windows.Foundation.FoundationContract\\4.0.0.0\\Windows.Foundation.FoundationContract.winmd"
             /reference "$ENV{WindowsSdkDir}References\\$ENV{WindowsSdkVersion}Windows.Foundation.UniversalApiContract\\19.0.0.0\\Windows.Foundation.UniversalApiContract.winmd"
-            /out "${CMAKE_BINARY_DIR}\\WinMetadata"
+            /out "${CMAKE_CURRENT_SOURCE_DIR}\\WinMetadata"
             ${IDL_FILE}
         RESULT_VARIABLE MIDL_RESULT
         ERROR_VARIABLE MIDL_ERROR)
@@ -32,7 +32,7 @@ execute_process(
     COMMAND cppwinrt
         -prefix
         -pch .
-        -input "${CMAKE_BINARY_DIR}\\WinMetadata"
+        -input "${CMAKE_CURRENT_SOURCE_DIR}\\WinMetadata"
         -reference sdk
         -component "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files\\sources"
         -out "${CMAKE_CURRENT_SOURCE_DIR}\\Generated Files")

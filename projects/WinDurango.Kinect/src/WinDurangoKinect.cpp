@@ -1,4 +1,4 @@
-#include "WinDurangoWinRT.h"
+#include "WinDurangoKinect.h"
 
 std::shared_ptr<wd::common::WinDurango> p_wd = nullptr;
 

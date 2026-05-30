@@ -12,6 +12,7 @@ add_subdirectory(projects/WinDurango.Common)
 add_subdirectory(projects/WinDurango.Implementation.WinRT)
 add_subdirectory(projects/WinDurango.Implementation.Native)
 add_subdirectory(projects/WinDurango.WinRT)
+add_subdirectory(projects/WinDurango.Kinect)
 add_subdirectory(projects/WinDurango.etwplus)
 add_subdirectory(projects/WinDurango.KernelX)
 add_subdirectory(projects/WinDurango.D3D11X)
@@ -23,6 +24,7 @@ add_custom_target(WinDurango ALL DEPENDS
     WinDurango.Implementation.WinRT
     WinDurango.Implementation.Native
     WinDurango.WinRT
+    WinDurango.Kinect
     WinDurango.etwplus
     WinDurango.KernelX
     WinDurango.D3D11X

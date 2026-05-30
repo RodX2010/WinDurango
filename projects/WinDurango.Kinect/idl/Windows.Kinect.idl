@@ -1,0 +1,276 @@
+namespace Windows.Kinect 
+{
+    enum Activity
+    {
+        EyeLeftClosed,
+        EyeRightClosed,
+        MouthOpen,
+        MouthMoved,
+        LookingAway,
+    };
+
+    enum Appearance
+    {
+        WearingGlasses,
+    };
+
+    [flags]
+    enum AudioBeamFrameFlags
+    {
+        None = 0x0,
+        SuppressBodyCorrelation = 0x1,
+    };
+
+    enum AudioBeamMode
+    {
+        Automatic,
+        Manual,
+    };
+
+    enum ColorImageFormat
+    {
+        None,
+        Rgba,
+        Yuv,
+        Bgra,
+        Bayer,
+        Yuy2,
+    };
+
+    [flags]
+    enum DepthFrameFlags
+    {
+        None = 0U,
+        NearOccluded = 1U,
+        Saturated = 2U,
+    };
+
+    enum DetectionResult
+    {
+        Unknown,
+        No,
+        Maybe,
+        Yes,
+    };
+
+    enum DeviceStatus
+    {
+        ServiceDisconnected,
+        Disconnected,
+        Connected,
+        Initializing,
+        HardwareError,
+        FirmwareUpdateRequired,
+        FirmwareUpdateInProgress,
+        SoftwareError,
+    };
+
+    enum EngagementMode
+    {
+        Normal,
+        Off,
+        Media,
+    };
+
+    enum EventPriority
+    {
+        Normal,
+        High,
+        Count,
+    };
+
+    enum Expression
+    {
+        Neutral,
+        Happy,
+    };
+
+    enum FrameCapturedStatus
+    {
+        Unknown,
+        Queued,
+        Dropped,
+    };
+
+    [flags]
+    enum FrameEdges
+    {
+        None = 0x0,
+        Right = 0x1,
+        Left = 0x2,
+        Top = 0x4,
+        Bottom = 0x8,
+    };
+
+    [flags]
+    enum FrameInternalSourceTypes
+    {
+        None = 0x0,
+        Color = 0x1,
+        Infrared = 0x2,
+        LongExposureInfrared = 0x4,
+        Depth = 0x8,
+        BodyIndex = 0x10,
+        Body = 0x20,
+        Audio = 0x40,
+        OpaqueMachineLearning = 0x80,
+        Interaction = 0x100,
+        TrackableControllers = 0x200,
+    };
+
+    [flags]
+    enum FrameSourceTypes
+    {
+        None = 0x0,
+        Color = 0x1,
+        Infrared = 0x2,
+        LongExposureInfrared = 0x4,
+        Depth = 0x8,
+        BodyIndex = 0x10,
+        Body = 0x20,
+        Audio = 0x40,
+    };
+
+    enum HandState
+    {
+        Unknown,
+        NotTracked,
+        Open,
+        Closed,
+        Lasso,
+    };
+
+    enum HandType
+    {
+        Left,
+        Right,
+    };
+
+    enum ImageSize
+    {
+        None,
+        Size960x540,
+        Size480x270,
+        Size320x180,
+        Size240x134,
+    };
+
+    [flags]
+    enum InfraredFrameFlags
+    {
+        None = 0x0,
+        NearOccluded = 0x1,
+        Saturated = 0x2,
+    };
+
+    enum InteractionType
+    {
+        None,
+        Manipulating,
+        Pressing,
+        Pressed,
+    };
+
+    enum JointType
+    {
+        SpineBase,
+        SpineMid,
+        Neck,
+        Head,
+        ShoulderLeft,
+        ElbowLeft,
+        WristLeft,
+        HandLeft,
+        ShoulderRight,
+        ElbowRight,
+        WristRight,
+        HandRight,
+        HipLeft,
+        KneeLeft,
+        AnkleLeft,
+        FootLeft,
+        HipRight,
+        KneeRight,
+        AnkleRight,
+        FootRight,
+        SpineShoulder,
+        HandTipLeft,
+        ThumbLeft,
+        HandTipRight,
+        ThumbRight,
+    };
+
+    enum KinectAudioCalibrationState
+    {
+        Unknown,
+        CalibrationRequired,
+        Calibrated,
+    };
+
+    [flags]
+    enum KinectCapabilities
+    {
+        None = 0x0,
+        Vision = 0x1,
+        Audio = 0x2,
+        Face = 0x4,
+        Expressions = 0x8,
+        Gamechat = 0x10,
+    };
+
+    [flags]
+    enum KinectCapabilitiesInternal
+    {
+        Set = 0x80000000,
+    };
+
+    enum KinectSensorAccessMode
+    {
+        None,
+        Exclusive,
+        Shared,
+    };
+
+    enum SuppressibleStreamTypes
+    {
+        None = 0x0,
+        Body = 0x1,
+        Audio = 0x2,
+        Interaction = 0x4,
+        SystemGesture = 0x8,
+    };
+
+    enum SystemEngagementMode
+    {
+        None,
+        SystemOnePerson,
+        SystemTwoPerson,
+        ManualOnePerson,
+        ManualTwoPerson,
+    };
+
+    enum TrackingConfidence
+    {
+        Low,
+        High,
+    };
+
+    enum TrackingState
+    {
+        NotTracked,
+        Inferred,
+        Tracked,
+    };
+
+    [interface_name("IFrameDescription", D5E2A26D-C1C3-429E-8DD4-3308CF12DAF5)]
+    runtimeclass FrameDescription
+    {
+        Int32 Width { get; };
+        Int32 Height { get; };
+        Single HorizontalFieldOfView { get; };
+        Single VerticalFieldOfView { get; };
+        Single DiagonalFieldOfView { get; };
+        UInt32 LengthInPixels { get; };
+        UInt32 BytesPerPixel { get; };
+    };
+}
