@@ -213,7 +213,6 @@ static void WdRoInitializeLibraries()
         L"Microsoft.Xbox.GameChat.dll",
         L"Microsoft.Xbox.Services.dll",
         L"Microsoft.XBox.Services.dll",
-        L"windows.kinect.dll",
         L"windows.media.devices.dll",
         L"SystemUI.Api.dll",
         L"XboxUI.Api.dll"
@@ -233,6 +232,15 @@ static void WdRoInitializeLibraries()
         }
     }
     if (auto dll = LoadLibraryW(L"winrt_x.dll"); dll != nullptr)
+    {
+        if (auto pfn = GetProcAddress(dll, "GetActivationFactory"); pfn != nullptr)
+        {
+            g_RoEntryPoints.push_back(reinterpret_cast<PFNGETACTIVATIONFACTORY>(pfn));
+
+            XWinePatchImport(dll, GetRuntimeModule(), "?GetActivationFactoryByPCWSTR@@YAJPEAXAEAVGuid@Platform@@PEAPEAX@Z", GetActivationFactoryRedirect);
+        }
+    }
+    if (auto dll = LoadLibraryW(L"windows.kinect.dll"); dll != nullptr)
     {
         if (auto pfn = GetProcAddress(dll, "GetActivationFactory"); pfn != nullptr)
         {
