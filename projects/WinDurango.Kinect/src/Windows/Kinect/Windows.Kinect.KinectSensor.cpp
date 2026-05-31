@@ -940,8 +940,8 @@ namespace winrt::Windows::Kinect::implementation
     }
     winrt::Windows::Kinect::KinectSensor KinectSensor::GetDefault()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: GetDefault");
-        throw hresult_not_implemented();
+        static winrt::Windows::Kinect::KinectSensor s_kinectSensor = winrt::make<implementation::KinectSensor>();
+        return s_kinectSensor;
     }
     winrt::Windows::Foundation::Collections::IObservableMap<hstring, winrt::Windows::Kinect::KinectSensor> KinectSensor::Sensors()
     {
@@ -960,13 +960,11 @@ namespace winrt::Windows::Kinect::implementation
     }
     void KinectSensor::Open()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: IsAvailableChanged");
-        throw hresult_not_implemented();
+        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: Open");
     }
     void KinectSensor::Close()
     {
         p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: Close");
-        throw hresult_not_implemented();
     }
     bool KinectSensor::IsOpen()
     {
@@ -976,7 +974,7 @@ namespace winrt::Windows::Kinect::implementation
     bool KinectSensor::IsAvailable()
     {
         p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: IsAvailable");
-        throw hresult_not_implemented();
+        return false;
     }
     winrt::Windows::Kinect::ColorFrameSource KinectSensor::ColorFrameSource()
     {
