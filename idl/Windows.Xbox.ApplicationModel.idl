@@ -14,23 +14,21 @@ namespace Windows.Xbox.ApplicationModel
 
     namespace Core
     {
-        [interface_name("ICoreApplicationContext", d8d4c59f-b9ac-4d41-842d-a01c59b617e7)]
+        [static_name("ICoreApplicationContext", D8D4C59F-B9AC-4D41-842D-A01C59B617E7)]
         runtimeclass CoreApplicationContext
         {
-            CoreApplicationContext();
-            Windows.Xbox.System.User CurrentUser { get; };
-            Windows.Xbox.System.User PreviousUser { get; };
-            event Windows.Foundation.EventHandler<IInspectable> CurrentUserChanged;
+            static Windows.Xbox.System.User CurrentUser { get; };
+            static event Windows.Foundation.EventHandler<IInspectable> CurrentUserChanged;
 
-            [interface_name("ICoreApplicationContext2", E555452E-8E16-46A6-BF31-34189B6CAD40)]
+            [static_name("ICoreApplicationContext2", E555452E-8E16-46A6-BF31-34189B6CAD40)]
             {
-                void SetCurrentUser(Windows.Xbox.System.User value);
+                static void SetCurrentUser(Windows.Xbox.System.User value);
             }
 
-            [interface_name("ICoreApplicationContext3", 52DB8037-0ECB-48F6-974D-5796ECF34B69)]
+            [static_name("ICoreApplicationContext3", 52DB8037-0ECB-48F6-974D-5796ECF34B69)]
             {
-                Windows.Xbox.System.User CurrentSystemUser { get; };
-                event Windows.Foundation.EventHandler<Object> CurrentSystemUserChanged;
+                static Windows.Xbox.System.User CurrentSystemUser { get; };
+                static event Windows.Foundation.EventHandler<Object> CurrentSystemUserChanged;
             }
         }
 

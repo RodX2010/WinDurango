@@ -1,4 +1,5 @@
 #include "Windows.Kinect.KinectSensor.h"
+#include "Windows.Kinect.Body.h"
 #include "WinDurangoKinect.h"
 
 namespace winrt::Windows::Kinect::implementation
@@ -940,8 +941,7 @@ namespace winrt::Windows::Kinect::implementation
     }
     winrt::Windows::Kinect::KinectSensor KinectSensor::GetDefault()
     {
-        static winrt::Windows::Kinect::KinectSensor s_kinectSensor = winrt::make<implementation::KinectSensor>();
-        return s_kinectSensor;
+        return winrt::make<implementation::KinectSensor>();
     }
     winrt::Windows::Foundation::Collections::IObservableMap<hstring, winrt::Windows::Kinect::KinectSensor> KinectSensor::Sensors()
     {
@@ -960,21 +960,23 @@ namespace winrt::Windows::Kinect::implementation
     }
     void KinectSensor::Open()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: Open");
+        m_pKinectSensor->Open();
     }
     void KinectSensor::Close()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: Close");
+        m_pKinectSensor->Close();
     }
     bool KinectSensor::IsOpen()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: IsOpen");
-        throw hresult_not_implemented();
+        BOOLEAN isOpen = 0;
+        m_pKinectSensor->get_IsOpen(&isOpen);
+        return (bool)isOpen;
     }
     bool KinectSensor::IsAvailable()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: IsAvailable");
-        return false;
+        BOOLEAN isAvailable = 0;
+        m_pKinectSensor->get_IsAvailable(&isAvailable);
+        return (bool)isAvailable;
     }
     winrt::Windows::Kinect::ColorFrameSource KinectSensor::ColorFrameSource()
     {
@@ -988,8 +990,9 @@ namespace winrt::Windows::Kinect::implementation
     }
     winrt::Windows::Kinect::BodyFrameSource KinectSensor::BodyFrameSource()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: BodyFrameSource");
-        throw hresult_not_implemented();
+        ::IBodyFrameSource *pBodyFrameSource = nullptr;
+        m_pKinectSensor->get_BodyFrameSource(&pBodyFrameSource);
+        return winrt::make<implementation::BodyFrameSource>(pBodyFrameSource);
     }
     winrt::Windows::Kinect::BodyIndexFrameSource KinectSensor::BodyIndexFrameSource()
     {
@@ -1023,12 +1026,12 @@ namespace winrt::Windows::Kinect::implementation
     }
     hstring KinectSensor::UniqueKinectId()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: UniqueKinectId");
-        throw hresult_not_implemented();
+        return L"0";
     }
     winrt::Windows::Kinect::KinectCapabilities KinectSensor::KinectCapabilities()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::KinectSensor", "Unimplemented: KinectCapabilities");
-        throw hresult_not_implemented();
+        DWORD kinectCapabilities = 0;
+        m_pKinectSensor->get_KinectCapabilities(&kinectCapabilities);
+        return static_cast<winrt::Windows::Kinect::KinectCapabilities>(kinectCapabilities);
     }
 }

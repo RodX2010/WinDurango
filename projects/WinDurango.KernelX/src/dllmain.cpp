@@ -2,6 +2,7 @@
 #include "kernelx.h"
 #include "Logan.h"
 #include "ForzaThreadHook.h"
+#include "D3D11Peggle2Hook.h"
 
 static DWORD ReasonForCall = 0;
 #define RETURN_IF_FAILED(hr) if (FAILED(hr)) return hr
@@ -51,11 +52,26 @@ void KernelxInitialize(HINSTANCE hinstDLL)
             *(void**)&P_FmodThreadProc = (char*)GetModuleHandleW(nullptr) + 0x19D3F80;
             DetourAttach((void**)&P_FmodThreadProc, &D_FmodThreadProc);
         }
-         //Forza Horizon 2 Presents Fast & Furious
+        //Forza Horizon 2 Presents Fast & Furious
         if (winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName() == L"Spire_8wekyb3d8bbwe")
         {
             *(void**)&P_StartForzaThread = (char*)GetModuleHandleW(nullptr) + 0x10A7C00;
             DetourAttach((void**)&P_StartForzaThread, &D_StartForzaThread);
+        }
+
+        //Peggle 2
+        if (winrt::Windows::ApplicationModel::Package::Current().Id().FamilyName() == L"Peggle2_zjr0dfhgjwvde")
+        {
+            HRESULT hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&g_pFactory));
+            if (FAILED(hr)) printf("Peggle 2: Failed to create the DXGI Factory object! Error: 0x%X\n", hr);
+            g_lpIDXGIFactory2Vtbl = *reinterpret_cast<IDXGIFactory2Vtbl**>(g_pFactory);
+            pCreateSwapChainForCoreWindow = g_lpIDXGIFactory2Vtbl->CreateSwapChainForCoreWindow;
+            DetourAttach(reinterpret_cast<PVOID*>(&pCreateSwapChainForCoreWindow), &CreateSwapChainForCoreWindow_Hook);
+
+            HMODULE hD3D11;
+            hD3D11 = LoadLibraryW(L"d3d11.dll");
+            reinterpret_cast<PVOID&>(pD3D11CreateDevice) = GetProcAddress(hD3D11, "D3D11CreateDevice");
+            DetourAttach(reinterpret_cast<PVOID*>(&pD3D11CreateDevice), &D3D11CreateDevice_Hook);
         }
 
         DetourAttach(&reinterpret_cast<PVOID &>(TrueCoCreateInstance), EraCoCreateInstance);

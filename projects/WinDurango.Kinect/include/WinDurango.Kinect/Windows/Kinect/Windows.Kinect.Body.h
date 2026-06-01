@@ -1,4 +1,5 @@
 #pragma once
+#include <Kinect.h>
 #include "Windows.Kinect.BodyFrame.g.h"
 #include "Windows.Kinect.BodyFrameArrivedEventArgs.g.h"
 #include "Windows.Kinect.BodyFrameReader.g.h"
@@ -33,7 +34,7 @@ namespace winrt::Windows::Kinect::implementation
 
     struct BodyFrameReader : BodyFrameReaderT<BodyFrameReader>
     {
-        BodyFrameReader() = default;
+        BodyFrameReader(::IBodyFrameReader *pBodyFrameReader) : m_pBodyFrameReader(pBodyFrameReader) {}
 
         winrt::event_token FrameArrived(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Kinect::BodyFrameReader, winrt::Windows::Kinect::BodyFrameArrivedEventArgs> const& handler);
         void FrameArrived(winrt::event_token const& token) noexcept;
@@ -41,6 +42,9 @@ namespace winrt::Windows::Kinect::implementation
         bool IsPaused();
         void IsPaused(bool value);
         winrt::Windows::Kinect::BodyFrameSource BodyFrameSource();
+
+    private:
+        ::IBodyFrameReader *m_pBodyFrameReader = nullptr;
     };
 
     struct BodyFrameReference : BodyFrameReferenceT<BodyFrameReference>
@@ -53,7 +57,7 @@ namespace winrt::Windows::Kinect::implementation
 
     struct BodyFrameSource : BodyFrameSourceT<BodyFrameSource>
     {
-        BodyFrameSource() = default;
+        BodyFrameSource(::IBodyFrameSource *pBodyFrameSource) : m_pBodyFrameSource(pBodyFrameSource) {}
 
         winrt::event_token FrameCaptured(winrt::Windows::Foundation::TypedEventHandler<winrt::Windows::Kinect::BodyFrameSource, winrt::Windows::Kinect::FrameCapturedEventArgs> const& handler);
         void FrameCaptured(winrt::event_token const& token) noexcept;
@@ -63,6 +67,9 @@ namespace winrt::Windows::Kinect::implementation
         winrt::Windows::Kinect::KinectSensor KinectSensor();
         void OverrideHandTracking(uint64_t trackingId);
         void OverrideAndReplaceHandTracking(uint64_t oldTrackingId, uint64_t newTrackingId);
+
+    private:
+        ::IBodyFrameSource *m_pBodyFrameSource = nullptr;
     };
 
     struct BodyIndexFrame : BodyIndexFrameT<BodyIndexFrame>

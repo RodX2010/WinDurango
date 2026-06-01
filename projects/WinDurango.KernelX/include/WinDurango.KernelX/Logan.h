@@ -203,6 +203,19 @@ typedef struct ACP_COMMAND_CONNECT
     APU_ADDRESS messageQueue;
 };
 
+typedef enum ACP_MESSAGE_TYPE
+{
+  ACP_MESSAGE_TYPE_AUDIO_FRAME_START = 0x0001,
+  ACP_MESSAGE_TYPE_FLOWGRAPH_COMPLETED = 0x0002,
+  ACP_MESSAGE_TYPE_SRC_BLOCKED = 0x0004,
+  ACP_MESSAGE_TYPE_DMA_BLOCKED = 0x0008,
+  ACP_MESSAGE_TYPE_COMMAND_COMPLETED = 0x0010,
+  ACP_MESSAGE_TYPE_FLOWGRAPH_TERMINATED = 0x0020,
+  ACP_MESSAGE_TYPE_ERROR = 0x0040,
+  ACP_MESSAGE_TYPE_DISCONNECTED = 0x0080,
+  ACP_MESSAGE_TYPE_MASK = 0x00ff
+} ACP_MESSAGE_TYPE, *PACP_MESSAGE_TYPE;
+
 typedef struct ACP_COMMAND_DISCONNECT
 {
     UINT32 instance;
@@ -536,6 +549,7 @@ class LoganHeap
     SIZE_T _sizeInBytes;
     LOGAN_PHYSICAL_MEMORY _driverMemory[3];
     static ULONGLONG constexpr c_XMemAttributes = 0xEC810000; 
+    ACP_COMMAND_REGISTER_CONTEXT_ARRAYS _acpContextArrays;
 };
 
 template <typename T> void _declspec(dllexport) DispatchLoganCommand(LOGAN_COMMAND_TYPE cmdType, T cmd);
@@ -660,8 +674,8 @@ static BOOL ReadFromInternalACPRingBuffer(AcpCommand *OutBuffer, AcpCommand *InB
     InBufferDesc->internalCommandQueueReadPointer++;
     InBufferDesc->internalCommandQueueReadCounter++;
 
-    if (InBufferDesc->internalCommandQueueReadCounter >= 16)
-        InBufferDesc->internalCommandQueueReadCounter = 0;
+    if (InBufferDesc->internalCommandQueueReadPointer >= 16)
+        InBufferDesc->internalCommandQueueReadPointer = 0;
 
     return TRUE;
 }
@@ -681,7 +695,8 @@ inline void DispatchACPCommand(ACP_COMMAND_TYPE_INTERNAL cmdType, AcpState *acpS
     }
     else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_REGISTER_CONTEXT_ARRAYS)
     {
-        printf("Received Internal ACP command (INTERNAL_ACP_COMMAND_TYPE_REGISTER_CONTEXT_ARRAYS)\n");
+        g_LoganHeap._acpContextArrays = Cmd.registerContextArrays;
+        printf("Registered ACP context arrays.\n");
     }
     else if (cmdType == INTERNAL_ACP_COMMAND_TYPE_EVENT_LOG_INIT)
     {
@@ -727,10 +742,14 @@ static DWORD WINAPI LoganChannelProc(LPVOID lpThreadParameter)
     do
     {
         LOGAN_COMMAND_INTERNAL command;
-
+        UINT MessageIndex = 0;
         while (ReadFromRingBuffer(&command, commands, &channel->commands))
         {
             DispatchLoganCommand((LOGAN_COMMAND_TYPE)command.commandType, g_LoganHeap.GetVirtualAddress(command.apuAddress, sizeof((LOGAN_COMMAND_TYPE)command.commandType)));
+            messages[MessageIndex].status = ACP_MESSAGE_TYPE_COMMAND_COMPLETED;
+            messages[MessageIndex].time = GetTickCount();
+            messages[MessageIndex].unknown0 = 1;
+            MessageIndex++;
         }       
 
         if (InitialCommand != nullptr)
@@ -743,7 +762,10 @@ static DWORD WINAPI LoganChannelProc(LPVOID lpThreadParameter)
                 AcpCommand Command{};
                 while (ReadFromInternalACPRingBuffer(&Command, &AcpInternalCommandQueue->command, pAcpState))
                 {
-                    DispatchACPCommand((ACP_COMMAND_TYPE_INTERNAL)Command.commandType, pAcpState, Command);
+                    if (Command.commandType)
+                    {
+                        DispatchACPCommand((ACP_COMMAND_TYPE_INTERNAL)Command.commandType, pAcpState, Command);
+                    }
                 }
             }
         }

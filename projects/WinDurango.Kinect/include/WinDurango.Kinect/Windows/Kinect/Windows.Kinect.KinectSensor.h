@@ -1,4 +1,6 @@
 #pragma once
+#pragma comment(lib, "kinect20.lib")
+#include <kinect.h>
 #include "Windows.Kinect.AudioBeam.g.h"
 #include "Windows.Kinect.AudioBeamFrame.g.h"
 #include "Windows.Kinect.AudioBeamFrameArrivedEventArgs.g.h"
@@ -457,7 +459,10 @@ namespace winrt::Windows::Kinect::implementation
 
     struct KinectSensor : KinectSensorT<KinectSensor>
     {
-        KinectSensor() = default;
+        KinectSensor()
+        {
+            GetDefaultKinectSensor(&m_pKinectSensor);
+        }
 
         static winrt::Windows::Kinect::KinectSensor GetDefault();
         static winrt::Windows::Foundation::Collections::IObservableMap<hstring, winrt::Windows::Kinect::KinectSensor> Sensors();
@@ -478,6 +483,9 @@ namespace winrt::Windows::Kinect::implementation
         winrt::Windows::Kinect::CoordinateMapper CoordinateMapper();
         hstring UniqueKinectId();
         winrt::Windows::Kinect::KinectCapabilities KinectCapabilities();
+
+        private:
+        ::IKinectSensor *m_pKinectSensor = nullptr;
     };
 }
 namespace winrt::Windows::Kinect::factory_implementation

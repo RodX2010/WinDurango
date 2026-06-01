@@ -4,20 +4,17 @@
 
 namespace winrt::Windows::Xbox::ApplicationModel::Core::implementation
 {
-    struct CoreApplicationContext : CoreApplicationContextT<CoreApplicationContext>
+    struct CoreApplicationContext
     {
         CoreApplicationContext() = default;
 
-        void SetCurrentUser(winrt::Windows::Xbox::System::User const& value);
-        winrt::Windows::Xbox::System::User CurrentSystemUser();
-        winrt::event_token CurrentSystemUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
-        void CurrentSystemUserChanged(winrt::event_token const& token) noexcept;
-        winrt::Windows::Xbox::System::User CurrentUser();
-        winrt::Windows::Xbox::System::User PreviousUser();
-        winrt::event_token CurrentUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
-        void CurrentUserChanged(winrt::event_token const& token) noexcept;
-    private:
-        winrt::event<winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable>> e_CurrentUserChanged;
+        static winrt::Windows::Xbox::System::User CurrentUser();
+        static winrt::event_token CurrentUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
+        static void CurrentUserChanged(winrt::event_token const& token) noexcept;
+        static void SetCurrentUser(winrt::Windows::Xbox::System::User const& value);
+        static winrt::Windows::Xbox::System::User CurrentSystemUser();
+        static winrt::event_token CurrentSystemUserChanged(winrt::Windows::Foundation::EventHandler<winrt::Windows::Foundation::IInspectable> const& handler);
+        static void CurrentSystemUserChanged(winrt::event_token const& token) noexcept;
     };
 }
 namespace winrt::Windows::Xbox::ApplicationModel::Core::factory_implementation
@@ -26,3 +23,4 @@ namespace winrt::Windows::Xbox::ApplicationModel::Core::factory_implementation
     {
     };
 }
+

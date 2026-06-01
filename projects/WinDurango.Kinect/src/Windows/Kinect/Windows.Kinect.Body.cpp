@@ -50,13 +50,13 @@ namespace winrt::Windows::Kinect::implementation
     }
     bool BodyFrameReader::IsPaused()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameReader", "Unimplemented: IsPaused");
-        throw hresult_not_implemented();
+        BOOLEAN isPaused = 0;
+        m_pBodyFrameReader->get_IsPaused(&isPaused);
+        return (bool)isPaused;
     }
     void BodyFrameReader::IsPaused(bool value)
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameReader", "Unimplemented: IsPaused");
-        throw hresult_not_implemented();
+        m_pBodyFrameReader->put_IsPaused((BOOLEAN)value);
     }
     winrt::Windows::Kinect::BodyFrameSource BodyFrameReader::BodyFrameSource()
     {
@@ -85,18 +85,22 @@ namespace winrt::Windows::Kinect::implementation
     }
     bool BodyFrameSource::IsActive()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameSource", "Unimplemented: IsActive");
-        throw hresult_not_implemented();
+        BOOLEAN isActive = 0;
+        m_pBodyFrameSource->get_IsActive(&isActive);
+        return (bool)isActive;
+                                           
     }
     int32_t BodyFrameSource::BodyCount()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameSource", "Unimplemented: BodyCount");
-        throw hresult_not_implemented();
+        INT32 bodyCount = 0;
+        m_pBodyFrameSource->get_BodyCount(&bodyCount);
+        return bodyCount;
     }
     winrt::Windows::Kinect::BodyFrameReader BodyFrameSource::OpenReader()
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameSource", "Unimplemented: OpenReader");
-        throw hresult_not_implemented();
+        ::IBodyFrameReader *pBodyFrameReader = nullptr;
+        m_pBodyFrameSource->OpenReader(&pBodyFrameReader);
+        return winrt::make<implementation::BodyFrameReader>(pBodyFrameReader);
     }
     winrt::Windows::Kinect::KinectSensor BodyFrameSource::KinectSensor()
     {
@@ -105,13 +109,11 @@ namespace winrt::Windows::Kinect::implementation
     }
     void BodyFrameSource::OverrideHandTracking(uint64_t trackingId)
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameSource", "Unimplemented: OverrideHandTracking");
-        throw hresult_not_implemented();
+        m_pBodyFrameSource->OverrideHandTracking(trackingId);
     }
     void BodyFrameSource::OverrideAndReplaceHandTracking(uint64_t oldTrackingId, uint64_t newTrackingId)
     {
-        p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameSource", "Unimplemented: OverrideAndReplaceHandTracking");
-        throw hresult_not_implemented();
+        m_pBodyFrameSource->OverrideAndReplaceHandTracking(oldTrackingId, newTrackingId);
     }
     com_array<uint8_t> BodyIndexFrame::CopyFrameDataToArray()
     {

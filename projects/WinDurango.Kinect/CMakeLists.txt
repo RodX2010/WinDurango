@@ -4,6 +4,8 @@ project(WinDurango.Kinect VERSION 1.0.0)
 set(VERSION_SUFFIX "-dev.1") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
+set(KINECT_SDK_DIR "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1409")
+
 add_compile_definitions(_AMD64_)
 
 make_directory(${CMAKE_CURRENT_SOURCE_DIR}/WinMetadata)
@@ -54,6 +56,11 @@ target_include_directories(WinDurango.Kinect PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include/WinDurango.Kinect/Windows/Kinect"
     "${CMAKE_CURRENT_SOURCE_DIR}/Generated Files"
     "${CMAKE_SOURCE_DIR}/projects/WinDurango.Common/include"
+    "${KINECT_SDK_DIR}/inc"
+)
+
+target_link_directories(WinDurango.Kinect PUBLIC
+    "${KINECT_SDK_DIR}/Lib/x64"
 )
 
 target_link_libraries(WinDurango.Kinect PRIVATE WinDurango.Common windowsapp runtimeobject)

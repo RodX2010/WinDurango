@@ -42,7 +42,7 @@ namespace wd::common
     void GUI::Render()
     {
         ImGui_ImplDX11_NewFrame();
-        ImGui_ImplUwp_NewFrame();
+        //ImGui_ImplUwp_NewFrame(); //technically we use a HWND swap chain so this isn't needed? (breaks Forza Motorsport 5 and doesn't seems to make a difference)
 
         ID3D11Texture2D* pBackBuffer = nullptr;
         m_pSwapchain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
