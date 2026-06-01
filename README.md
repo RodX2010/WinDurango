@@ -23,8 +23,8 @@
 
 <h3 align="center">WinDurango</h3>
   <p align="center">
-    <br />
     WinDurango is an Xbox One Translation Layer which enables you to play various ERA based UWP Games on Windows.
+    <br />
     <a href="https://codeberg.org/WinDurango/WinDurango/issues">Report Bug</a>
     &middot;
     <a href="https://codeberg.org/WinDurango/WinDurango/issues">Request Feature</a>
