@@ -23,7 +23,7 @@
 
 <h3 align="center">WinDurango</h3>
   <p align="center">
-    WinDurango is an Xbox One Translation Layer which enables you to play various ERA based UWP Games on Windows.
+    WinDurango is an Xbox One Translation Layer which allows you to play various ERA based Games on Windows via UWP.
     <br />
     <a href="https://codeberg.org/WinDurango/WinDurango/issues">Report Bug</a>
     &middot;
@@ -66,18 +66,18 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://codeberg.org/WinDurango/WinDurango)
 
-WinDurango is an Xbox One Translation Layer which enables you to play various ERA based UWP Games on Windows. Currently WinDurango has implemented winrt, kernelx, d3d11. Kinect isn't supported currently but may be supported later.
+WinDurango is an Xbox One Translation Layer which allows you to play various ERA based Games on Windows via UWP. Currently, WinDurango has implemented most of the essential Xbox WinRT interfaces, KernelX and D3D11.X. Kinect support is completely experimental and hasn't been tested, expect issues.
 
 
 
 ### Playable Games
 
  - Sonic Mania - Playable
- - Minecraft 1.2.0.0 - Playable
- - Minecraft 1.61 - Boots
+ - Minecraft: Xbox One Edition (version 1.2.0.0) - Playable
+ - Minecraft: Xbox One Edition (versions 1.61.X.X) - Boots
  - LIMBO - Playable
- - FH2 - Boots
- - FH5 - Boots
+ - Forza Horizon 2 and it's variants - Boots
+ - Forza Motorsport 5 - Boots
  - Peggle 2 - Boots
 
 
@@ -117,19 +117,34 @@ Make sure you have Visual Studio 2026 with the C++ Extension, vcpkg and cmake.
 1. Get WinDurango Dll's from `build/bin/Debug`
 2. Copy the Dll's into the Mount Dir in your Game
 3. Enable Developer Mode
-3. Install the Game
+3. Install the Game (open powershell in the folder that contains `AppxManifest.xml`)
    ```sh
    Add-AppXPackage -Register .\AppxManifest.xml
    ```
+4. Add `EmbeddedXvd` to the folder that has the game executable
+   (usually in `Mount`)
+5. Pick these DLLs from EmbeddedXvd and drop them in the same folder as the executable:
+   `xg_x.dll`, `xg.dll` (if present), `AcpHal.dll`, `xaudio2_9.dll`,
+   `D3DCompiler46.dll` (if present), `sc_dll.dll` (if present).
+   if the game complains about a missing DLL that isn't present in this list nor implemented, please reach us out.
 
+
+### Minimum Requirements
+
+WinDurango does not have a fixed and correct minimum requirements list, as some games are more demands than others (e.g. Minecraft uses way less system resources than Forza). However, we can speculate system requirements that **should** supply the needs of most games:
+
+- A CPU with at least 4 Cores (e.g. Intel Core I5 4690K)
+- A GPU with at least 2gb of Video Memory (e.g. NVIDIA GeForce GTX 960)
+- 12gb of RAM (DDR3 or newer)
+- Windows 10 or newer
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Minecraft 1.61
-- [ ] FH2 Playable
-- [ ] FH5 Playable
-- [ ] Peggle Playable
+- [ ] Get Minecraft: Xbox One Edition (versions 1.61.X.X) to a playable state
+- [ ] Get Forza Horizon 2 and it's variants to a playable state
+- [ ] Get Forza Motorsport 5 to a playable state
+- [ ] Get Peggle 2 to a playable state
 
 
 <!-- CONTRIBUTING -->
