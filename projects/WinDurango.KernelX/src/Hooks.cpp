@@ -284,11 +284,6 @@ HRESULT WINAPI WdRoGetActivationFactoryCore(
     std::wstring rsws(rawString);
     std::string rss(rsws.begin(), rsws.end());
 
-    if (rss == std::string("Windows.ApplicationModel.Store.CurrentApp"))
-    {
-        return g_RoGetActivationFactory(activatableClassId, iid, factory);
-    }
-
     if (rss == std::string("Windows.ApplicationModel.Core.CoreApplication"))
     {
         ComPtr<IActivationFactory> realFactory;
