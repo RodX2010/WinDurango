@@ -613,8 +613,10 @@ HRESULT D3D11DeviceX<ABI>::CheckFeatureSupport(D3D11_FEATURE Feature, void *pFea
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::GetPrivateData(_GUID const &guid, uint32_t *pDataSize, void *pData)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    /*
+     * IDK what Im doing here, rod plz help
+    */
+    return m_pFunction->GetPrivateData(guid, pDataSize, pData);
 }
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::SetPrivateData(_GUID const &guid, uint32_t DataSize, void const *pData)
@@ -625,8 +627,10 @@ template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::SetPrivateData(_GUID const &guid
 
 template <abi_t ABI> HRESULT D3D11DeviceX<ABI>::SetPrivateDataInterface(_GUID const &guid, IUnknown const *pData)
 {
-    IMPLEMENT_STUB();
-    return E_NOTIMPL;
+    /*
+     * IDK what Im doing here, rod plz help
+    */
+    return m_pFunction->SetPrivateDataInterface(guid, pData);
 }
 
 template <abi_t ABI>
