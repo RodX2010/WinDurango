@@ -44,9 +44,8 @@ namespace wd::common
 
             std::shared_ptr<interfaces::storage::File> LogFile =
                 WinDurangoRoot->CreateFile("windurango_log_" + date + ".log");
-            std::shared_ptr<interfaces::storage::File> ConfigFile = WinDurangoRoot->CreateFile("windurango.json");
 
-            config = Config(ConfigFile);
+            config = Config(WinDurangoRoot);
             log = Logging(LogFile);
 
             config.parse();

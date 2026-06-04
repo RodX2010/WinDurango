@@ -90,7 +90,7 @@ namespace wd::impl::winrt::interfaces::storage
         return "Failed";
     }
 
-    void WinRTFile::operator<<(std::string data)
+    void WinRTFile::write(std::string data)
     {
         if (file == nullptr)
         {

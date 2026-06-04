@@ -11,22 +11,22 @@ namespace winrt::Windows::Xbox::System::implementation
 
     hstring UserDisplayInfo::Gamertag()
     {
-        return gamertag + m_id;
+        return winrt::to_hstring(p_wd->config["gamertag"]);
     }
 
     uint32_t UserDisplayInfo::GamerScore()
     {
-        return gamerscore;
+        return p_wd->config["gamerscore"];
     }
 
     hstring UserDisplayInfo::ApplicationDisplayName()
     {
-        return appDisplayName + m_id;
+        return winrt::to_hstring(p_wd->config["gamertag"]);
     }
 
     hstring UserDisplayInfo::GameDisplayName()
     {
-        return gameDisplayName + m_id;
+        return winrt::to_hstring(p_wd->config["gamertag"]);
     }
 
     uint32_t UserDisplayInfo::Reputation()

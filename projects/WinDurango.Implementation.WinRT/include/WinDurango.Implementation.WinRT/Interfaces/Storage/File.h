@@ -23,7 +23,7 @@ namespace wd::impl::winrt::interfaces::storage
         virtual bool open() override;
         virtual bool create() override;
         virtual std::string read() override;
-        virtual void operator<<(std::string data) override; // write
+        virtual void write(std::string data) override; // write
         virtual bool close() override;
 
         virtual std::filesystem::path filepath() override;

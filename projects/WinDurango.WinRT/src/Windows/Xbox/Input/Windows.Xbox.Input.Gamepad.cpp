@@ -261,21 +261,96 @@ namespace winrt::Windows::Xbox::Input::implementation
         ZeroMemory(&xiState, sizeof(XINPUT_STATE));
         RawGamepadReading reading = {};
 
+        WORD gp_up;
+        WORD gp_down;
+        WORD gp_left;
+        WORD gp_right;
+        WORD gp_start;
+        WORD gp_back;
+        WORD gp_lt;
+        WORD gp_rt;
+        WORD gp_ls;
+        WORD gp_rs;
+        WORD gp_a;
+        WORD gp_b;
+        WORD gp_x;
+        WORD gp_y;
+
+        if (p_wd->config.jsonData().contains("controls") && p_wd->config["controls"].is_object()) 
+        {
+            if (p_wd->config["controls"].contains("Up") && p_wd->config["controls"]["Up"].is_number())
+            {
+                gp_up = p_wd->config["controls"]["Up"];
+            }
+            if (p_wd->config["controls"].contains("Down") && p_wd->config["controls"]["Down"].is_number())
+            {
+                gp_down = p_wd->config["controls"]["Down"];
+            }
+            if (p_wd->config["controls"].contains("Left") && p_wd->config["controls"]["Left"].is_number())
+            {
+                gp_left = p_wd->config["controls"]["Left"];
+            }
+            if (p_wd->config["controls"].contains("Right") && p_wd->config["controls"]["Right"].is_number())
+            {
+                gp_right = p_wd->config["controls"]["Right"];
+            }
+            if (p_wd->config["controls"].contains("Start") && p_wd->config["controls"]["Start"].is_number())
+            {
+                gp_start = p_wd->config["controls"]["Start"];
+            }
+            if (p_wd->config["controls"].contains("Back") && p_wd->config["controls"]["Back"].is_number())
+            {
+                gp_back = p_wd->config["controls"]["Back"];
+            }
+            if (p_wd->config["controls"].contains("LeftTrigger") && p_wd->config["controls"]["LeftTrigger"].is_number())
+            {
+                gp_lt = p_wd->config["controls"]["LeftTrigger"];
+            }
+            if (p_wd->config["controls"].contains("RightTrigger") && p_wd->config["controls"]["RightTrigger"].is_number())
+            {
+                gp_rt = p_wd->config["controls"]["RightTrigger"];
+            }
+            if (p_wd->config["controls"].contains("LeftShoulder") && p_wd->config["controls"]["LeftShoulder"].is_number())
+            {
+                gp_ls = p_wd->config["controls"]["LeftShoulder"];
+            }
+            if (p_wd->config["controls"].contains("RightShoulder") && p_wd->config["controls"]["RightShoulder"].is_number())
+            {
+                gp_rs = p_wd->config["controls"]["RightShoulder"];
+            }
+            if (p_wd->config["controls"].contains("A") && p_wd->config["controls"]["A"].is_number())
+            {
+                gp_a = p_wd->config["controls"]["A"];
+            }
+            if (p_wd->config["controls"].contains("B") && p_wd->config["controls"]["B"].is_number())
+            {
+                gp_b = p_wd->config["controls"]["B"];
+            }
+            if (p_wd->config["controls"].contains("X") && p_wd->config["controls"]["X"].is_number())
+            {
+                gp_x = p_wd->config["controls"]["X"];
+            }
+            if (p_wd->config["controls"].contains("Y") && p_wd->config["controls"]["Y"].is_number())
+            {
+                gp_y = p_wd->config["controls"]["Y"];
+            }
+        }
+
         static std::pair<WORD, GamepadButtons> const buttons[] = {
-            {XINPUT_GAMEPAD_DPAD_UP, GamepadButtons::DPadUp},
-            {XINPUT_GAMEPAD_DPAD_DOWN, GamepadButtons::DPadDown},
-            {XINPUT_GAMEPAD_DPAD_LEFT, GamepadButtons::DPadLeft},
-            {XINPUT_GAMEPAD_DPAD_RIGHT, GamepadButtons::DPadRight},
-            {XINPUT_GAMEPAD_START, GamepadButtons::Menu},
-            {XINPUT_GAMEPAD_BACK, GamepadButtons::View},
-            {XINPUT_GAMEPAD_LEFT_THUMB, GamepadButtons::LeftThumbstick},
-            {XINPUT_GAMEPAD_RIGHT_THUMB, GamepadButtons::RightThumbstick},
-            {XINPUT_GAMEPAD_LEFT_SHOULDER, GamepadButtons::LeftShoulder},
-            {XINPUT_GAMEPAD_RIGHT_SHOULDER, GamepadButtons::RightShoulder},
-            {XINPUT_GAMEPAD_A, GamepadButtons::A},
-            {XINPUT_GAMEPAD_B, GamepadButtons::B},
-            {XINPUT_GAMEPAD_X, GamepadButtons::X},
-            {XINPUT_GAMEPAD_Y, GamepadButtons::Y},
+            {gp_up, GamepadButtons::DPadUp},
+            {gp_down, GamepadButtons::DPadDown},
+            {gp_left, GamepadButtons::DPadLeft},
+            {gp_right, GamepadButtons::DPadRight},
+            {gp_start, GamepadButtons::Menu},
+            {gp_back, GamepadButtons::View},
+            {gp_lt, GamepadButtons::LeftThumbstick},
+            {gp_rt, GamepadButtons::RightThumbstick},
+            {gp_ls, GamepadButtons::LeftShoulder},
+            {gp_rs, GamepadButtons::RightShoulder},
+            {gp_a, GamepadButtons::A},
+            {gp_b, GamepadButtons::B},
+            {gp_x, GamepadButtons::X},
+            {gp_y, GamepadButtons::Y},
         };
 
         if (XInput1_3GetState(id, &xiState) == ERROR_SUCCESS)
@@ -296,22 +371,127 @@ namespace winrt::Windows::Xbox::Input::implementation
             reading.RightThumbstickY = xiState.Gamepad.sThumbRY / 32768.f;
         }
 
+        SHORT kb_wm;
+        SHORT kb_am;
+        SHORT kb_sm;
+        SHORT kb_dm;
+        SHORT kb_a;
+        SHORT kb_b;
+        SHORT kb_x;
+        SHORT kb_y;
+        SHORT kb_up;
+        SHORT kb_down;
+        SHORT kb_left;
+        SHORT kb_right;
+        SHORT kb_menu;
+        SHORT kb_view;
+        SHORT kb_lt;
+        SHORT kb_rt;
+        SHORT kb_ls;
+        SHORT kb_rs;
+        SHORT kb_rtr;
+        SHORT kb_ltr;
+
+        if (p_wd->config.jsonData().contains("keyboard") && p_wd->config["keyboard"].is_object()) 
+        {
+            if (p_wd->config["keyboard"].contains("WM") && p_wd->config["keyboard"]["WM"].is_number())
+            {
+                kb_wm = p_wd->config["keyboard"]["WM"];
+            }
+            if (p_wd->config["keyboard"].contains("AM") && p_wd->config["keyboard"]["AM"].is_number())
+            {
+                kb_am = p_wd->config["keyboard"]["AM"];
+            }
+            if (p_wd->config["keyboard"].contains("SM") && p_wd->config["keyboard"]["SM"].is_number())
+            {
+                kb_sm = p_wd->config["keyboard"]["SM"];
+            }
+            if (p_wd->config["keyboard"].contains("DM") && p_wd->config["keyboard"]["DM"].is_number())
+            {
+                kb_dm = p_wd->config["keyboard"]["DM"];
+            }
+            if (p_wd->config["keyboard"].contains("A") && p_wd->config["keyboard"]["A"].is_number())
+            {
+                kb_a = p_wd->config["keyboard"]["A"];
+            }
+            if (p_wd->config["keyboard"].contains("B") && p_wd->config["keyboard"]["B"].is_number())
+            {
+                kb_b = p_wd->config["keyboard"]["B"];
+            }
+            if (p_wd->config["keyboard"].contains("X") && p_wd->config["keyboard"]["X"].is_number())
+            {
+                kb_x = p_wd->config["keyboard"]["X"];
+            }
+            if (p_wd->config["keyboard"].contains("Y") && p_wd->config["keyboard"]["Y"].is_number())
+            {
+                kb_y = p_wd->config["keyboard"]["Y"];
+            }
+            if (p_wd->config["keyboard"].contains("Up") && p_wd->config["keyboard"]["Up"].is_number())
+            {
+                kb_up = p_wd->config["keyboard"]["Up"];
+            }
+            if (p_wd->config["keyboard"].contains("Down") && p_wd->config["keyboard"]["Down"].is_number())
+            {
+                kb_down = p_wd->config["keyboard"]["Down"];
+            }
+            if (p_wd->config["keyboard"].contains("Left") && p_wd->config["keyboard"]["Left"].is_number())
+            {
+                kb_left = p_wd->config["keyboard"]["Left"];
+            }
+            if (p_wd->config["keyboard"].contains("Right") && p_wd->config["keyboard"]["Right"].is_number())
+            {
+                kb_right = p_wd->config["keyboard"]["Right"];
+            }
+            if (p_wd->config["keyboard"].contains("Menu") && p_wd->config["keyboard"]["Menu"].is_number())
+            {
+                kb_menu = p_wd->config["keyboard"]["Menu"];
+            }
+            if (p_wd->config["keyboard"].contains("View") && p_wd->config["keyboard"]["View"].is_number())
+            {
+                kb_view = p_wd->config["keyboard"]["View"];
+            }
+            if (p_wd->config["keyboard"].contains("LeftThumb") && p_wd->config["keyboard"]["LeftThumb"].is_number())
+            {
+                kb_lt = p_wd->config["keyboard"]["LeftThumb"];
+            }
+            if (p_wd->config["keyboard"].contains("RightThumb") && p_wd->config["keyboard"]["RightThumb"].is_number())
+            {
+                kb_rt = p_wd->config["keyboard"]["RightThumb"];
+            }
+            if (p_wd->config["keyboard"].contains("LeftShoulder") && p_wd->config["keyboard"]["LeftShoulder"].is_number())
+            {
+                kb_ls = p_wd->config["keyboard"]["LeftShoulder"];
+            }
+            if (p_wd->config["keyboard"].contains("RightShoulder") && p_wd->config["keyboard"]["RightShoulder"].is_number())
+            {
+                kb_rs = p_wd->config["keyboard"]["RightShoulder"];
+            }
+            if (p_wd->config["keyboard"].contains("LeftTrigger") && p_wd->config["keyboard"]["LeftTrigger"].is_number())
+            {
+                kb_ltr = p_wd->config["keyboard"]["LeftTrigger"];
+            }
+            if (p_wd->config["keyboard"].contains("RightTrigger") && p_wd->config["keyboard"]["RightTrigger"].is_number())
+            {
+                kb_rtr = p_wd->config["keyboard"]["RightTrigger"];
+            }
+        }
+
         float lx = 0.0f;
         float ly = 0.0f;
 
-        if (GetAsyncKeyState('W') & 0x8000) {
+        if (GetAsyncKeyState(kb_wm) & 0x8000) {
             ly = 1.0f;
         }
 
-        if (GetAsyncKeyState('A') & 0x8000) {
+        if (GetAsyncKeyState(kb_am) & 0x8000) {
             lx = -1.0f;
         }
 
-        if (GetAsyncKeyState('S') & 0x8000) {
+        if (GetAsyncKeyState(kb_sm) & 0x8000) {
             ly = -1.0;
         }
 
-        if (GetAsyncKeyState('D') & 0x8000) {
+        if (GetAsyncKeyState(kb_dm) & 0x8000) {
             lx = 1.0f;
         }
 
@@ -323,53 +503,53 @@ namespace winrt::Windows::Xbox::Input::implementation
             reading.LeftThumbstickY = ly;
         }
 
-        if (GetAsyncKeyState('Z') & 0x8000) {
+        if (GetAsyncKeyState(kb_a) & 0x8000) {
             reading.Buttons |= GamepadButtons::A;
         }
-        if (GetAsyncKeyState('X') & 0x8000) {
+        if (GetAsyncKeyState(kb_b) & 0x8000) {
             reading.Buttons |= GamepadButtons::B;
         }
-        if (GetAsyncKeyState('C') & 0x8000) {
+        if (GetAsyncKeyState(kb_x) & 0x8000) {
             reading.Buttons |= GamepadButtons::X;
         }
-        if (GetAsyncKeyState('V') & 0x8000) {
+        if (GetAsyncKeyState(kb_y) & 0x8000) {
             reading.Buttons |= GamepadButtons::Y;
         }
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
+        if (GetAsyncKeyState(kb_up) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadUp;
         }
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+        if (GetAsyncKeyState(kb_down) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadDown;
         }
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+        if (GetAsyncKeyState(kb_left) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadLeft;
         }
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+        if (GetAsyncKeyState(kb_right) & 0x8000) {
             reading.Buttons |= GamepadButtons::DPadRight;
         }
-        if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
+        if (GetAsyncKeyState(kb_menu) & 0x8000) {
             reading.Buttons |= GamepadButtons::Menu;
         }
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+        if (GetAsyncKeyState(kb_view) & 0x8000) {
             reading.Buttons |= GamepadButtons::View;
         }
-        if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
+        if (GetAsyncKeyState(kb_lt) & 0x8000) {
             reading.Buttons |= GamepadButtons::LeftThumbstick;
         }
-        if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) {
+        if (GetAsyncKeyState(kb_rt) & 0x8000) {
             reading.Buttons |= GamepadButtons::RightThumbstick;
         }
-        if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
+        if (GetAsyncKeyState(kb_ls) & 0x8000) {
             reading.Buttons |= GamepadButtons::LeftShoulder;
         }
-        if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) {
+        if (GetAsyncKeyState(kb_rs) & 0x8000) {
             reading.Buttons |= GamepadButtons::RightShoulder;
         }
 
-        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+        if (GetAsyncKeyState(kb_ltr) & 0x8000) {
             reading.RightTrigger = 1.0f;
         }
-        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+        if (GetAsyncKeyState(kb_rtr) & 0x8000) {
             reading.LeftTrigger = 1.0f;
         }
 

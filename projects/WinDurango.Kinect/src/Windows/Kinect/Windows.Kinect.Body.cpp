@@ -45,6 +45,9 @@ namespace winrt::Windows::Kinect::implementation
     }
     winrt::Windows::Kinect::BodyFrame BodyFrameReader::AcquireLatestFrame()
     {
+        /*
+        * Peggle 2
+        */
         p_wd->log.Warn("WinDurango::Kinect::Windows::Kinect::BodyFrameReader", "Unimplemented: AcquireLatestFrame");
         throw hresult_not_implemented();
     }
