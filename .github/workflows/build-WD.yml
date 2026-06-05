@@ -22,6 +22,5 @@ jobs:
           cd build
           cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
           cd ../
-          ls
     - name: Build WinDurango
       run: cmake --build build
