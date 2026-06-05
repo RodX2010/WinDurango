@@ -1,0 +1,27 @@
+name: Build WD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: windows-2025-vs2026
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Install VCPkg Packages
+      uses: lukka/run-vcpkg@v11
+    - name: Configure CMake
+      run: |
+          mkdir build
+          cd build
+          cmake ..
+          cd ../
+          ls
+    - name: Build WinDurango
+      run: cmake --build build
