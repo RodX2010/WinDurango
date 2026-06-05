@@ -22,5 +22,6 @@ jobs:
           cd build
           cmake ..
           cd ../
+          ls
     - name: Build WinDurango
       run: cmake --build build
