@@ -16,10 +16,6 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Install VCPkg Packages
       uses: lukka/run-vcpkg@v11
-    - name: Install Kinect SDK
-      run: |
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/f/2/d/f2d1012e-3bc6-49c5-b8b3-5acff58af7b8/KinectSDK-v2.0_1409-Setup.exe" -OutFile "KinectSDK.exe"
-        Start-Process -FilePath ".\KinectSDK.exe" -ArgumentList "/quiet /norestart" -Wait
     - name: Configure CMake
       run: |
           mkdir build

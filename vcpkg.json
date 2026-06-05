@@ -4,6 +4,7 @@
   "dependencies": [
     "cppwinrt",
     "detours",
-    "directxtex"
+    "directxtex",
+    "kinectsdk2"
   ]
 }
