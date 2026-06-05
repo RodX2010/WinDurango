@@ -18,7 +18,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/WinDurango/WinDurango">
-    <img src="https://github.com/WinDurango/WinDurango/raw/branch/main/assets/logo/128.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/WinDurango/WinDurango/blob/main/assets/logo/128.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">WinDurango</h3>
@@ -198,4 +198,4 @@ Thanks to
 [issues-url]: https://github.com/WinDurango/WinDurango/issues
 [license-shield]: https://img.shields.io/github/license/WinDurango/WinDurango.svg?style=for-the-badge
 [license-url]: https://github.com/WinDurango/WinDurango/blob/master/LICENSE.txt
-[product-screenshot]: https://github.com/WinDurango/WinDurango/raw/branch/main/assets/demo.png
+[product-screenshot]: https://github.com/WinDurango/WinDurango/blob/main/assets/demo.png
