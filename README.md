@@ -64,7 +64,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://codeberg.org/WinDurango/WinDurango)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/WinDurango/WinDurango)
 
 WinDurango is an Xbox One Translation Layer which allows you to play various ERA based Games on Windows via UWP. Currently, WinDurango has implemented most of the essential Xbox WinRT interfaces, KernelX and D3D11.X. Kinect support is completely experimental and hasn't been tested, expect issues.
 
@@ -96,7 +96,7 @@ Make sure you have Visual Studio 2026 with the C++ Extension, vcpkg and cmake.
 1. Open up the `VS 2026 Powershell Prompt`
 2. Clone the repo
    ```sh
-   git clone https://codeberg.org/WinDurango/WinDurango
+   git clone https://github.com/WinDurango/WinDurango
    ```
 3. Install VCPKG packages
    ```sh
